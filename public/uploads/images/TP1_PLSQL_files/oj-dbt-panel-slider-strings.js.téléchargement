@@ -1,0 +1,1 @@
+define(["require","exports"],(function(require,e){"use strict";return{root:!0,de:!1,es:!1,fr:!1,it:!1,ja:!1,ko:!1,"pt-BR":!1,"zh-Hans":!1,"zh-Hant":!1}}));

@@ -1,0 +1,1 @@
+define(["require","exports"],(function(require,e){"use strict";return{ojdbtPanelSlider:{close:"Close",help:"Help",clearErrorMessage:"Clear error message"}}}));

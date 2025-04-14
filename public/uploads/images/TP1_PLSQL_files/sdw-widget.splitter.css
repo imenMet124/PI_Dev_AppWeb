@@ -1,0 +1,281 @@
+/* 
+ * From 'Theme-Standard.min.css'
+ */
+.a-Splitter-barH.a-Splitter--end.is-collapsed .a-Splitter-thumb,.a-Splitter-barH .a-Splitter-thumb {
+    background-image: url(../img/ui/splitter-h-start.svg)
+}
+
+.a-Splitter-barH.a-Splitter--end .a-Splitter-thumb,.a-Splitter-barH.is-collapsed .a-Splitter-thumb {
+    background-image: url(../img/ui/splitter-h-end.svg)
+}
+
+.a-Splitter-barV.a-Splitter--end.is-collapsed .a-Splitter-thumb,.a-Splitter-barV .a-Splitter-thumb {
+    background-image: url(../img/ui/splitter-v-start.svg)
+}
+
+.a-Splitter-barV.a-Splitter--end .a-Splitter-thumb,.a-Splitter-barV.is-collapsed .a-Splitter-thumb {
+    background-image: url(../img/ui/splitter-v-end.svg)
+}
+
+.a-Splitter-barH,.a-Splitter-barH.is-disabled:hover,.a-Splitter-barV,.a-Splitter-barV.is-disabled:hover {
+    background-color: #e0e0e0
+}
+
+.a-Splitter-barH {
+    box-shadow: inset 1px 0 0 #d1d1d1,inset -1px 0 0 #d1d1d1
+}
+
+.a-Splitter-barH:hover {
+    background-color: #fff
+}
+
+.a-Splitter-barV {
+    box-shadow: inset 0 1px 0 #d1d1d1,inset 0 -1px 0 #d1d1d1
+}
+
+.a-Splitter-barV:hover {
+    background-color: #fff
+}
+
+.a-Splitter-barH.is-focused,.a-Splitter-barV.is-focused {
+    background-color: #0572ce;
+    box-shadow: inset 0 0 0 1px #0572ce,0 0 2px rgba(0,0,0,.1)!important
+}
+
+.a-Splitter-barH button:hover,.a-Splitter-barH button:hover:focus,.a-Splitter-barV button:hover,.a-Splitter-barV button:hover:focus {
+    background-color: #f9f9f9;
+    box-shadow: inset 0 0 0 1px #0572ce
+}
+
+.a-Splitter-barH button:focus {
+    box-shadow: inset 1px 0 0 #0572ce,inset -1px 0 0 #0572ce
+}
+
+.a-Splitter-barV button:focus {
+    box-shadow: inset 0 1px 0 #0572ce,inset 0 -1px 0 #0572ce
+}
+
+/*
+ * From 'Core.min.css'
+ */
+.a-Splitter-barH,.a-Splitter-barV {
+    z-index: 90
+}
+
+.a-Splitter-barH {
+    width: 8px;
+    height: 100%;
+    cursor: col-resize
+}
+
+.a-Splitter-barV {
+    width: 100%;
+    height: 8px;
+    cursor: row-resize
+}
+
+.a-Splitter-barH.is-disabled,.a-Splitter-barV.is-disabled {
+    cursor: default
+}
+
+.a-Splitter-barH .a-Splitter-thumb,.a-Splitter-barV .a-Splitter-thumb {
+    position: absolute;
+    padding: 0;
+    border: 0;
+    border-style: solid;
+    background-color: transparent;
+    background-repeat: no-repeat
+}
+
+.a-Splitter-barH .a-Splitter-thumb {
+    width: 8px;
+    height: 48px;
+    top: 50%;
+    left: 0;
+    margin-top: -24px;
+    background-position: 50% 50%
+}
+
+.a-Splitter-barV .a-Splitter-thumb {
+    width: 48px;
+    height: 8px;
+    top: 0;
+    left: 50%;
+    margin-left: -24px;
+    background-position: 50% 50%
+}
+
+.a-Splitter-barV.a-Splitter--end .a-Splitter-thumb,.a-Splitter-barV.is-collapsed .a-Splitter-thumb {
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22utf-8%22%3F%3E%3C!DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20x%3D%220px%22%20y%3D%220px%22%20%20width%3D%2224px%22%20height%3D%228px%22%20viewBox%3D%220%200%2024%208%22%20enable-background%3D%22new%200%200%2024%208%22%20xml%3Aspace%3D%22preserve%22%3E%3Cg%20opacity%3D%220.8%22%3E%20%3Cpolygon%20fill%3D%22%23231F20%22%20points%3D%2212%2C6%208%2C2%2016%2C2%20%20%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")
+}
+
+.a-Splitter-barH.a-Splitter--end.is-collapsed .a-Splitter-thumb,.a-Splitter-barH .a-Splitter-thumb {
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22utf-8%22%3F%3E%3C!DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20x%3D%220px%22%20y%3D%220px%22%20%20width%3D%228px%22%20height%3D%2224px%22%20viewBox%3D%220%200%208%2024%22%20enable-background%3D%22new%200%200%208%2024%22%20xml%3Aspace%3D%22preserve%22%3E%3Cg%20opacity%3D%220.8%22%3E%20%3Cpolygon%20fill%3D%22%23231F20%22%20points%3D%222%2C12%206%2C8%206%2C16%20%20%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")
+}
+
+.a-Splitter-barH.a-Splitter--end .a-Splitter-thumb,.a-Splitter-barH.is-collapsed .a-Splitter-thumb {
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22utf-8%22%3F%3E%3C!DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20x%3D%220px%22%20y%3D%220px%22%20%20width%3D%228px%22%20height%3D%2224px%22%20viewBox%3D%220%200%208%2024%22%20enable-background%3D%22new%200%200%208%2024%22%20xml%3Aspace%3D%22preserve%22%3E%3Cg%20opacity%3D%220.8%22%3E%20%3Cpolygon%20fill%3D%22%23231F20%22%20points%3D%226%2C12%202%2C16%202%2C8%20%20%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")
+}
+
+.a-Splitter-barV.a-Splitter--end.is-collapsed .a-Splitter-thumb,.a-Splitter-barV .a-Splitter-thumb {
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22utf-8%22%3F%3E%3C!DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20x%3D%220px%22%20y%3D%220px%22%20%20width%3D%2224px%22%20height%3D%228px%22%20viewBox%3D%220%200%2024%208%22%20enable-background%3D%22new%200%200%2024%208%22%20xml%3Aspace%3D%22preserve%22%3E%3Cg%20opacity%3D%220.8%22%3E%20%3Cpolygon%20fill%3D%22%23231F20%22%20points%3D%2212%2C2%2016%2C6%208%2C6%20%20%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")
+}
+
+.u-HCM .a-Splitter-barH .a-Splitter-thumb,.u-HCM .a-Splitter-barV {
+    border-top: 1px solid!important;
+    border-bottom: 1px solid!important
+}
+
+.u-HCM .a-Splitter-barH,.u-HCM .a-Splitter-barV .a-Splitter-thumb {
+    border-left: 1px solid!important;
+    border-right: 1px solid!important
+}
+
+.u-HCM .a-Splitter-barH .a-Splitter-thumb {
+    width: 6px
+}
+
+.u-HCM .a-Splitter-barV .a-Splitter-thumb {
+    height: 6px
+}
+
+.u-HCM .a-Splitter-thumb {
+    font-size: 0
+}
+
+.u-HCM .a-Splitter-thumb:focus {
+    outline: 1px dotted
+}
+
+.u-HCM .a-Splitter-thumb:before {
+    display: inline-block;
+    font-size: 0
+}
+
+.u-HCM .a-Splitter-barH.a-Splitter--end.is-collapsed button:before,.u-HCM .a-Splitter-barH button:before {
+    content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAICAYAAADaxo44AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAADFJREFUeNpiYCAScAHxfHRBTSC+DMT/kQUTgPgrVBAswUSM+TpAfAXdKLyWowCAAAMAYeAIoi9jxW8AAAAASUVORK5CYII=")
+}
+
+.u-HCM .a-Splitter-barH.a-Splitter--end button:before,.u-HCM .a-Splitter-barH.is-collapsed button:before {
+    content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAICAYAAADaxo44AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAADBJREFUeNpiYCAA5gMxFzaJ/0B8GYi1sUmA8FcgTgAJMBGyA6T6GhDrEG05BgAIMACXbgimsJcHxgAAAABJRU5ErkJggg==")
+}
+
+.u-HCM .a-Splitter-barV.a-Splitter--end.is-collapsed button:before,.u-HCM .a-Splitter-barV button:before {
+    content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAGCAYAAAD+Bd/7AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAADBJREFUeNpiYCARxAFxPC5JTSD+CsVa6JJcQHwViP9D8VWoGBzMR5KE4QVEOQogwACWHgvyF5+1BQAAAABJRU5ErkJggg==")
+}
+
+.u-HCM .a-Splitter-barV.a-Splitter--end button:before,.u-HCM .a-Splitter-barV.is-collapsed button:before {
+    content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAGCAYAAAD+Bd/7AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAADhJREFUeNpiYiAAmKD0AiD+j4YXIivkAuKrSJLXoGIoQAuIv0KxFkyQBUkBSFcWEDNC2cQBgAADAMvQDVhQ+xZAAAAAAElFTkSuQmCC")
+}
+
+.a-Splitter-barH.is-disabled .a-Splitter-thumb,.a-Splitter-barV.is-disabled .a-Splitter-thumb {
+    background-image: none!important
+}
+
+.a-Splitter-barH div,.a-Splitter-barV div {
+    display: none
+}
+
+/******************************************************************************
+Color Variables
+******************************************************************************/
+/******************************************************************************
+Splitter Images
+******************************************************************************/
+.a-Splitter-barV.is-focused.is-collapsed .a-Splitter-thumb, .a-Splitter-barV.is-focused.a-Splitter--end .a-Splitter-thumb {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSI4IiB2aWV3Qm94PSIwIDAgMjQgOCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEyIDZsLTQtNGg4eiIvPjwvc3ZnPg==");
+}
+
+.a-Splitter-barH.is-focused .a-Splitter-thumb, .a-Splitter-barH.is-focused.a-Splitter--end.is-collapsed .a-Splitter-thumb {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgOCAyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTIgMTJsNC00djh6Ii8+PC9zdmc+");
+}
+
+.a-Splitter-barH.is-focused.is-collapsed .a-Splitter-thumb, .a-Splitter-barH.is-focused.a-Splitter--end .a-Splitter-thumb {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgOCAyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTYgMTJsLTQgNHYtOHoiLz48L3N2Zz4=");
+}
+
+.a-Splitter-barV.is-focused .a-Splitter-thumb, .a-Splitter-barV.is-focused.a-Splitter--end.is-collapsed .a-Splitter-thumb {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSI4IiB2aWV3Qm94PSIwIDAgMjQgOCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEyIDJsNCA0aC04eiIvPjwvc3ZnPg==");
+}
+
+/******************************************************************************
+Splitter Styles
+******************************************************************************/
+/**
+ * Splitter Bar
+ */
+.a-Splitter-barH,
+.a-Splitter-barV,
+.a-Splitter-barH.is-disabled:hover,
+.a-Splitter-barV.is-disabled:hover {
+  background-color: #EAEAEA;
+}
+
+.a-Splitter-barH {
+  box-shadow: 1px 0 0 #E0E0E0 inset, -1px 0 0 #E0E0E0 inset;
+}
+
+.a-Splitter-barV {
+  box-shadow: 0 1px 0 #E0E0E0 inset, 0 -1px 0 #E0E0E0 inset;
+}
+
+/**
+ * Splitter Bar Hover and Focus States
+ */
+.a-Splitter-barH:hover,
+.a-Splitter-barV:hover {
+  background-color: #FFF;
+}
+
+.a-Splitter-barH.is-active,
+.a-Splitter-barV.is-active {
+  box-shadow: 0 0 0 1px #399bea inset, 0 0 2px rgba(0, 0, 0, 0.1) !important;
+  background-color: #FFF;
+  z-index: 1000;
+}
+
+.a-Splitter-barH.is-focused,
+.a-Splitter-barV.is-focused {
+  box-shadow: 0 0 0 1px #399bea inset, 0 0 2px rgba(0, 0, 0, 0.1) !important;
+  background-color: #399BEA;
+}
+
+.a-Splitter-barH.is-disabled .a-Splitter-thumb,
+.a-Splitter-barV.is-disabled .a-Splitter-thumb {
+  background-image: none !important;
+}
+
+/**
+ * Splitter Bar Button Focus and Hovers
+ */
+.a-Splitter-barH button:hover,
+.a-Splitter-barV button:hover,
+.a-Splitter-barH button:hover:focus,
+.a-Splitter-barV button:hover:focus {
+  box-shadow: 0 0 0 1px #399bea inset;
+  background-color: #FFF;
+}
+
+.a-Splitter-barH button:focus,
+.a-Splitter-barV button:focus {
+  outline: none;
+}
+
+.a-Splitter-barH button:focus {
+  box-shadow: 1px 0 0 #399BEA inset, -1px 0 0 #399BEA inset;
+}
+
+.a-Splitter-barV button:focus {
+  box-shadow: 0 1px 0 #399BEA inset, 0 -1px 0 #399BEA inset;
+}
+
+.a-Splitter-barH.is-focused button:hover,
+.a-Splitter-barV.is-focused button:hover {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+.a-Splitter-barH.is-disabled button:hover,
+.a-Splitter-barV.is-disabled button:hover {
+  background-color: transparent;
+  box-shadow: none;
+}

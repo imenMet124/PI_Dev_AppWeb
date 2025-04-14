@@ -1,0 +1,93 @@
+/* Avoid overlapping with the info button */
+.output-error-item__message {
+    float: left;
+    outline: none;
+    white-space: pre-line;
+    /* 30px is the size of the button and 10px is the padding */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.output-error-item__plsql-object-position {
+    color: var( --color-site-2-c-1 );
+    white-space: nowrap;
+    text-decoration: underline;
+}
+
+.output-error-item__plsql-object-description {
+    white-space: initial;
+    word-break: break-word;
+}
+
+.output-error-item__plsql-object-position:hover {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.output-error-item oj-button {
+    height: 30px;
+    width: 30px;
+    margin-bottom: 0;
+    background-color: inherit !important;
+}
+
+.output-error-item__controls {
+    position: absolute;
+    right: 10px;
+}
+
+.output-error-item_button {
+    right: 10px;
+}
+
+.output-error-item__message__popup .oj-popup-content {
+    padding: 0;
+}
+
+.output-error-item-msg {
+    background: transparent !important;
+    color: red !important;
+    line-height: 30px;
+    padding: 0 8px;
+}
+.output-msg.output-msg--error .message { 
+    display: flex;
+    padding: 0 8px;
+    line-height: 30px
+}
+
+.output-error-item__message__popup .dbt-code-viewer__actions--vertical {
+    height: 30px;
+}
+
+.output-error-item__message__popup__content {
+    min-width: 350px; 
+    max-height: 600px; 
+    max-width: 700px; 
+    user-select: text; 
+    overflow: auto;
+}
+
+.output-error-item-viewer {
+    display: inline-flex;
+    min-width: inherit;
+}
+
+.output-error-item-line-numbers {
+    width: 20px;
+    text-align: right;
+    font-family: Hack, Menlo, Monaco, "Courier New", monospace;
+    font-size: 12px;
+    padding-top: 10px!important;
+}
+
+.output-error-item-line-numbers span::before {
+    display: block;
+    color: #333333;
+}
+
+.output-error-item-code-viewer {
+    width: 100%; 
+    user-select: text; 
+    overflow: auto;
+}

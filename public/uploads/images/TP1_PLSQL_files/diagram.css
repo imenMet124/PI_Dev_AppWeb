@@ -1,0 +1,119 @@
+.free-transform .resize {
+    width: 6px;
+    height: 6px;
+    border-width: 1px;
+}
+
+.free-transform > div,
+.free-transform > div:hover,
+.free-transform.in-operation > div {
+    background: #0898F7;
+}
+
+.joint-selection {
+    background-color: red;
+    border: 0px solid red !important;
+    opacity: .7 !important;
+}
+.selection-box {
+    border: 2px solid red;
+    box-shadow: 2px 2px 5px black !important;
+}
+
+.fa-ar {
+    font-weight: bold !important;
+    font-size: 12px !important;
+    vertical-align: middle !important;
+    display: table-cell !important;
+}
+
+@media print {
+  body:before {
+        content: '';
+        font-size: 24px;
+        color: #FF0000;
+        position: absolute;
+        top: 5mm;
+        left: 5mm;
+    }
+}
+
+.selection-wrapper { display: none; }
+
+.link-tools .tool-remove { display: none }
+.link-tools .tool-options { display: none }
+.link .marker-arrowheads { display: none }
+
+.connection-wrap {
+    stroke: red !important;
+    stroke-width: 10 !important;
+}
+.connection-wrap:hover {
+    opacity: 0.7 !important;
+    stroke-opacity: 0.7 !important;
+}
+
+.marker-arrowheads {
+    display: none;
+}
+.joint-link.joint-theme-default .marker-vertex {
+    fill: #34495E;
+}
+.joint-link.joint-theme-default .marker-vertex:hover {
+    fill: #34495E;
+    stroke: none;
+}
+
+.joint-halo .handle.clone { display: none; }
+.joint-halo .handle.resize { display: none; }
+.joint-halo .handle.rotate { display: none; }
+.joint-halo .handle.fork { display: none; }
+.joint-halo .handle.unlink { display: none; }
+.joint-halo .handle.remove { display: none; }
+.joint-halo.joint-theme-default .handle.link {
+    background-image: url('data:image/svg+xml;charset=utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22utf-8%22%3F%3E%3C!DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20x%3D%220px%22%20y%3D%220px%22%20width%3D%2218.75px%22%20height%3D%2218.75px%22%20viewBox%3D%220%200%2018.75%2018.75%22%20enable-background%3D%22new%200%200%2018.75%2018.75%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%236A6C8A%22%20d%3D%22M9.884%2C9.838c0.54-0.551%2C1.005-0.955%2C1.384-1.201c0.463-0.308%2C0.749-0.352%2C0.887-0.352h1.34v1.367%20c0%2C0.104%2C0.061%2C0.2%2C0.154%2C0.242s0.204%2C0.027%2C0.284-0.038l3.168-2.669c0.06-0.051%2C0.096-0.125%2C0.096-0.203S17.16%2C6.83%2C17.101%2C6.781%20l-3.168-2.677c-0.08-0.067-0.19-0.081-0.284-0.038c-0.094%2C0.045-0.154%2C0.139-0.154%2C0.242v1.414h-1.343%20c-1.24%2C0.014-2.215%2C0.67-2.927%2C1.242c-0.797%2C0.65-1.533%2C1.447-2.245%2C2.217c-0.361%2C0.391-0.7%2C0.759-1.044%2C1.1%20c-0.541%2C0.549-1.011%2C0.951-1.395%2C1.199c-0.354%2C0.231-0.678%2C0.357-0.921%2C0.357h-1.8c-0.146%2C0-0.266%2C0.12-0.266%2C0.265v2.029%20c0%2C0.148%2C0.12%2C0.268%2C0.266%2C0.268h1.8l0%2C0c1.255-0.014%2C2.239-0.667%2C2.958-1.24c0.82-0.661%2C1.572-1.475%2C2.297-2.256%20C9.225%2C10.524%2C9.555%2C10.169%2C9.884%2C9.838z%22%2F%3E%3C%2Fsvg%3E%20');
+}
+
+.joint-tooltip.joint-theme-default {
+   background-color: #33bdef;
+   color: white;
+   font-size: 14px;
+}
+
+.joint-tooltip.joint-theme-default.left .tooltip-arrow-mask {
+   border-right-color: #33bdef;
+}
+
+.joint-tooltip.joint-theme-default.right .tooltip-arrow-mask {
+   border-left-color: #33bdef;
+}
+
+.joint-tooltip.joint-theme-default.top .tooltip-arrow-mask {
+   border-bottom-color: #33bdef;
+}
+
+.joint-tooltip.joint-theme-default.bottom .tooltip-arrow-mask {
+   border-top-color: #33bdef;
+}
+
+.joint-tooltip.joint-theme-default.left .tooltip-arrow {
+   border-right-color: #33bdef;
+}
+
+.joint-tooltip.joint-theme-default.right .tooltip-arrow {
+   border-left-color: #33bdef;
+}
+
+.joint-tooltip.joint-theme-default.top .tooltip-arrow {
+   border-bottom-color: #33bdef;
+}
+
+.joint-tooltip.joint-theme-default.bottom .tooltip-arrow {
+   border-top-color: #33bdef;
+}
+
+.joint-type-json-jsondoc,
+.joint-type-json-jsondocchild,
+.joint-type-json-jsonrect {
+	cursor: default !Important;
+ }

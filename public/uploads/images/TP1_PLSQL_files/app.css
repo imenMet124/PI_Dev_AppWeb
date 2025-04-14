@@ -1,0 +1,173 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+
+.app-Container {
+    min-height: 100dvh;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-Header {
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    background: rgb(var(--oj-palette-neutral-rgb-30));
+}
+
+.app-Header-start {
+    display: flex;
+}
+
+.app-Header-end {
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-end;
+    min-width: 0;
+    align-items: center;
+}
+
+.app-MenuButton {
+    margin-inline-end: 0.5rem;
+}
+
+.app-Brand {
+    margin: 0;
+    margin-inline-end: 0.5rem;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.app-Brand-logo {
+    margin-inline-end: 0.5rem;
+}
+
+.app-Brand-text {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.app-Header-toolbar {
+    flex-wrap: nowrap;
+    min-width: 0;
+}
+
+.livesql-main {
+    width: 100%;
+    height: 100%;
+}
+
+/* APEX Layout splitter */
+.a-Splitter-thumb {
+    cursor: pointer
+}
+
+.a-Splitter-barH,
+.a-Splitter-barV {
+    z-index: 1
+}
+
+.a-Splitter-barH:active,
+.a-Splitter-barV:active {
+    z-index: 10050
+}
+
+.a-Splitter-barH,
+.a-Splitter-barV {
+    background-color: #ccc;
+    border-radius: 5px
+}
+
+.a-Splitter-barH.a-Splitter--end.is-collapsed .a-Splitter-thumb,
+.a-Splitter-barH .a-Splitter-thumb,
+.a-Splitter-barV .a-Splitter-thumb,
+.a-Splitter-barV.a-Splitter--end.is-collapsed .a-Splitter-thumb {
+    background-color: rgba(0, 0, 0, .25)
+}
+
+.a-Splitter-barH button:hover,
+.a-Splitter-barV button:hover,
+.a-Splitter-barH button:hover:focus,
+.a-Splitter-barV button:hover:focus {
+    background-color: rgba(0, 0, 0, .25)
+}
+
+.a-Splitter-barH.a-Splitter--end.is-collapsed .a-Splitter-thumb,
+.a-Splitter-barH .a-Splitter-thumb {
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22utf-8%22%3F%3E%3C!DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20x%3D%220px%22%20y%3D%220px%22%20%20width%3D%228px%22%20height%3D%2224px%22%20viewBox%3D%220%200%208%2024%22%20enable-background%3D%22new%200%200%208%2024%22%20xml%3Aspace%3D%22preserve%22%3E%3Cg%20opacity%3D%220.8%22%3E%20%3Cpolygon%20fill%3D%22%23FFFFFF%22%20points%3D%222%2C12%206%2C8%206%2C16%20%20%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")
+}
+
+.a-Splitter-barH.a-Splitter--end .a-Splitter-thumb,
+.a-Splitter-barH.is-collapsed .a-Splitter-thumb {
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22utf-8%22%3F%3E%3C!DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20x%3D%220px%22%20y%3D%220px%22%20%20width%3D%228px%22%20height%3D%2224px%22%20viewBox%3D%220%200%208%2024%22%20enable-background%3D%22new%200%200%208%2024%22%20xml%3Aspace%3D%22preserve%22%3E%3Cg%20opacity%3D%220.8%22%3E%20%3Cpolygon%20fill%3D%22%23FFFFFF%22%20points%3D%226%2C12%202%2C16%202%2C8%20%20%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")
+}
+
+.a-Splitter-barV.a-Splitter--end .a-Splitter-thumb,
+.a-Splitter-barV.is-collapsed .a-Splitter-thumb {
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22utf-8%22%3F%3E%3C!DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20x%3D%220px%22%20y%3D%220px%22%20%20width%3D%2224px%22%20height%3D%228px%22%20viewBox%3D%220%200%2024%208%22%20enable-background%3D%22new%200%200%2024%208%22%20xml%3Aspace%3D%22preserve%22%3E%3Cg%20opacity%3D%220.8%22%3E%20%3Cpolygon%20fill%3D%22%23FFFFFF%22%20points%3D%2212%2C6%208%2C2%2016%2C2%20%20%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")
+}
+
+.a-Splitter-barV.a-Splitter--end.is-collapsed .a-Splitter-thumb,
+.a-Splitter-barV .a-Splitter-thumb {
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22utf-8%22%3F%3E%3C!DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20x%3D%220px%22%20y%3D%220px%22%20%20width%3D%2224px%22%20height%3D%228px%22%20viewBox%3D%220%200%2024%208%22%20enable-background%3D%22new%200%200%2024%208%22%20xml%3Aspace%3D%22preserve%22%3E%3Cg%20opacity%3D%220.8%22%3E%20%3Cpolygon%20fill%3D%22%23FFFFFF%22%20points%3D%2212%2C2%2016%2C6%208%2C6%20%20%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")
+}
+
+/* End APEX Layout splitter */
+
+/* JET CSS variables overrides */
+.oj-tabbar-horizontal {
+    --oj-tab-bar-item-padding: 0.5rem 1rem;
+    --oj-tab-bar-item-margin: 0;
+    --oj-tab-bar-item-border-color-selected : #4c825c;
+}
+/* End of JET CSS variables overrides */
+
+/* Generic styles */
+.bottom-center {
+    position: fixed;
+    top: 90% !important; 
+    left: 50% !important;
+    transform: translate(-50%, -90%) !important;
+}
+
+/* Explain Plan */
+.output-container {
+    height: calc(100% - 40px);
+    overflow-x: auto;
+    overflow-y: auto !important
+}
+
+/* Used in the icons in SDW to style the buttons and remove the bold outlines */
+.fa {
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    font-size: 16px;
+    display: inline-block;
+    vertical-align: top;
+}
+/* Prevent interaction with the worksheet while keeping Terms&Conditions dialog visible */
+#terms-dialog {
+    z-index: 9999;
+    pointer-events: auto;
+}
+
+/* ensure dialog's internal elements are not blocked by pointer-events */
+#terms-dialog * {
+    pointer-events: auto;
+}
+
+.header-selected-menu-item {
+    background-color: var( --oj-button-solid-chrome-bg-color );
+    border-radius: var( --oj-button-border-radius );
+}

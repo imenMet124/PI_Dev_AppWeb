@@ -1,0 +1,1 @@
+define(["require","exports","ojs/ojcomposite","text!./oj-dbt-panel-slider-view.html","./oj-dbt-panel-slider-module","text!./component.json","css!./oj-dbt-panel-slider-styles"],(function(require,e,t,o,s,d){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),t.register("oj-dbt-panel-slider",{view:o,viewModel:s.default,metadata:JSON.parse(d)})}));

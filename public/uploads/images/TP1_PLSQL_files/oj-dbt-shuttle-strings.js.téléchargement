@@ -1,0 +1,17 @@
+define(["require", "exports"], function (require, exports) {
+    "use strict";
+    return {
+        "shuttle": {
+            "select_all": "Select all",
+            "select": "Select",
+            "remove": "Remove",
+            "remove_all": "Remove all",
+            "top": "Top",
+            "up": "Up",
+            "down": "Down",
+            "bottom": "Bottom",
+            "msg_no_data_options": "No items to display.",
+            "msg_no_data_value": "No items selected."
+        }
+    };
+});

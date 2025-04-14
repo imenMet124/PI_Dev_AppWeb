@@ -1,0 +1,1 @@
+define(["ojs/ojcomposite","text!./ExplainPlanDiagram.html","./ExplainPlanDiagram","text!./ExplainPlanDiagram.json"],(function(i,a,n,e){"use strict";i.register("dbt-explain-plan-diagram",{view:{inline:a},viewModel:{inline:n},metadata:{inline:JSON.parse(e)}})}));

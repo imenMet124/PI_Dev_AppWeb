@@ -1,0 +1,1 @@
+define([],(function(){var n={isIE11:function(){var n=navigator.userAgent;if(n.indexOf("Trident/")>0){var r=n.indexOf("rv:");return parseInt(n.substring(r+3,n.indexOf(".",r)))}return!1},isEdge:function(){var n=navigator.userAgent,r=n.indexOf("Edge/");return r>0&&parseInt(n.substring(r+5,n.indexOf(".",r)))},isMicrosoftBrowser:function(){return n.isIE11()||n.isEdge()}};return n}));
