@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Evenement;
 use App\Entity\Participation;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Participation>
@@ -15,6 +16,18 @@ class ParticipationRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Participation::class);
     }
+    public function findByEvenement(Evenement $evenement): array
+{
+    return $this->createQueryBuilder('p')
+        ->andWhere('p.evenement = :evenement')
+        ->setParameter('evenement', $evenement)
+        ->leftJoin('p.utilisateur', 'u') // pour accéder à l'utilisateur facilement dans le Twig
+        ->addSelect('u')
+        ->orderBy('p.dateParticipation', 'DESC')
+        ->getQuery()
+        ->getResult();
+}
+
 
 //    /**
 //     * @return Participation[] Returns an array of Participation objects

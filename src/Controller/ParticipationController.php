@@ -2,14 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\Evenement;
 use App\Entity\Participation;
 use App\Form\ParticipationType;
-use App\Repository\ParticipationRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\ParticipationRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/participation')]
 final class ParticipationController extends AbstractController{
@@ -76,5 +78,32 @@ final class ParticipationController extends AbstractController{
         }
 
         return $this->redirectToRoute('app_participation_index', [], Response::HTTP_SEE_OTHER);
+    }
+    #[Route('/byEvenement/{id}', name: 'app_participation_by_evenement', methods: ['GET'])]
+    public function getParticipationsByEvenement(Evenement $evenement, ParticipationRepository $participationRepository): Response
+    {
+        $participations = $participationRepository->findByEvenement($evenement);
+
+        return $this->render('participation/index.html.twig', [
+            'evenement' => $evenement,
+            'participations' => $participations,
+        ]);
+    }
+    #[Route('/validate/{id}', name: 'app_participation_validate', methods: ['GET'])]
+    public function validateParticipation(Participation $participation, EntityManagerInterface $entityManager): RedirectResponse
+    {
+        // Modifier le statut de la participation
+        $participation->setStatut('Confirmé');
+
+        // Sauvegarder la modification en base
+        $entityManager->flush();
+
+        // Message flash optionnel
+        $this->addFlash('success', 'Participation validée avec succès !');
+
+        // Redirection vers la liste des participations de l’événement
+        return $this->redirectToRoute('app_participation_by_evenement', [
+            'id' => $participation->getEvenement()->getId(),
+        ]);
     }
 }
