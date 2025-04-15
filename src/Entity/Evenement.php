@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\EvenementRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -13,7 +15,6 @@ class Evenement
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
 
     #[ORM\Column(length: 255)]
     private ?string $Nom_Evenement = null;
@@ -36,6 +37,14 @@ class Evenement
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $Image_Path = null;
 
+    #[ORM\OneToMany(mappedBy: 'evenement', targetEntity: Participation::class, cascade: ['remove'], orphanRemoval: true)]
+    private Collection $participations;
+
+    public function __construct()
+    {
+        $this->participations = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -43,8 +52,7 @@ class Evenement
 
     public function setId(int $Id): static
     {
-        $this->Id = $Id;
-
+        $this->id = $Id;
         return $this;
     }
 
@@ -56,7 +64,6 @@ class Evenement
     public function setNomEvenement(string $Nom_Evenement): static
     {
         $this->Nom_Evenement = $Nom_Evenement;
-
         return $this;
     }
 
@@ -68,7 +75,6 @@ class Evenement
     public function setDescription(string $Description): static
     {
         $this->Description = $Description;
-
         return $this;
     }
 
@@ -80,7 +86,6 @@ class Evenement
     public function setDate(\DateTimeInterface $Date): static
     {
         $this->Date = $Date;
-
         return $this;
     }
 
@@ -92,7 +97,6 @@ class Evenement
     public function setHeure(\DateTimeInterface $Heure): static
     {
         $this->Heure = $Heure;
-
         return $this;
     }
 
@@ -104,7 +108,6 @@ class Evenement
     public function setCapacite(int $Capacite): static
     {
         $this->Capacite = $Capacite;
-
         return $this;
     }
 
@@ -116,7 +119,6 @@ class Evenement
     public function setNombreParticipants(?int $Nombre_Participants): static
     {
         $this->Nombre_Participants = $Nombre_Participants;
-
         return $this;
     }
 
@@ -128,7 +130,31 @@ class Evenement
     public function setImagePath(?string $Image_Path): static
     {
         $this->Image_Path = $Image_Path;
+        return $this;
+    }
 
+    /** @return Collection<int, Participation> */
+    public function getParticipations(): Collection
+    {
+        return $this->participations;
+    }
+
+    public function addParticipation(Participation $participation): static
+    {
+        if (!$this->participations->contains($participation)) {
+            $this->participations[] = $participation;
+            $participation->setEvenement($this);
+        }
+        return $this;
+    }
+
+    public function removeParticipation(Participation $participation): static
+    {
+        if ($this->participations->removeElement($participation)) {
+            if ($participation->getEvenement() === $this) {
+                $participation->setEvenement(null);
+            }
+        }
         return $this;
     }
 }

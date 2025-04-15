@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Controller;
+use App\Entity\Participation;
+use App\Entity\Utilisateur; 
 
 use App\Entity\Evenement;
 use App\Form\EvenementType;
@@ -92,10 +94,16 @@ final class EvenementController extends AbstractController
     public function delete(Request $request, Evenement $evenement, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $evenement->getId(), $request->getPayload()->getString('_token'))) {
+            // Supprimer les participations associées manuellement si nécessaire
+            foreach ($evenement->getParticipations() as $participation) {
+                $entityManager->remove($participation);
+            }
+    
+            // Ensuite supprimer l'événement
             $entityManager->remove($evenement);
             $entityManager->flush();
         }
-
+    
         return $this->redirectToRoute('app_back_evenement', [], Response::HTTP_SEE_OTHER);
     }
 
@@ -106,4 +114,35 @@ final class EvenementController extends AbstractController
             'evenements' => $evenementRepository->findAll(),
         ]);
     }
+
+    #[Route('/evenement/{id}/participer', name: 'app_evenement_participer')]
+    public function participer(Evenement $evenement, EntityManagerInterface $entityManager): Response
+    {
+        // Simuler un utilisateur connecté (à remplacer plus tard par getUser())
+        $utilisateur = $entityManager->getRepository(Utilisateur::class)->find(1); // ID 1 en dur pour test
+    
+        if (!$utilisateur) {
+            throw $this->createNotFoundException('Utilisateur non trouvé.');
+        }
+    
+        // Incrémenter le nombre de participants
+        $evenement->setNombreParticipants($evenement->getNombreParticipants() + 1);
+    
+        // Créer une nouvelle participation
+        $participation = new Participation();
+        $participation->setEvenement($evenement);
+        $participation->setUtilisateur($utilisateur);
+        $participation->setDateParticipation(new \DateTime());
+        $participation->setStatut('En attente');
+    
+        // Enregistrer dans la base de données
+        $entityManager->persist($participation);
+        $entityManager->flush();
+    
+        $this->addFlash('success', 'Participation enregistrée avec succès !');
+    
+        return $this->redirectToRoute('app_evenement_show', ['id' => $evenement->getId()]);
+    }
+    
+
 }
