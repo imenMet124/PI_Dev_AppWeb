@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<title>JobOffer</title>
+
+{% block body %}
+    <h1>JobOffer</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ job_offer.id }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ job_offer.title }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ job_offer.description }}</td>
+            </tr>
+            <tr>
+                <th>Location</th>
+                <td>{{ job_offer.location }}</td>
+            </tr>
+            <tr>
+                <th>ContractType</th>
+                <td>{{ job_offer.contractType }}</td>
+            </tr>
+            <tr>
+                <th>SalaryMin</th>
+                <td>{{ job_offer.salaryMin }}</td>
+            </tr>
+            <tr>
+                <th>SalaryMax</th>
+                <td>{{ job_offer.salaryMax }}</td>
+            </tr>
+            <tr>
+                <th>Department</th>
+                <td>{{ job_offer.department }}</td>
+            </tr>
+            <tr>
+                <th>Datetime_immutable</th>
+                <td>{{ job_offer.datetimeImmutable ? job_offer.datetimeImmutable|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>IsActive</th>
+                <td>{{ job_offer.isActive ? 'Yes' : 'No' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_job_offer_index') }}">back to list</a>
+
+    <a href="{{ path('app_job_offer_edit', {'id': job_offer.id}) }}">edit</a>
+
+    {{ include('job_offer/_delete_form.html.twig') }}
+{% endblock %}

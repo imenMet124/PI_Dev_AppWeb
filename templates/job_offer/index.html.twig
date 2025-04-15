@@ -1,0 +1,27 @@
+{% extends 'Back_Base.html.twig' %}
+
+{% block body %}
+<div class="container">
+  <h2 class="mt-4 mb-3">Liste des Offres d’Emploi</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Titre</th>
+        <th>Type de contrat</th>
+        <th>Date de publication</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for offer in offers %}
+        <tr>
+          <td>{{ offer.title }}</td>
+          <td>{{ offer.contractType }}</td>
+          <td>{{ offer.createdAt|date('d/m/Y') }}</td>
+        </tr>
+      {% else %}
+        <tr><td colspan="3">Aucune offre disponible.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<title>Application index</title>
+
+{% block body %}
+    <h1>Application index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Status</th>
+                <th>Message</th>
+                <th>SubmittedAt</th>
+                <th>CvSnapshotPath</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for application in applications %}
+            <tr>
+                <td>{{ application.id }}</td>
+                <td>{{ application.status }}</td>
+                <td>{{ application.message }}</td>
+                <td>{{ application.submittedAt ? application.submittedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ application.cvSnapshotPath }}</td>
+                <td>
+                    <a href="{{ path('app_application_show', {'id': application.id}) }}">show</a>
+                    <a href="{{ path('app_application_edit', {'id': application.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_application_new') }}">Create new</a>
+{% endblock %}

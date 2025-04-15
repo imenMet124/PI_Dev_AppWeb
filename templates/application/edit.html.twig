@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+
+<title>Edit Application</title>
+
+{% block body %}
+    <h1>Edit Application</h1>
+
+    {{ include('application/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_application_index') }}">back to list</a>
+
+    {{ include('application/_delete_form.html.twig') }}
+{% endblock %}
