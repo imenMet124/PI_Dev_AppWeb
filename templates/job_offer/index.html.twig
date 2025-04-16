@@ -1,27 +1,68 @@
 {% extends 'Back_Base.html.twig' %}
 
+{% block title %}Liste des Offres d'Emploi{% endblock %}
+
 {% block body %}
-<div class="container">
-  <h2 class="mt-4 mb-3">Liste des Offres d’Emploi</h2>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Titre</th>
-        <th>Type de contrat</th>
-        <th>Date de publication</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for offer in offers %}
-        <tr>
-          <td>{{ offer.title }}</td>
-          <td>{{ offer.contractType }}</td>
-          <td>{{ offer.createdAt|date('d/m/Y') }}</td>
-        </tr>
-      {% else %}
-        <tr><td colspan="3">Aucune offre disponible.</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<div class="main-panel">
+  <div class="content">
+    <div class="container mt-4">
+
+      <!-- Bouton du haut -->
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold mb-0">Liste des Offres d’Emploi</h2>
+        <a href="{{ path('app_job_offer_new') }}" class="btn btn-primary">
+          <i class="bi bi-plus-lg"></i> Ajouter une offre
+        </a>
+      </div>
+
+      <!-- Tableau des offres -->
+      <div class="card shadow-sm">
+        <div class="card-body p-0">
+          <table class="table table-hover table-bordered mb-0">
+            <thead class="table-light text-center">
+              <tr>
+                <th>Titre</th>
+                <th>Type de contrat</th>
+                <th>Date de publication</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for offer in offers %}
+                <tr class="text-center align-middle">
+                  <td>{{ offer.title }}</td>
+                  <td>{{ offer.contractType.value }}</td>
+
+                  <td>{{ offer.datetimeImmutable ? offer.datetimeImmutable|date('d/m/Y') : '' }}</td>
+
+                  <td>
+                    <a href="{{ path('app_job_offer_show', {'id': offer.id}) }}" class="btn btn-sm btn-outline-info me-1" title="Voir">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                    <a href="{{ path('app_job_offer_edit', {'id': offer.id}) }}" class="btn btn-sm btn-outline-warning me-1" title="Modifier">
+                      <i class="bi bi-pencil-square"></i>
+                    </a>
+                    {{ include('job_offer/_delete_form.html.twig', { offer: offer }) }}
+                  </td>
+                </tr>
+              {% else %}
+                <tr>
+                  <td colspan="4" class="text-center text-muted">Aucune offre disponible.</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Bouton du bas -->
+      <div class="text-end mt-4">
+        <a href="{{ path('app_job_offer_new') }}" class="btn btn-primary">
+          <i class="bi bi-plus-lg"></i> Ajouter une nouvelle offre
+        </a>
+      </div>
+
+    </div>
+  </div>
 </div>
 {% endblock %}

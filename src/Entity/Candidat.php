@@ -37,7 +37,8 @@ class Candidat
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $coverLetterPath = null;
-
+    private ?UploadedFile $resumeFile = null;
+    private ?UploadedFile $coverLetterFile = null;
     #[ORM\Column(length: 25)]
     private ?string $linkedinUrl = null;
 
@@ -153,4 +154,15 @@ class Candidat
 
         return $this;
     }
+    public function getResumeFile(): ?UploadedFile { return $this->resumeFile; }
+public function setResumeFile(?UploadedFile $file): static {
+    $this->resumeFile = $file;
+    return $this;
+}
+
+public function getCoverLetterFile(): ?UploadedFile { return $this->coverLetterFile; }
+public function setCoverLetterFile(?UploadedFile $file): static {
+    $this->coverLetterFile = $file;
+    return $this;
+}
 }

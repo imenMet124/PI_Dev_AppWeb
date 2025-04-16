@@ -9,26 +9,26 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use App\Enum\ApplicationStatus;
+
 
 class ApplicationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('status')
-            ->add('message')
-            ->add('submittedAt', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('cvSnapshotPath')
-            ->add('candidat', EntityType::class, [
-                'class' => Candidat::class,
-                'choice_label' => 'id',
-            ])
-            ->add('jobOffer', EntityType::class, [
-                'class' => jobOffer::class,
-                'choice_label' => 'id',
-            ])
+        ->add('status', ChoiceType::class, [
+            'choices' => [
+                'En attente' => ApplicationStatus::EN_ATTENTE,
+                'Acceptée' => ApplicationStatus::ACCEPTEE,
+                'Refusée' => ApplicationStatus::REFUSEE,
+            ],
+            'label' => 'Statut de la candidature',
+            'expanded' => false,  // si tu veux un <select>
+            'multiple' => false,
+        ])
+        
         ;
     }
 

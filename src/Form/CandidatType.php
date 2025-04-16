@@ -6,6 +6,8 @@ use App\Entity\Candidat;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
 
 class CandidatType extends AbstractType
 {
@@ -20,10 +22,32 @@ class CandidatType extends AbstractType
             ->add('dateOfBirth', null, [
                 'widget' => 'single_text',
             ])
-            ->add('resumePath')
-            ->add('coverLetterPath')
+           
             ->add('linkedinUrl')
-        ;
+            ->add('resumeFile', FileType::class, [
+                'label' => 'CV (PDF uniquement)',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '2M',
+                        'mimeTypes' => ['application/pdf'],
+                        'mimeTypesMessage' => 'Veuillez uploader un fichier PDF valide',
+                    ])
+                ]
+            ])
+            ->add('coverLetterFile', FileType::class, [
+                'label' => 'Lettre de motivation (PDF uniquement)',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '2M',
+                        'mimeTypes' => ['application/pdf'],
+                        'mimeTypesMessage' => 'PDF uniquement svp',
+                    ])
+                ]
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -32,4 +56,5 @@ class CandidatType extends AbstractType
             'data_class' => Candidat::class,
         ]);
     }
+
 }

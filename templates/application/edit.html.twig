@@ -1,13 +1,119 @@
-<!DOCTYPE html>
+{% extends 'Back_Base.html.twig' %}
 
-<title>Edit Application</title>
+{% block title %}Traiter la candidature #{{ application.id }}{% endblock %}
 
 {% block body %}
-    <h1>Edit Application</h1>
+<div class="main-panel">
+  <div class="content">
+    <div class="container mt-4">
 
-    {{ include('application/_form.html.twig', {'button_label': 'Update'}) }}
+      <h2 class="fw-bold mb-4">Traiter la candidature</h2>
 
-    <a href="{{ path('app_application_index') }}">back to list</a>
+      <div class="card shadow-sm">
+        <div class="card-body">
 
-    {{ include('application/_delete_form.html.twig') }}
+          {# === CANDIDAT - INFOS COMPLETES === #}
+          <h5 class="fw-semibold mb-3">🧑 Informations du candidat</h5>
+          <dl class="row">
+            <dt class="col-sm-3">Nom complet</dt>
+            <dd class="col-sm-9">{{ application.candidat.firstName }} {{ application.candidat.lastName }}</dd>
+
+            <dt class="col-sm-3">Email</dt>
+            <dd class="col-sm-9">{{ application.candidat.email }}</dd>
+
+            <dt class="col-sm-3">Téléphone</dt>
+            <dd class="col-sm-9">{{ application.candidat.phone }}</dd>
+
+            <dt class="col-sm-3">Date de naissance</dt>
+            <dd class="col-sm-9">{{ application.candidat.dateOfBirth ? application.candidat.dateOfBirth|date('d/m/Y') : '-' }}</dd>
+
+            <dt class="col-sm-3">Adresse</dt>
+            <dd class="col-sm-9">{{ application.candidat.address }}</dd>
+
+            <dt class="col-sm-3">Profil LinkedIn</dt>
+            <dd class="col-sm-9">
+              {% if application.candidat.linkedinUrl %}
+                <a href="{{ application.candidat.linkedinUrl }}" target="_blank">{{ application.candidat.linkedinUrl }}</a>
+              {% else %}
+                -
+              {% endif %}
+            </dd>
+          </dl>
+
+          <hr>
+
+          {# === OFFRE - INFOS COMPLETES === #}
+          <h5 class="fw-semibold mb-3">📌 Offre associée</h5>
+          <dl class="row">
+            <dt class="col-sm-3">Titre</dt>
+            <dd class="col-sm-9">{{ application.jobOffer.title }}</dd>
+
+            <dt class="col-sm-3">Type de contrat</dt>
+            <dd class="col-sm-9">{{ application.jobOffer.contractType.value }}</dd>
+
+            <dt class="col-sm-3">Localisation</dt>
+            <dd class="col-sm-9">{{ application.jobOffer.location }}</dd>
+
+            <dt class="col-sm-3">Département</dt>
+            <dd class="col-sm-9">{{ application.jobOffer.department }}</dd>
+
+            <dt class="col-sm-3">Date de publication</dt>
+            <dd class="col-sm-9">{{ application.jobOffer.datetimeImmutable ? application.jobOffer.datetimeImmutable|date('d/m/Y') : '-' }}</dd>
+
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9 text-muted">{{ application.jobOffer.description|raw }}</dd>
+          </dl>
+
+          <hr>
+
+          {# === INFOS DE LA CANDIDATURE === #}
+          <h5 class="fw-semibold mb-3">📝 Candidature</h5>
+          <dl class="row">
+            <dt class="col-sm-3">Message du candidat</dt>
+            <dd class="col-sm-9">{{ application.message ?: '-' }}</dd>
+
+            <dt class="col-sm-3">Soumise le</dt>
+            <dd class="col-sm-9">{{ application.submittedAt ? application.submittedAt|date('d/m/Y H:i') : '-' }}</dd>
+          </dl>
+
+          {# === CV PDF === #}
+          {% if application.candidat.resumePath %}
+            <h5 class="mt-4">📄 CV du candidat</h5>
+            <iframe src="{{ path('app_application_cv', {'id': application.id}) }}" width="100%" height="500px"></iframe>
+            {% endif %}
+
+          {# === Lettre de motivation PDF === #}
+          {% if application.candidat.coverLetterPath %}
+            <h5 class="mt-4">✉️ Lettre de motivation</h5>
+            <iframe src="{{ path('app_application_lettre', {'id': application.id}) }}" width="100%" height="500px"></iframe>
+
+          {% endif %}
+
+          <hr class="my-4">
+
+          {# === FORMULAIRE DE TRAITEMENT === #}
+          <h5 class="fw-semibold mb-3">🛠 Modifier le statut</h5>
+
+          {{ form_start(form) }}
+            <div class="mb-3">
+              {{ form_label(form.status, 'Statut de la candidature') }}
+              {{ form_widget(form.status, {'attr': {'class': 'form-select'}}) }}
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <a href="{{ path('app_application_index') }}" class="btn btn-outline-secondary">
+                ← Retour à la liste
+              </a>
+              <button class="btn btn-primary">
+                <i class="bi bi-check2-circle"></i> Enregistrer le traitement
+              </button>
+            </div>
+          {{ form_end(form) }}
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
 {% endblock %}

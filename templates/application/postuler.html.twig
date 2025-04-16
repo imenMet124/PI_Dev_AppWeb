@@ -1,0 +1,100 @@
+{% extends 'Front_Base.html.twig' %}
+
+{% block title %}Postuler à l'offre : {{ offer.title }}{% endblock %}
+
+{% block body %}
+<div class="container py-5 mt-4">
+  <div class="text-center mb-4">
+    <h2 class="text-primary">Postuler à cette offre</h2>
+    <p class="text-muted">{{ offer.title }} - {{ offer.location }}</p>
+    <small class="text-secondary">
+      Publiée le {{ offer.datetimeImmutable ? offer.datetimeImmutable|date('d/m/Y') : '' }}
+    </small>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-8">
+      <div class="card shadow-sm border-0 p-4">
+        <h5 class="mb-4 fw-semibold">Vos informations personnelles</h5>
+
+        {{ form_start(form) }}
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="form-floating">
+              {{ form_widget(form.firstName, {'attr': {'placeholder': 'Prénom', 'class': 'form-control'}}) }}
+              <label for="{{ form.firstName.vars.id }}">Prénom</label>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-floating">
+              {{ form_widget(form.lastName, {'attr': {'placeholder': 'Nom', 'class': 'form-control'}}) }}
+              <label for="{{ form.lastName.vars.id }}">Nom</label>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-floating">
+              {{ form_widget(form.email, {'attr': {'placeholder': 'Email', 'class': 'form-control'}}) }}
+              <label for="{{ form.email.vars.id }}">Email</label>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-floating">
+              {{ form_widget(form.phone, {'attr': {'placeholder': 'Téléphone', 'class': 'form-control'}}) }}
+              <label for="{{ form.phone.vars.id }}">Téléphone</label>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="form-floating">
+              {{ form_widget(form.address, {'attr': {'placeholder': 'Adresse', 'class': 'form-control', 'style': 'height: 100px'}}) }}
+              <label for="{{ form.address.vars.id }}">Adresse</label>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-floating">
+              {{ form_widget(form.dateOfBirth, {'attr': {'placeholder': 'Date de naissance', 'class': 'form-control'}}) }}
+              <label for="{{ form.dateOfBirth.vars.id }}">Date de naissance</label>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-floating">
+              {{ form_widget(form.linkedinUrl, {'attr': {'placeholder': 'Lien LinkedIn', 'class': 'form-control'}}) }}
+              <label for="{{ form.linkedinUrl.vars.id }}">LinkedIn</label>
+            </div>
+          </div>
+        </div>
+
+        <hr class="my-4">
+
+        <!-- Uploads PDF -->
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="{{ form.resumeFile.vars.id }}" class="form-label fw-semibold">CV (PDF uniquement)</label>
+            {{ form_widget(form.resumeFile, {'attr': {'class': 'form-control'}}) }}
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label for="{{ form.coverLetterFile.vars.id }}" class="form-label fw-semibold">Lettre de motivation (PDF uniquement)</label>
+            {{ form_widget(form.coverLetterFile, {'attr': {'class': 'form-control'}}) }}
+          </div>
+        </div>
+
+        <div class="mt-5 d-flex justify-content-between">
+          <a href="{{ path('app_job_offer_public') }}" class="btn btn-outline-secondary">
+            ← Retour aux offres
+          </a>
+          <button class="btn btn-primary">
+            <i class="bi bi-check-circle-fill"></i> Confirmer et postuler
+          </button>
+        </div>
+        {{ form_end(form) }}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

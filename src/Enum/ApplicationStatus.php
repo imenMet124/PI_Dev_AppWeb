@@ -4,9 +4,7 @@ namespace App\Enum;
 
 enum ApplicationStatus: string
 {
-    case PENDING = 'pending';
-    case SHORTLISTED = 'shortlisted';
-    case INTERVIEW = 'interview';
-    case ACCEPTED = 'accepted';
-    case REJECTED = 'rejected';
+    case EN_ATTENTE = 'En attente';
+    case ACCEPTEE = 'Acceptée';
+    case REFUSEE = 'Refusée';
 }
