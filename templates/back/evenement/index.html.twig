@@ -310,7 +310,7 @@
 										<h4 class="card-title">Liste des evenements</h4>
 										<a href="{{ path('app_back_evenement_new') }}" class="btn btn-primary btn-round ms-auto">
 											<i class="fa fa-plus"></i>
-											Ajout
+											Ajouter un événement
 										</a>
 									</div>
 								</div>
@@ -340,6 +340,7 @@
 														{% for evenement in evenements %}
 															<tr role="row" class="odd">
 																<td class="sorting_1">{{ evenement.NomEvenement }}</td>
+																
 																<td>{{ evenement.Description }}</td>
 																<td>{{ evenement.Date|date('d/m/Y') }}</td>
 																<td>{{ evenement.Heure|date('H:i') }}
