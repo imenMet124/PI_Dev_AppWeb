@@ -80,13 +80,12 @@
           {% if application.candidat.resumePath %}
             <h5 class="mt-4">📄 CV du candidat</h5>
             <iframe src="{{ path('app_application_cv', {'id': application.id}) }}" width="100%" height="500px"></iframe>
-            {% endif %}
+          {% endif %}
 
           {# === Lettre de motivation PDF === #}
           {% if application.candidat.coverLetterPath %}
             <h5 class="mt-4">✉️ Lettre de motivation</h5>
             <iframe src="{{ path('app_application_lettre', {'id': application.id}) }}" width="100%" height="500px"></iframe>
-
           {% endif %}
 
           <hr class="my-4">
@@ -116,4 +115,28 @@
     </div>
   </div>
 </div>
+
+<footer class="footer">
+  <div class="container-fluid d-flex justify-content-between">
+    <nav class="pull-left">
+      <ul class="nav">
+        <li class="nav-item">
+          <a class="nav-link" href="http://www.themekita.com">ThemeKita</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Help</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Licenses</a>
+        </li>
+      </ul>
+    </nav>
+    <div class="copyright">
+      2024, made By DevLand
+    </div>
+    <div>
+      Distributed by DevLand
+    </div>
+  </div>
+</footer>
 {% endblock %}

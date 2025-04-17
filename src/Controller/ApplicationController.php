@@ -140,7 +140,7 @@ public function postuler(
         'offer' => $offer,
     ]);
 }
-#[Route('/{id}/cv', name: 'app_application_cv', methods: ['GET'])]
+#[Route('/file/cv/{id}', name: 'app_application_cv', methods: ['GET'])]
 public function viewCv(Application $application): Response
 {
     $cvPath = $application->getCandidat()->getResumePath();
@@ -151,7 +151,7 @@ public function viewCv(Application $application): Response
 
     return $this->file($this->getParameter('kernel.project_dir') . '/public' . $cvPath);
 }
-#[Route('/{id}/lettre', name: 'app_application_lettre', methods: ['GET'])]
+#[Route('/file/lettre/{id}', name: 'app_application_lettre', methods: ['GET'])]
 public function viewLettre(Application $application): Response
 {
     $lettrePath = $application->getCandidat()->getCoverLetterPath();
