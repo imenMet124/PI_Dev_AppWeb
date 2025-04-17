@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TacheRepository::class)]
 #[ORM\Table(name: 'tache')]
@@ -18,25 +19,55 @@ class Tache
     private ?int $id_tache = null;
 
     #[ORM\Column(name: 'titre_tache', length: 150)]
+    #[Assert\NotBlank(message: "Le titre de la tâche est obligatoire")]
+    #[Assert\Length(
+        min: 3,
+        max: 150,
+        minMessage: "Le titre doit contenir au moins {{ limit }} caractères",
+        maxMessage: "Le titre ne peut pas dépasser {{ limit }} caractères"
+    )]
     private string $titre_tache;
 
     #[ORM\Column(name: 'desc_tache', type: Types::TEXT, nullable: true)]
+    #[Assert\Length(
+        max: 1000,
+        maxMessage: "La description ne peut pas dépasser {{ limit }} caractères"
+    )]
     private ?string $desc_tache = null;
 
     #[ORM\Column(name: 'priorite', length: 50, nullable: true)]
+    #[Assert\Choice(
+        choices: ['Low', 'Medium', 'High'],
+        message: "La priorité doit être Low, Medium ou High"
+    )]
     private ?string $priorite = null;
 
     #[ORM\Column(name: 'statut_tache', length: 50, nullable: true)]
+    #[Assert\Choice(
+        choices: ['Not Started', 'In Progress', 'Completed'],
+        message: "Le statut doit être Not Started, In Progress ou Completed"
+    )]
     private ?string $statut_tache = null;
 
     #[ORM\Column(name: 'deadline', type: Types::DATE_MUTABLE, nullable: true)]
+    #[Assert\Type("\DateTimeInterface", message: "La date limite doit être une date valide")]
+    #[Assert\GreaterThanOrEqual(
+        "today",
+        message: "La date limite ne peut pas être dans le passé"
+    )]
     private ?\DateTimeInterface $deadline = null;
 
     #[ORM\Column(name: 'progression', type: Types::FLOAT, nullable: true)]
+    #[Assert\Range(
+        min: 0,
+        max: 100,
+        notInRangeMessage: "La progression doit être entre {{ min }}% et {{ max }}%"
+    )]
     private ?float $progression = null;
 
     #[ORM\ManyToOne(inversedBy: 'taches')]
     #[ORM\JoinColumn(name: 'id_projet', referencedColumnName: 'id_projet')]
+    #[Assert\NotNull(message: "Un projet doit être associé à la tâche")]
     private ?Projet $projet = null;
 
     #[ORM\OneToMany(mappedBy: 'tache', targetEntity: Affectation::class)]

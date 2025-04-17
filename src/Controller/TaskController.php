@@ -113,6 +113,12 @@ class TaskController extends AbstractController
     public function delete(Request $request, Tache $tache, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$tache->getIdTache(), $request->request->get('_token'))) {
+            // First, remove all related affectations
+            foreach ($tache->getAffectations() as $affectation) {
+                $entityManager->remove($affectation);
+            }
+            
+            // Then remove the task
             $entityManager->remove($tache);
             $entityManager->flush();
         }

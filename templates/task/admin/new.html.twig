@@ -16,22 +16,44 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-12">
+                <div class="row justify-content-center">
+                    <div class="col-md-10">
                         <div class="card">
                             <div class="card-body">
+                                <div class="alert alert-info mb-4">
+                                    <h5 class="alert-heading"><i class="fas fa-info-circle me-2"></i>Requirements</h5>
+                                    <ul class="mb-0">
+                                        <li><strong>Title:</strong> Required, between 3 and 150 characters</li>
+                                        <li><strong>Description:</strong> Optional, maximum 1000 characters</li>
+                                        <li><strong>Priority:</strong> Must be one of: Low, Medium, High</li>
+                                        <li><strong>Status:</strong> Must be one of: Not Started, In Progress, Completed</li>
+                                        <li><strong>Deadline:</strong> Must be a future date</li>
+                                        <li><strong>Progress:</strong> Must be between 0% and 100%</li>
+                                        <li><strong>Project:</strong> Required, must select a project</li>
+                                    </ul>
+                                </div>
+
+                                {% if not form.vars.valid %}
+                                    <div class="alert alert-danger">
+                                        <i class="fas fa-exclamation-circle me-2"></i>
+                                        Please correct the errors below before submitting.
+                                    </div>
+                                {% endif %}
+
                                 {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
                                     <div class="row mb-3">
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 {{ form_label(form.titreTache, 'Title', {'label_attr': {'class': 'form-label'}}) }}
                                                 {{ form_widget(form.titreTache, {'attr': {'class': 'form-control'}}) }}
+                                                {{ form_errors(form.titreTache) }}
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 {{ form_label(form.deadline, 'Deadline', {'label_attr': {'class': 'form-label'}}) }}
                                                 {{ form_widget(form.deadline, {'attr': {'class': 'form-control datepicker'}}) }}
+                                                {{ form_errors(form.deadline) }}
                                             </div>
                                         </div>
                                     </div>
@@ -46,6 +68,7 @@
                                                         'rows': 4
                                                     }
                                                 }) }}
+                                                {{ form_errors(form.descTache) }}
                                             </div>
                                         </div>
                                     </div>
@@ -55,12 +78,14 @@
                                             <div class="form-group">
                                                 {{ form_label(form.statutTache, 'Status', {'label_attr': {'class': 'form-label'}}) }}
                                                 {{ form_widget(form.statutTache, {'attr': {'class': 'form-select'}}) }}
+                                                {{ form_errors(form.statutTache) }}
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 {{ form_label(form.priorite, 'Priority', {'label_attr': {'class': 'form-label'}}) }}
                                                 {{ form_widget(form.priorite, {'attr': {'class': 'form-select'}}) }}
+                                                {{ form_errors(form.priorite) }}
                                             </div>
                                         </div>
                                         <div class="col-md-4">
@@ -74,6 +99,7 @@
                                                         'type': 'number'
                                                     }
                                                 }) }}
+                                                {{ form_errors(form.progression) }}
                                             </div>
                                         </div>
                                     </div>
@@ -84,6 +110,7 @@
                                             <div class="form-group">
                                                 {{ form_label(form.users, 'Assign To', {'label_attr': {'class': 'form-label'}}) }}
                                                 {{ form_widget(form.users, {'attr': {'class': 'form-select'}}) }}
+                                                {{ form_errors(form.users) }}
                                             </div>
                                         </div>
                                     </div>
@@ -107,4 +134,24 @@
         </div>
     </div>
 </div>
+
+<style>
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    .form-group label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    .form-control.is-invalid,
+    .form-select.is-invalid {
+        border-color: #dc3545;
+    }
+    .invalid-feedback {
+        display: block;
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+</style>
 {% endblock %} 

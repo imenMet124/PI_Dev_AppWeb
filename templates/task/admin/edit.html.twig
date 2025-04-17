@@ -1,52 +1,132 @@
-{% extends 'Back.html.twig' %}
+{% extends 'Back_Base.html.twig' %}
 
 {% block title %}Edit Task{% endblock %}
 
 {% block body %}
-    <div class="container-fluid">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1><i class="fas fa-edit me-2"></i>Edit Task</h1>
-            <a href="{{ path('app_task_index') }}" class="btn btn-secondary">
-                <i class="fas fa-arrow-left me-2"></i>Back to List
-            </a>
-        </div>
+<div class="wrapper">
+    <div class="main-panel">
+        <div class="content">
+            <div class="page-inner">
+                <div class="page-header">
+                    <h4 class="page-title">Edit Task</h4>
+                    <div class="btn-group btn-group-page-header ml-auto">
+                        <a href="{{ path('app_task_index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to List
+                        </a>
+                    </div>
+                </div>
 
-        <div class="row">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-body">
-                        {{ form_start(form) }}
-                            <div class="row">
-                                <div class="col-md-6">
-                                    {{ form_row(form.titreTache) }}
+                <div class="row justify-content-center">
+                    <div class="col-md-10">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="alert alert-info mb-4">
+                                    <h5 class="alert-heading"><i class="fas fa-info-circle me-2"></i>Requirements</h5>
+                                    <ul class="mb-0">
+                                        <li><strong>Title:</strong> Required, between 3 and 150 characters</li>
+                                        <li><strong>Description:</strong> Optional, maximum 1000 characters</li>
+                                        <li><strong>Priority:</strong> Must be one of: Low, Medium, High</li>
+                                        <li><strong>Status:</strong> Must be one of: Not Started, In Progress, Completed</li>
+                                        <li><strong>Deadline:</strong> Must be a future date</li>
+                                        <li><strong>Progress:</strong> Must be between 0% and 100%</li>
+                                        <li><strong>Project:</strong> Required, must select a project</li>
+                                    </ul>
                                 </div>
-                                <div class="col-md-6">
-                                    {{ form_row(form.assignedTo) }}
-                                </div>
+
+                                {% if not form.vars.valid %}
+                                    <div class="alert alert-danger">
+                                        <i class="fas fa-exclamation-circle me-2"></i>
+                                        Please correct the errors below before submitting.
+                                    </div>
+                                {% endif %}
+
+                                {{ form_start(form) }}
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                {{ form_label(form.titreTache) }}
+                                                {{ form_widget(form.titreTache, {'attr': {'class': 'form-control'}}) }}
+                                                {{ form_errors(form.titreTache) }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            {% if form.users is defined %}
+                                                <div class="form-group">
+                                                    {{ form_label(form.users) }}
+                                                    {{ form_widget(form.users, {'attr': {'class': 'form-control'}}) }}
+                                                    {{ form_errors(form.users) }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        {{ form_label(form.descTache) }}
+                                        {{ form_widget(form.descTache, {'attr': {'class': 'form-control', 'rows': 4}}) }}
+                                        {{ form_errors(form.descTache) }}
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                {{ form_label(form.deadline) }}
+                                                {{ form_widget(form.deadline, {'attr': {'class': 'form-control'}}) }}
+                                                {{ form_errors(form.deadline) }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                {{ form_label(form.statutTache) }}
+                                                {{ form_widget(form.statutTache, {'attr': {'class': 'form-control'}}) }}
+                                                {{ form_errors(form.statutTache) }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                {{ form_label(form.priorite) }}
+                                                {{ form_widget(form.priorite, {'attr': {'class': 'form-control'}}) }}
+                                                {{ form_errors(form.priorite) }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        {{ form_label(form.progression) }}
+                                        {{ form_widget(form.progression, {'attr': {'class': 'form-control'}}) }}
+                                        {{ form_errors(form.progression) }}
+                                    </div>
+                                    
+                                    <div class="mt-4">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save me-2"></i>Save Changes
+                                        </button>
+                                    </div>
+                                {{ form_end(form) }}
                             </div>
-                            {{ form_row(form.descTache) }}
-                            <div class="row">
-                                <div class="col-md-4">
-                                    {{ form_row(form.deadline) }}
-                                </div>
-                                <div class="col-md-4">
-                                    {{ form_row(form.statutTache) }}
-                                </div>
-                                <div class="col-md-4">
-                                    {{ form_row(form.priorite) }}
-                                </div>
-                            </div>
-                            {{ form_row(form.progress) }}
-                            
-                            <div class="mt-4">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-2"></i>Save Changes
-                                </button>
-                            </div>
-                        {{ form_end(form) }}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<style>
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    .form-group label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    .form-control.is-invalid {
+        border-color: #dc3545;
+    }
+    .invalid-feedback {
+        display: block;
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+</style>
 {% endblock %} 
