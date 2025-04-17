@@ -1,0 +1,148 @@
+{% extends 'Front_Base.html.twig' %}
+
+{% block title %}Task Details{% endblock %}
+
+{% block body %}
+    <!-- Page Header Start -->
+    <div class="container-fluid page-header mb-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container">
+            <h1 class="display-3 mb-4 animated slideInDown">Task Details</h1>
+            <nav aria-label="breadcrumb animated slideInDown">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_task_index') }}">Tasks</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Details</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+    <!-- Task Details Start -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-lg-8 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="service-item rounded h-100 p-5">
+                        <div class="d-flex justify-content-between mb-4">
+                            <h3 class="mb-0">{{ tache.titreTache }}</h3>
+                            <div>
+                                <a href="{{ path('app_task_edit', {'id_tache': tache.idTache}) }}" class="btn btn-primary">
+                                    <i class="fas fa-edit me-2"></i>Update Progress
+                                </a>
+                                <a href="{{ path('app_task_index') }}" class="btn btn-light ms-2">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Tasks
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="progress mb-4">
+                            <div class="progress-bar bg-{{ tache.statutTache == 'Completed' ? 'success' : 'primary' }}" 
+                                 role="progressbar" 
+                                 style="width: {{ tache.progression ?? 0 }}%" 
+                                 aria-valuenow="{{ tache.progression ?? 0 }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ tache.progression ?? 0 }}%
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <span class="badge bg-{{ tache.statutTache == 'Completed' ? 'success' : 'primary' }} me-2">
+                                {{ tache.statutTache ?? 'Not Started' }}
+                            </span>
+                            <span class="badge bg-{{ tache.priorite == 'High' ? 'danger' : (tache.priorite == 'Medium' ? 'warning' : 'info') }}">
+                                {{ tache.priorite ?? 'No Priority' }}
+                            </span>
+                        </div>
+
+                        <p class="mb-4">{{ tache.descTache }}</p>
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center">
+                                    <div class="service-icon flex-shrink-0">
+                                        <i class="far fa-calendar-alt text-primary me-3"></i>
+                                    </div>
+                                    <div>
+                                        <p class="mb-0"><strong>Deadline:</strong></p>
+                                        <p class="mb-0">{{ tache.deadline ? tache.deadline|date('Y-m-d') : 'Not set' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center">
+                                    <div class="service-icon flex-shrink-0">
+                                        <i class="far fa-clock text-primary me-3"></i>
+                                    </div>
+                                    <div>
+                                        <p class="mb-0"><strong>Last Updated:</strong></p>
+                                        <p class="mb-0">{{ tache.updatedAt ? tache.updatedAt|date('Y-m-d H:i') : 'Not set' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="service-item rounded h-100 p-5">
+                        <h4 class="mb-3">Task Timeline</h4>
+                        <div class="timeline">
+                            <div class="timeline-item pb-3">
+                                <div class="timeline-icon">
+                                    <i class="fas fa-plus-circle text-primary"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <h6 class="mb-0">Created</h6>
+                                    <small class="text-muted">{{ tache.createdAt ? tache.createdAt|date('Y-m-d H:i') : 'Not set' }}</small>
+                                </div>
+                            </div>
+                            {% if tache.updatedAt and tache.updatedAt != tache.createdAt %}
+                                <div class="timeline-item">
+                                    <div class="timeline-icon">
+                                        <i class="fas fa-edit text-primary"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <h6 class="mb-0">Last Updated</h6>
+                                        <small class="text-muted">{{ tache.updatedAt|date('Y-m-d H:i') }}</small>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Task Details End -->
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+.timeline {
+    position: relative;
+    padding-left: 30px;
+}
+.timeline-item {
+    position: relative;
+    padding-bottom: 1.5rem;
+}
+.timeline-icon {
+    position: absolute;
+    left: -30px;
+    top: 0;
+    width: 20px;
+    text-align: center;
+}
+.timeline-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: -21px;
+    top: 25px;
+    height: calc(100% - 10px);
+    width: 2px;
+    background-color: #dee2e6;
+}
+</style>
+{% endblock %} 

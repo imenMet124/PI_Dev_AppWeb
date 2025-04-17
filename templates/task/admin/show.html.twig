@@ -1,0 +1,66 @@
+{% extends 'Back.html.twig' %}
+
+{% block title %}Task Details{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="fas fa-tasks me-2"></i>Task Details</h1>
+            <div class="btn-group">
+                <a href="{{ path('app_task_edit', {'id_tache': tache.idTache}) }}" class="btn btn-primary">
+                    <i class="fas fa-edit me-2"></i>Edit Task
+                </a>
+                <a href="{{ path('app_task_index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to List
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ tache.titreTache }}</h5>
+                        <p class="card-text">{{ tache.descTache }}</p>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <h6>Task Information</h6>
+                                <ul class="list-unstyled">
+                                    <li><strong>Status:</strong> 
+                                        <span class="badge bg-{{ tache.statutTache == 'Completed' ? 'success' : 'primary' }}">
+                                            {{ tache.statutTache ?? 'Not Started' }}
+                                        </span>
+                                    </li>
+                                    <li><strong>Priority:</strong> 
+                                        <span class="badge bg-{{ tache.priorite == 'High' ? 'danger' : (tache.priorite == 'Medium' ? 'warning' : 'info') }}">
+                                            {{ tache.priorite ?? 'No Priority' }}
+                                        </span>
+                                    </li>
+                                    <li><strong>Deadline:</strong> {{ tache.deadline ? tache.deadline|date('Y-m-d') : 'Not set' }}</li>
+                                    <li><strong>Progress:</strong> {{ tache.progression ?? 0 }}%</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Assignment</h6>
+                                <ul class="list-unstyled">
+                                    <li><strong>Assigned To:</strong>
+                                        <ul>
+                                            {% for affectation in tache.affectations %}
+                                                <li>{{ affectation.employe.iyedEmailUser }}</li>
+                                            {% else %}
+                                                <li>No one assigned</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                    <li><strong>Created At:</strong> {{ tache.createdAt ? tache.createdAt|date('Y-m-d H:i') : 'Not set' }}</li>
+                                    <li><strong>Updated At:</strong> {{ tache.updatedAt ? tache.updatedAt|date('Y-m-d H:i') : 'Not set' }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Task{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h1 class="h3 mb-0"><i class="fas fa-tasks me-2"></i>Create New Task</h1>
+                    </div>
+                    <div class="card-body">
+                        {{ form_start(form) }}
+                            <div class="mb-3">
+                                {{ form_label(form.titreTache, 'Task Title', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.titreTache, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.titreTache) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.descTache, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.descTache, {'attr': {'class': 'form-control', 'rows': '4'}}) }}
+                                {{ form_errors(form.descTache) }}
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form_label(form.priorite, 'Priority', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.priorite, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(form.priorite) }}
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    {{ form_label(form.statutTache, 'Status', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.statutTache, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(form.statutTache) }}
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.deadline, 'Deadline', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.deadline, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.deadline) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.progression, 'Progress (%)', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.progression, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.progression) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.projet, 'Project', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.projet, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.projet) }}
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ path('app_task_index') }}" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to list
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Create Task
+                                </button>
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

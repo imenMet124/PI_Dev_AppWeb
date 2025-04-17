@@ -1,0 +1,52 @@
+{% extends 'Back.html.twig' %}
+
+{% block title %}Edit Task{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="fas fa-edit me-2"></i>Edit Task</h1>
+            <a href="{{ path('app_task_index') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to List
+            </a>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        {{ form_start(form) }}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form_row(form.titreTache) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_row(form.assignedTo) }}
+                                </div>
+                            </div>
+                            {{ form_row(form.descTache) }}
+                            <div class="row">
+                                <div class="col-md-4">
+                                    {{ form_row(form.deadline) }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form_row(form.statutTache) }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form_row(form.priorite) }}
+                                </div>
+                            </div>
+                            {{ form_row(form.progress) }}
+                            
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Save Changes
+                                </button>
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %} 
