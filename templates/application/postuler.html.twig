@@ -17,54 +17,98 @@
       <div class="card shadow-sm border-0 p-4">
         <h5 class="mb-4 fw-semibold">Vos informations personnelles</h5>
 
-        {{ form_start(form) }}
+        {{ form_start(form, { 'attr': { 'novalidate': 'novalidate' } }) }}
+
         <div class="row g-4">
           <div class="col-md-6">
             <div class="form-floating">
-              {{ form_widget(form.firstName, {'attr': {'placeholder': 'Prénom', 'class': 'form-control'}}) }}
+              {{ form_widget(form.firstName, {
+                'attr': {
+                  'placeholder': 'Prénom',
+                  'class': 'form-control'
+                }
+              }) }}
               <label for="{{ form.firstName.vars.id }}">Prénom</label>
+              {{ form_errors(form.firstName) }}
             </div>
           </div>
 
           <div class="col-md-6">
             <div class="form-floating">
-              {{ form_widget(form.lastName, {'attr': {'placeholder': 'Nom', 'class': 'form-control'}}) }}
+              {{ form_widget(form.lastName, {
+                'attr': {
+                  'placeholder': 'Nom',
+                  'class': 'form-control'
+                }
+              }) }}
               <label for="{{ form.lastName.vars.id }}">Nom</label>
+              {{ form_errors(form.lastName) }}
             </div>
           </div>
 
           <div class="col-md-6">
             <div class="form-floating">
-              {{ form_widget(form.email, {'attr': {'placeholder': 'Email', 'class': 'form-control'}}) }}
+              {{ form_widget(form.email, {
+                'attr': {
+                  'placeholder': 'Email',
+                  'class': 'form-control'
+                }
+              }) }}
               <label for="{{ form.email.vars.id }}">Email</label>
+              {{ form_errors(form.email) }}
             </div>
           </div>
 
           <div class="col-md-6">
             <div class="form-floating">
-              {{ form_widget(form.phone, {'attr': {'placeholder': 'Téléphone', 'class': 'form-control'}}) }}
+              {{ form_widget(form.phone, {
+                'attr': {
+                  'placeholder': 'Téléphone',
+                  'class': 'form-control'
+                }
+              }) }}
               <label for="{{ form.phone.vars.id }}">Téléphone</label>
+              {{ form_errors(form.phone) }}
             </div>
           </div>
 
           <div class="col-md-12">
             <div class="form-floating">
-              {{ form_widget(form.address, {'attr': {'placeholder': 'Adresse', 'class': 'form-control', 'style': 'height: 100px'}}) }}
+              {{ form_widget(form.address, {
+                'attr': {
+                  'placeholder': 'Adresse',
+                  'class': 'form-control',
+                  'style': 'height: 100px'
+                }
+              }) }}
               <label for="{{ form.address.vars.id }}">Adresse</label>
+              {{ form_errors(form.address) }}
             </div>
           </div>
 
           <div class="col-md-6">
             <div class="form-floating">
-              {{ form_widget(form.dateOfBirth, {'attr': {'placeholder': 'Date de naissance', 'class': 'form-control'}}) }}
+              {{ form_widget(form.dateOfBirth, {
+                'attr': {
+                  'placeholder': 'Date de naissance',
+                  'class': 'form-control'
+                }
+              }) }}
               <label for="{{ form.dateOfBirth.vars.id }}">Date de naissance</label>
+              {{ form_errors(form.dateOfBirth) }}
             </div>
           </div>
 
           <div class="col-md-6">
             <div class="form-floating">
-              {{ form_widget(form.linkedinUrl, {'attr': {'placeholder': 'Lien LinkedIn', 'class': 'form-control'}}) }}
+              {{ form_widget(form.linkedinUrl, {
+                'attr': {
+                  'placeholder': 'Lien LinkedIn',
+                  'class': 'form-control'
+                }
+              }) }}
               <label for="{{ form.linkedinUrl.vars.id }}">LinkedIn</label>
+              {{ form_errors(form.linkedinUrl) }}
             </div>
           </div>
         </div>
@@ -75,12 +119,22 @@
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="{{ form.resumeFile.vars.id }}" class="form-label fw-semibold">CV (PDF uniquement)</label>
-            {{ form_widget(form.resumeFile, {'attr': {'class': 'form-control'}}) }}
+            {{ form_widget(form.resumeFile, {
+              'attr': {
+                'class': 'form-control'
+              }
+            }) }}
+            {{ form_errors(form.resumeFile) }}
           </div>
 
           <div class="col-md-6 mb-3">
             <label for="{{ form.coverLetterFile.vars.id }}" class="form-label fw-semibold">Lettre de motivation (PDF uniquement)</label>
-            {{ form_widget(form.coverLetterFile, {'attr': {'class': 'form-control'}}) }}
+            {{ form_widget(form.coverLetterFile, {
+              'attr': {
+                'class': 'form-control'
+              }
+            }) }}
+            {{ form_errors(form.coverLetterFile) }}
           </div>
         </div>
 

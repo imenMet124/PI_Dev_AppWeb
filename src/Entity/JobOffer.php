@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: JobOfferRepository::class)]
 class JobOffer
@@ -18,31 +19,57 @@ class JobOffer
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le titre de l’offre est obligatoire.")]
+    #[Assert\Length(
+        min: 5,
+        max: 255,
+        minMessage: "Le titre doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "Le titre ne peut pas dépasser {{ limit }} caractères."
+    )]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: "La description de l’offre est obligatoire.")]
+    #[Assert\Length(min: 20, minMessage: "La description doit être plus détaillée.")]
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: "Le lieu ne peut pas dépasser {{ limit }} caractères."
+    )]
     private ?string $location = null;
 
     #[ORM\Column(type: 'string', enumType: ContractType::class)]
+    #[Assert\NotNull(message: "Le type de contrat est obligatoire.")]
     private ContractType $contractType;
 
-    
     #[ORM\Column]
+    #[Assert\NotNull(message: "Le salaire minimum est obligatoire.")]
+    #[Assert\PositiveOrZero(message: "Le salaire minimum doit être un nombre positif.")]
     private ?int $salaryMin = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: "Le salaire maximum est obligatoire.")]
+    #[Assert\Positive(message: "Le salaire maximum doit être un nombre positif.")]
+    #[Assert\Expression(
+        "this.getSalaryMax() >= this.getSalaryMin()",
+        message: "Le salaire maximum doit être supérieur ou égal au salaire minimum."
+    )]
     private ?int $salaryMax = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le département est obligatoire.")]
+    #[Assert\Length(max: 255, maxMessage: "Le nom du département est trop long.")]
     private ?string $department = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\Type(\DateTimeImmutable::class)]
+    #[Assert\LessThanOrEqual("today", message: "La date ne peut pas être dans le futur.")]
     private ?\DateTimeImmutable $datetime_immutable = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: "Le statut d’activation est obligatoire.")]
     private ?bool $isActive = null;
 
     /**
@@ -102,7 +129,6 @@ class JobOffer
         return $this->contractType;
     }
 
-  
     public function setContractType(ContractType $contractType): self
     {
         $this->contractType = $contractType;
@@ -190,7 +216,6 @@ class JobOffer
     public function removeApplication(Application $application): static
     {
         if ($this->applications->removeElement($application)) {
-            // set the owning side to null (unless already changed)
             if ($application->getJobOffer() === $this) {
                 $application->setJobOffer(null);
             }

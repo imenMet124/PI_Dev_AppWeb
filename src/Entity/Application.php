@@ -6,6 +6,7 @@ use App\Enum\ApplicationStatus;
 use App\Repository\ApplicationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ApplicationRepository::class)]
 class Application
@@ -17,22 +18,36 @@ class Application
 
     #[ORM\ManyToOne(inversedBy: 'applications')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: "Le candidat est obligatoire.")]
+    #[Assert\Valid] // Validation en cascade de l'entité Candidat
     private ?Candidat $candidat = null;
 
     #[ORM\ManyToOne(inversedBy: 'applications')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: "L’offre d’emploi est obligatoire.")]
     private ?JobOffer $jobOffer = null;
 
     #[ORM\Column(type: 'string', enumType: ApplicationStatus::class)]
+    #[Assert\NotNull(message: "Le statut est obligatoire.")]
     private ApplicationStatus $status;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\Length(
+        max: 2000,
+        maxMessage: "Le message ne peut pas dépasser {{ limit }} caractères."
+    )]
     private ?string $message = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: "La date de soumission est obligatoire.")]
+    #[Assert\LessThanOrEqual("now", message: "La date de soumission ne peut pas être dans le futur.")]
     private ?\DateTimeImmutable $submittedAt = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: "Le chemin du CV est trop long."
+    )]
     private ?string $cvSnapshotPath = null;
 
     // -----------------------------
