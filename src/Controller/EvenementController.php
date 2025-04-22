@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
+
 final class EvenementController extends AbstractController
 {
     #[Route('/evenement', name: 'app_evenement')]
@@ -33,23 +34,46 @@ final class EvenementController extends AbstractController
         ]);
     }
 
+    
+    
+    // Ajoute SluggerInterface dans la méthode :
     #[Route('/{id}/edit', name: 'app_evenement_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Evenement $evenement, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Evenement $evenement, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $form = $this->createForm(EvenementType::class, $evenement);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('Image_Path')->getData();
+    
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+    
+                try {
+                    $imageFile->move(
+                        $this->getParameter('images_directory'), // chemin défini dans services.yaml
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Erreur lors de l\'upload de l\'image.');
+                }
+    
+                $evenement->setImagePath('uploads/images/' . $newFilename);
+            }
+    
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('app_back_evenement', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->render('evenement/edit.html.twig', [
             'evenement' => $evenement,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
+    
 
     #[Route('/back/evenement/new', name: 'app_back_evenement_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response

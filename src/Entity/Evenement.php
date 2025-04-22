@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EvenementRepository::class)]
 class Evenement
@@ -17,24 +18,50 @@ class Evenement
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom de l'événement est obligatoire.")]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: "Le nom doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "Le nom ne doit pas dépasser {{ limit }} caractères."
+    )]
     private ?string $Nom_Evenement = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "La description est obligatoire.")]
+    #[Assert\Length(
+        min: 10,
+        max: 255,
+        minMessage: "La description doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "La description ne doit pas dépasser {{ limit }} caractères."
+    )]
     private ?string $Description = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\NotBlank(message: "La date est obligatoire.")]
+    #[Assert\Type(\DateTimeInterface::class, message: "Format de date invalide.")]
+    #[Assert\GreaterThan("today", message: "La date doit être ultérieure à aujourd'hui.")]
     private ?\DateTimeInterface $Date = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[Assert\NotBlank(message: "L'heure est obligatoire.")]
+    #[Assert\Type(\DateTimeInterface::class, message: "Format de l'heure invalide.")]
     private ?\DateTimeInterface $Heure = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: "La capacité est obligatoire.")]
+    #[Assert\Positive(message: "La capacité doit être un nombre positif.")]
     private ?int $Capacite = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\PositiveOrZero(message: "Le nombre de participants doit être positif ou nul.")]
+    #[Assert\LessThanOrEqual(
+        propertyPath: "Capacite",
+        message: "Le nombre de participants ne peut pas dépasser la capacité maximale."
+    )]
     private ?int $Nombre_Participants = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $Image_Path = null;
 
     #[ORM\OneToMany(mappedBy: 'evenement', targetEntity: Participation::class, cascade: ['remove'], orphanRemoval: true)]
@@ -83,7 +110,7 @@ class Evenement
         return $this->Date;
     }
 
-    public function setDate(\DateTimeInterface $Date): static
+    public function setDate(?\DateTimeInterface $Date): static
     {
         $this->Date = $Date;
         return $this;
@@ -94,7 +121,7 @@ class Evenement
         return $this->Heure;
     }
 
-    public function setHeure(\DateTimeInterface $Heure): static
+    public function setHeure(?\DateTimeInterface $Heure): static
     {
         $this->Heure = $Heure;
         return $this;
@@ -105,7 +132,7 @@ class Evenement
         return $this->Capacite;
     }
 
-    public function setCapacite(int $Capacite): static
+    public function setCapacite(?int $Capacite): static
     {
         $this->Capacite = $Capacite;
         return $this;
@@ -133,7 +160,9 @@ class Evenement
         return $this;
     }
 
-    /** @return Collection<int, Participation> */
+    /**
+     * @return Collection<int, Participation>
+     */
     public function getParticipations(): Collection
     {
         return $this->participations;
@@ -145,6 +174,7 @@ class Evenement
             $this->participations[] = $participation;
             $participation->setEvenement($this);
         }
+
         return $this;
     }
 
@@ -155,6 +185,7 @@ class Evenement
                 $participation->setEvenement(null);
             }
         }
+
         return $this;
     }
 }

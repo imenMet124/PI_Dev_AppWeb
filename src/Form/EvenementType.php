@@ -7,6 +7,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 
 class EvenementType extends AbstractType
@@ -26,8 +28,23 @@ class EvenementType extends AbstractType
             ->add('Nombre_Participants')
             ->add('Image_Path', FileType::class, [
                 'label' => 'Image de l\'événement',
-                'mapped' => false, // si tu ne stockes pas directement dans l'entité
-                'required' => false
+                'mapped' => false,
+                'required' => true,
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'L\'image est obligatoire.',
+                    ]),
+                    new File([
+                        'maxSize' => '2M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/jpg'
+                        ],
+                        'mimeTypesMessage' => 'Veuillez uploader une image au format JPEG ou PNG.',
+                        'maxSizeMessage' => 'L\'image ne doit pas dépasser 2 Mo.',
+                    ])
+                ],
             ])
         ;
     }

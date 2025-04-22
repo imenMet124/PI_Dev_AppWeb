@@ -335,18 +335,24 @@
 														</thead>
 
 													</thead>
-												
+
 													<tbody>
 														{% for evenement in evenements %}
 															<tr role="row" class="odd">
 																<td class="sorting_1">{{ evenement.NomEvenement }}</td>
-																
+
 																<td>{{ evenement.Description }}</td>
 																<td>{{ evenement.Date|date('d/m/Y') }}</td>
 																<td>{{ evenement.Heure|date('H:i') }}
 																</td>
-																<td><a href="{{ path('app_participation_by_evenement', {'id': evenement.id}) }}" > <span class="badge badge-success">{{ evenement.NombreParticipants }}</span> </a></td>
-																<td><img src="{{ asset(evenement.ImagePath) }}" alt="Image" width="100"></td>
+																<td>
+																	<a href="{{ path('app_participation_by_evenement', {'id': evenement.id}) }}">
+																		<span class="badge badge-success">{{ evenement.NombreParticipants }}</span>
+																	</a>
+																</td>
+																<td>
+																	<img src="{{ asset(evenement.ImagePath ? evenement.ImagePath : 'uploads/images/default-image.jpg') }}" alt="Image" width="100">
+																</td>
 																<td>
 																	<div class="form-button-action">
 																		<a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-link btn-primary btn-lg" data-bs-toggle="tooltip" title="Modifier l'événement">
@@ -371,7 +377,7 @@
 											</div>
 										</div>
 										<div class="row">
-											
+
 											<div class="col-sm-12 col-md-7"></div>
 										</div>
 									</div>
@@ -448,4 +454,3 @@
 		<!-- End Custom template -->
 	</div>
 {% endblock %}
-
