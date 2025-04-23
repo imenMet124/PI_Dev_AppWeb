@@ -1,0 +1,28 @@
+{# templates/user/new.html.twig #}
+{% extends 'Back_Base.html.twig' %}
+
+{% block title %}Add New User{% endblock %}
+
+{% block body %}
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Add New User</h4>
+                            <div class="float-right">
+                                <a href="{{ path('app_user_index') }}" class="btn btn-secondary">
+                                    <i class="fa fa-arrow-left"></i> Back to List
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            {% include 'user/_form.html.twig' with {'form': form, 'button_label': 'Create'} %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

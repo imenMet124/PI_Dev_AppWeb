@@ -1,0 +1,88 @@
+{% extends 'Front_Base.html.twig' %}
+
+{% block title %}Register - EasyHR{% endblock %}
+
+{% block body %}
+    <!-- Register Start -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-5">
+                            <div class="text-center mb-4">
+                                <h1 class="display-5 mb-3">Create Your Account</h1>
+                                <p class="text-muted">Join EasyHR and manage your HR needs</p>
+                            </div>
+
+                            {{ form_start(registrationForm, {'attr': {'class': 'form'}}) }}
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            {{ form_label(registrationForm.name, 'Full Name', {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(registrationForm.name, {'attr': {'class': 'form-control'}}) }}
+                                            {{ form_errors(registrationForm.name) }}
+                                        </div>
+
+                                        <div class="mb-3">
+                                            {{ form_label(registrationForm.email, 'Email Address', {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+                                            {{ form_errors(registrationForm.email) }}
+                                        </div>
+
+                                        <div class="mb-3">
+                                            {{ form_label(registrationForm.phone, 'Phone Number', {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(registrationForm.phone, {'attr': {'class': 'form-control'}}) }}
+                                            {{ form_errors(registrationForm.phone) }}
+                                        </div>
+
+                                        <div class="mb-3">
+                                            {{ form_label(registrationForm.plainPassword, 'Password', {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
+                                            {{ form_errors(registrationForm.plainPassword) }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            {{ form_label(registrationForm.position, 'Position', {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(registrationForm.position, {'attr': {'class': 'form-control'}}) }}
+                                            {{ form_errors(registrationForm.position) }}
+                                        </div>
+
+                                        <div class="mb-3">
+                                            {{ form_label(registrationForm.salary, 'Salary', {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(registrationForm.salary, {'attr': {'class': 'form-control'}}) }}
+                                            {{ form_errors(registrationForm.salary) }}
+                                        </div>
+
+                                        <div class="mb-3">
+                                            {{ form_label(registrationForm.hireDate, 'Hire Date', {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(registrationForm.hireDate, {'attr': {'class': 'form-control'}}) }}
+                                            {{ form_errors(registrationForm.hireDate) }}
+                                        </div>
+
+                                        <div class="mb-3">
+                                            {{ form_label(registrationForm.role, 'Role', {'label_attr': {'class': 'form-label'}}) }}
+                                            {{ form_widget(registrationForm.role, {'attr': {'class': 'form-control'}}) }}
+                                            {{ form_errors(registrationForm.role) }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid gap-2 mt-4">
+                                    <button type="submit" class="btn btn-primary py-3">Register</button>
+                                </div>
+
+                                <div class="text-center mt-3">
+                                    <p class="mb-0">Already have an account? <a href="{{ path('app_login') }}" class="text-primary">Login here</a></p>
+                                </div>
+                            {{ form_end(registrationForm) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Register End -->
+{% endblock %} 

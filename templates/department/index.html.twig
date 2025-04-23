@@ -1,0 +1,83 @@
+{% extends 'Back_Base.html.twig' %}
+
+{% block title %}Departments{% endblock %}
+
+{% block body %}
+    <div class="page-inner">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+            <div>
+                <h3 class="fw-bold mb-3">Departments</h3>
+                <h6 class="op-7 mb-2">Manage your company departments</h6>
+            </div>
+            <div class="ms-md-auto py-2 py-md-0">
+                <a href="{{ path('app_department_new') }}" class="btn btn-primary btn-round">
+                    <i class="fa fa-plus"></i> Add Department
+                </a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Location</th>
+                                <th>Manager</th>
+                                <th style="width: 10%">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for department in departments %}
+                            <tr>
+                                <td>{{ department.id }}</td>
+                                <td>{{ department.name }}</td>
+                                <td>{{ department.description }}</td>
+                                <td>{{ department.location }}</td>
+                                <td>
+                                    {% if department.manager %}
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-sm me-2">
+                                                <span class="avatar-title rounded-circle bg-primary text-white">
+                                                    {{ department.manager.name|first|upper }}
+                                                </span>
+                                            </div>
+                                            {{ department.manager.name }}
+                                        </div>
+                                    {% else %}
+                                        <span class="text-muted">No manager</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="form-button-action">
+                                        <a href="{{ path('app_department_show', {'id': department.id}) }}" class="btn btn-link btn-primary btn-lg" data-bs-toggle="tooltip" title="View Details">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        <a href="{{ path('app_department_edit', {'id': department.id}) }}" class="btn btn-link btn-warning btn-lg" data-bs-toggle="tooltip" title="Edit Department">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">No departments found</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function() {
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        });
+    </script>
+{% endblock %}

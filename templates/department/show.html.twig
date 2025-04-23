@@ -1,0 +1,81 @@
+{% extends 'Back_Base.html.twig' %}
+
+{% block title %}Department Details{% endblock %}
+
+{% block body %}
+    <div class="page-inner">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+            <div>
+                <h3 class="fw-bold mb-3">Department Details</h3>
+                <h6 class="op-7 mb-2">View department information</h6>
+            </div>
+            <div class="ms-md-auto py-2 py-md-0">
+                <a href="{{ path('app_department_index') }}" class="btn btn-secondary btn-round me-2">
+                    <i class="fa fa-arrow-left"></i> Back to List
+                </a>
+                <a href="{{ path('app_department_edit', {'id': department.id}) }}" class="btn btn-primary btn-round">
+                    <i class="fa fa-edit"></i> Edit Department
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th style="width: 200px">ID</th>
+                                        <td>{{ department.id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Name</th>
+                                        <td>{{ department.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Description</th>
+                                        <td>{{ department.description }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Location</th>
+                                        <td>{{ department.location }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Manager</th>
+                                        <td>
+                                            {% if department.manager %}
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar-sm me-2">
+                                                        <span class="avatar-title rounded-circle bg-primary text-white">
+                                                            {{ department.manager.name|first|upper }}
+                                                        </span>
+                                                    </div>
+                                                    {{ department.manager.name }}
+                                                </div>
+                                            {% else %}
+                                                <span class="text-muted">No manager assigned</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Danger Zone</h4>
+                    </div>
+                    <div class="card-body">
+                        {{ include('department/_delete_form.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
