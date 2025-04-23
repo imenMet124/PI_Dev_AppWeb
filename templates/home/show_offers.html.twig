@@ -1,0 +1,55 @@
+{% extends 'Front_Base.html.twig' %}
+
+{% block title %}{{ offer.title }}{% endblock %}
+
+{% block body %}
+<!-- ====== Offre Détail Start ====== -->
+<div class="container py-5 mt-4">
+  <div class="text-center mb-4">
+    <h2 class="fw-bold text-primary">{{ offer.title }}</h2>
+    <p class="text-muted mb-1">{{ offer.department }} - {{ offer.location }}</p>
+    <small class="text-danger">
+      Publiée le {{ offer.datetimeImmutable ? offer.datetimeImmutable|date('d/m/Y') : '' }}
+    </small>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="bg-light border rounded-4 p-4 shadow-sm" style="background-color: #f5f7ff;">
+        <h5 class="fw-semibold mb-3 text-dark">Description du poste</h5>
+        <p class="text-justify text-muted">{{ offer.description }}</p>
+
+        <div class="row mt-4 g-3">
+          <div class="col-md-6">
+            <strong>Type de contrat :</strong> {{ offer.contractType.value }}
+          </div>
+          <div class="col-md-6">
+            <strong>Département :</strong> {{ offer.department }}
+          </div>
+          <div class="col-md-6">
+            <strong>Salaire :</strong> {{ offer.salaryMin }}€ - {{ offer.salaryMax }}€
+          </div>
+          <div class="col-md-6">
+            <strong>Lieu :</strong> {{ offer.location }}
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-5">
+          <a href="{{ path('app_job_offer_public') }}" class="btn btn-outline-primary">
+            ← Retour aux offres
+          </a>
+
+          <a href="{{ path('app_application_postuler', {'offerId': offer.id}) }}" class="btn btn-primary">
+            Postuler à cette offre
+          </a>
+          
+          
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ====== Offre Détail End ====== -->
+{% endblock %}
+

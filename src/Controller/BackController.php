@@ -18,4 +18,13 @@ final class BackController extends AbstractController
             'controller_name' => 'BackController',
         ]);
     }
+    #[Route('/admin/candidatures', name: 'admin_applications')]
+public function adminIndex(ApplicationRepository $repo): Response
+{
+    $applications = $repo->findAll(); // ou avec pagination si besoin
+    return $this->render('/application/index.html.twig', [
+        'applications' => $applications,
+    ]);
+}
+
 }

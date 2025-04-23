@@ -1,41 +1,65 @@
-<!DOCTYPE html>
+{% extends 'Back_Base.html.twig' %}
 
-<title>Application index</title>
+{% block title %}Candidatures reçues{% endblock %}
 
 {% block body %}
-    <h1>Application index</h1>
+<div class="main-panel">
+  <div class="content">
+    <div class="container mt-4">
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Status</th>
-                <th>Message</th>
-                <th>SubmittedAt</th>
-                <th>CvSnapshotPath</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for application in applications %}
-            <tr>
-                <td>{{ application.id }}</td>
-                <td>{{ application.status }}</td>
-                <td>{{ application.message }}</td>
-                <td>{{ application.submittedAt ? application.submittedAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ application.cvSnapshotPath }}</td>
-                <td>
-                    <a href="{{ path('app_application_show', {'id': application.id}) }}">show</a>
-                    <a href="{{ path('app_application_edit', {'id': application.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+      <!-- En-tête -->
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold mb-0">Candidatures reçues</h2>
+      </div>
 
-    <a href="{{ path('app_application_new') }}">Create new</a>
+      <!-- Tableau des candidatures -->
+      <div class="card shadow-sm">
+        <div class="card-body p-0">
+          <table class="table table-hover table-bordered mb-0">
+            <thead class="table-light text-center">
+              <tr>
+                <th>Candidat</th>
+                <th>Offre</th>
+                <th>Statut</th>
+                <th>Date de soumission</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for app in applications %}
+                <tr class="text-center align-middle">
+                  <td>{{ app.candidat.firstName }} {{ app.candidat.lastName }}</td>
+                  <td>{{ app.jobOffer.title }}</td>
+                  <td>
+                    <span class="badge 
+                      {% if app.status.value == 'Acceptée' %}bg-success
+                      {% elseif app.status.value == 'Refusée' %}bg-danger
+                      {% else %}bg-warning text-dark{% endif %}
+                    ">
+                      {{ app.status.value }}
+                    </span>
+                  </td>
+                  <td>{{ app.submittedAt|date('d/m/Y H:i') }}</td>
+                  <td>
+                    <a href="{{ path('app_application_show', {'id': app.id}) }}" class="btn btn-sm btn-outline-info me-1" title="Voir">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                    <a href="{{ path('app_application_edit', {'id': app.id}) }}" class="btn btn-sm btn-outline-primary" title="Traiter">
+                      <i class="bi bi-check2-square"></i> Traiter
+                    </a>
+                  </td>
+                </tr>
+              {% else %}
+                <tr>
+                  <td colspan="5" class="text-center text-muted">Aucune candidature reçue.</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
 {% endblock %}

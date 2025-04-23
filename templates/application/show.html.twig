@@ -1,38 +1,81 @@
-<!DOCTYPE html>
+{% extends 'Back_Base.html.twig' %}
 
-<title>Application</title>
+{% block title %}Candidature #{{ application.id }}{% endblock %}
 
 {% block body %}
-    <h1>Application</h1>
+<div class="main-panel">
+  <div class="content">
+    <div class="container mt-4">
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
+      <h2 class="mb-4 fw-bold">Détail de la candidature</h2>
+
+      <div class="card shadow-sm">
+        <div class="card-body">
+
+          <table class="table table-striped">
+            <tbody>
+              <tr>
+                <th scope="row">ID</th>
                 <td>{{ application.id }}</td>
-            </tr>
-            <tr>
-                <th>Status</th>
-                <td>{{ application.status }}</td>
-            </tr>
-            <tr>
-                <th>Message</th>
+              </tr>
+              <tr>
+                <th scope="row">Statut</th>
+                <td>
+                  <span class="badge 
+                    {% if application.status.value == 'Acceptée' %}bg-success
+                    {% elseif application.status.value == 'Refusée' %}bg-danger
+                    {% else %}bg-warning text-dark{% endif %}
+                  ">
+                    {{ application.status.value }}
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Message du candidat</th>
                 <td>{{ application.message }}</td>
-            </tr>
-            <tr>
-                <th>SubmittedAt</th>
-                <td>{{ application.submittedAt ? application.submittedAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>CvSnapshotPath</th>
-                <td>{{ application.cvSnapshotPath }}</td>
-            </tr>
-        </tbody>
-    </table>
+              </tr>
+              <tr>
+                <th scope="row">Soumise le</th>
+                <td>{{ application.submittedAt ? application.submittedAt|date('d/m/Y H:i') : '' }}</td>
+              </tr>
+            </tbody>
+          </table>
 
-    <a href="{{ path('app_application_index') }}">back to list</a>
+          {# === Affichage PDF - CV === #}
+          {% if application.candidat.resumePath %}
+            <h5 class="mt-4">📄 CV</h5>
+            <iframe 
+              src="{{ asset(application.candidat.resumePath) }}" 
+              width="100%" 
+              height="500px" 
+              style="border: 1px solid #ccc; border-radius: 8px;"
+            ></iframe>
+          {% endif %}
 
-    <a href="{{ path('app_application_edit', {'id': application.id}) }}">edit</a>
+          {# === Affichage PDF - Lettre de motivation === #}
+          {% if application.candidat.coverLetterPath %}
+            <h5 class="mt-4">✉️ Lettre de motivation</h5>
+            <iframe 
+              src="{{ asset(application.candidat.coverLetterPath) }}" 
+              width="100%" 
+              height="500px" 
+              style="border: 1px solid #ccc; border-radius: 8px;"
+            ></iframe>
+          {% endif %}
 
-    {{ include('application/_delete_form.html.twig') }}
+          <div class="mt-4 d-flex justify-content-between">
+            <a href="{{ path('app_application_index') }}" class="btn btn-outline-secondary">
+              ← Retour à la liste
+            </a>
+            <a href="{{ path('app_application_edit', {'id': application.id}) }}" class="btn btn-primary">
+              <i class="bi bi-pencil-square"></i> Traiter la candidature
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
 {% endblock %}

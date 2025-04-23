@@ -1,0 +1,57 @@
+{% extends 'Front_Base.html.twig' %}
+
+{% block title %}Nos Offres d'Emploi{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+  <div class="text-center mb-5">
+    <h2 class="fw-bold text-primary">Nos Offres d'Emploi</h2>
+    <p class="text-muted">Explorez nos opportunités les plus récentes</p>
+  </div>
+
+  <div class="row g-4">
+    {% for offer in offers %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title text-dark fw-semibold">{{ offer.title }}</h5>
+
+            <p class="text-muted mb-1">
+              <i class="bi bi-geo-alt-fill text-primary me-1"></i>
+              {{ offer.location }}
+            </p>
+
+            <p class="text-truncate text-secondary" style="max-height: 4.5rem; overflow: hidden;">
+              {{ offer.description|striptags }}
+            </p>
+
+            <ul class="list-unstyled mb-3">
+              <li><strong>Type :</strong> {{ offer.contractType.value }}</li>
+              <li>
+                <strong>Salaire :</strong>
+                {% if offer.salaryMin and offer.salaryMax %}
+                  {{ offer.salaryMin }}€ - {{ offer.salaryMax }}€
+                {% else %}
+                  À négocier
+                {% endif %}
+              </li>
+            </ul>
+
+            <div class="mt-auto text-end">
+              <a href="{{ path('app_job_offer_front_show', { 'id': offer.id }) }}" class="btn btn-sm btn-outline-primary">
+                Voir plus <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="col-12 text-center">
+        <div class="alert alert-info">
+          Aucune offre disponible pour le moment.
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

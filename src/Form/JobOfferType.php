@@ -32,6 +32,14 @@ class JobOfferType extends AbstractType
                     new Assert\Length(min: 20),
                 ],
             ])
+            ->add('department', TextType::class, [
+                'label' => 'Département',
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Length(max: 255),
+                ],
+            ])
+            
             ->add('location', TextType::class, [
                 'label' => 'Lieu',
                 'constraints' => [
