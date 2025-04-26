@@ -19,56 +19,65 @@ use Knp\Component\Pager\PaginatorInterface;
 final class ApplicationController extends AbstractController
 {
     #[Route('/application', name: 'app_application_index', methods: ['GET'])]
-    public function index(ApplicationRepository $applicationRepository, Request $request, PaginatorInterface $paginator): Response
-    {
-        $search = $request->query->get('search');
-        $status = $request->query->get('status');
-        $sort = $request->query->get('sort', 'submittedAt');
-        $direction = $request->query->get('direction', 'desc');
-    
-        $queryBuilder = $applicationRepository->createQueryBuilder('a')
-            ->join('a.candidat', 'c');
-    
-        if ($search) {
-            $queryBuilder
-                ->andWhere('c.firstName LIKE :search OR c.lastName LIKE :search')
-                ->setParameter('search', '%' . $search . '%');
-        }
-    
-        if ($status !== null && $status !== '') {
-            $queryBuilder
-                ->andWhere('a.status = :status')
-                ->setParameter('status', $status);
-        }
-    
-        // Tri manuel
-        if (in_array($sort, ['submittedAt', 'status'])) {
-            $queryBuilder->orderBy('a.' . $sort, $direction);
-        } elseif ($sort === 'candidat') {
-            $queryBuilder->orderBy('c.lastName', $direction);
-        } else {
-            $queryBuilder->orderBy('a.submittedAt', 'DESC');
-        }
-    
-        $query = $queryBuilder->getQuery();
-    
-        $applications = $paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            5,
-            [
-                'defaultSortFieldName' => null,
-                'defaultSortDirection' => null,
-                'sortFieldParameterName' => null,
-                'sortDirectionParameterName' => null,
-            ]
-        );
-    
-        return $this->render('application/index.html.twig', [
+public function index(ApplicationRepository $applicationRepository, Request $request, PaginatorInterface $paginator): Response
+{
+    $search = $request->query->get('search');
+    $status = $request->query->get('status');
+    $sort = $request->query->get('sort', 'submittedAt');
+    $direction = $request->query->get('direction', 'desc');
+
+    $queryBuilder = $applicationRepository->createQueryBuilder('a')
+        ->join('a.candidat', 'c');
+
+    if ($search) {
+        $queryBuilder
+            ->andWhere('c.firstName LIKE :search OR c.lastName LIKE :search')
+            ->setParameter('search', '%' . $search . '%');
+    }
+
+    if ($status !== null && $status !== '') {
+        $queryBuilder
+            ->andWhere('a.status = :status')
+            ->setParameter('status', $status);
+    }
+
+    // 🛠️ Tri manuel
+    if (in_array($sort, ['submittedAt', 'status'])) {
+        $queryBuilder->orderBy('a.' . $sort, $direction);
+    } elseif ($sort === 'candidat') {
+        $queryBuilder->orderBy('c.lastName', $direction);
+    } else {
+        $queryBuilder->orderBy('a.submittedAt', 'DESC');
+    }
+
+    $query = $queryBuilder->getQuery();
+
+    $applications = $paginator->paginate(
+        $query,
+        $request->query->getInt('page', 1),
+        5,
+        [
+            'defaultSortFieldName' => null,
+            'defaultSortDirection' => null,
+            'sortFieldParameterName' => null,
+            'sortDirectionParameterName' => null,
+        ]
+    );
+
+    // 🧠 Si c'est un appel AJAX, on retourne uniquement le tableau partiel
+    if ($request->isXmlHttpRequest()) {
+        return $this->render('application/_table.html.twig', [
             'applications' => $applications,
         ]);
     }
+
+    // Sinon, retour complet (normal)
+    return $this->render('application/index.html.twig', [
+        'applications' => $applications,
+    ]);
     
+}
+
 
 
     

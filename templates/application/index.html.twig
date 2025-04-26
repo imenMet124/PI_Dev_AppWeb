@@ -2,138 +2,81 @@
 
 {% block title %}Candidatures reçues{% endblock %}
 
-{% block stylesheets %}
-<style>
-  .sortable-column {
-    color: #212529; /* couleur texte normale */
-    text-decoration: none;
-    transition: color 0.3s ease, transform 0.3s ease;
-    display: inline-block; /* nécessaire pour appliquer transform */
-  }
-
-  .sortable-column:hover {
-    color: #0d6efd; /* devient bleu au hover */
-    text-decoration: underline;
-    cursor: pointer;
-    transform: scale(1.05); /* effet de zoom léger */
-  }
-</style>
-{% endblock %}
-
-
 {% block body %}
 <div class="main-panel">
   <div class="content">
     <div class="container mt-4">
 
-      <!-- En-tête -->
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="fw-bold mb-0">Candidatures reçues</h2>
       </div>
 
-      <!-- Formulaire de recherche -->
-      <form method="get" action="{{ path('app_application_index') }}" class="d-flex align-items-center mb-4 gap-2">
+      <!-- Formulaire de recherche et filtre -->
+      <form id="filter-form" method="get" action="{{ path('app_application_index') }}" class="d-flex align-items-center mb-4 gap-2">
+
         <input type="text" name="search" class="form-control" placeholder="Rechercher un candidat..." value="{{ app.request.get('search') }}">
+
         <select name="status" class="form-select">
-          <option value="">ALL</option>
-          <option value="En attente" {% if app.request.get('status') == 'En attente' %}selected{% endif %}>En attente</option>
-          <option value="Acceptée" {% if app.request.get('status') == 'Acceptée' %}selected{% endif %}>Acceptée</option>
-          <option value="Refusée" {% if app.request.get('status') == 'Refusée' %}selected{% endif %}>Refusée</option>
+            <option value="">ALL</option>
+            <option value="En attente" {% if app.request.get('status') == 'En attente' %}selected{% endif %}>En attente</option>
+            <option value="Acceptée" {% if app.request.get('status') == 'Acceptée' %}selected{% endif %}>Acceptée</option>
+            <option value="Refusée" {% if app.request.get('status') == 'Refusée' %}selected{% endif %}>Refusée</option>
         </select>
+
         <button class="btn btn-primary" type="submit">
           <i class="bi bi-search"></i> Filtrer
         </button>
+
       </form>
-      {% if applications is not empty %}
-      <div class="mb-2 text-muted">
-          {{ applications.getTotalItemCount }} candidatures trouvées
-      </div>
-  {% else %}
-      <div class="mb-2 text-muted">
-          Aucune candidature trouvée
-      </div>
-  {% endif %}
-  
-      <!-- Tableau -->
-      <div class="card shadow-sm">
-        <div class="card-body p-0">
-          <table class="table table-hover table-bordered mb-0">
-            <thead class="table-light text-center">
-              <tr>
-                <th>Candidat</th>
-                <th>Offre</th>
-                <th>Statut</th>
-                <th>
-                  <a href="{{ path('app_application_index', {
-                      'search': app.request.get('search'),
-                      'status': app.request.get('status'),
-                      'sort': 'submittedAt',
-                      'direction': app.request.get('direction') == 'asc' ? 'desc' : 'asc'
-                  }) }}" class="sortable-column">
-                
-                      Date de soumission
-                      {% if app.request.get('sort') == 'submittedAt' %}
-                          {% if app.request.get('direction') == 'asc' %}
-                              <i class="bi bi-caret-up-fill"></i> {# petite flèche haut #}
-                          {% else %}
-                              <i class="bi bi-caret-down-fill"></i> {# petite flèche bas #}
-                          {% endif %}
-                      {% else %}
-                          <i class="bi bi-filter"></i> {# petit filtre discret sinon #}
-                      {% endif %}
-                  </a>
-                </th>
-                
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for app in applications %}
-              <tr class="text-center align-middle
-              {% if app.status.value == 'Acceptée' %}table-success
-              {% elseif app.status.value == 'Refusée' %}table-danger
-              {% elseif app.status.value == 'En attente' %}table-warning
-              {% endif %}
-          ">
-          
-                  <td>{{ app.candidat.firstName }} {{ app.candidat.lastName }}</td>
-                  <td>{{ app.jobOffer.title }}</td>
-                  <td>
-                    <span class="badge 
-                      {% if app.status.value == 'Acceptée' %}bg-success
-                      {% elseif app.status.value == 'Refusée' %}bg-danger
-                      {% else %}bg-warning text-dark{% endif %}
-                    ">
-                    
-                      {{ app.status.value }}
-                    </span>
-                  </td>
-                  <td>{{ app.submittedAt|date('d/m/Y H:i') }}</td>
-                  <td>
-                    <a href="{{ path('app_application_show', {'id': app.id}) }}" class="btn btn-sm btn-outline-info me-1" title="Voir">
-                      <i class="bi bi-eye"></i>
-                    </a>
-                    <a href="{{ path('app_application_edit', {'id': app.id}) }}" class="btn btn-sm btn-outline-primary" title="Traiter">
-                      <i class="bi bi-check2-square"></i> Traiter
-                    </a>
-                  </td>
-                </tr>
-              {% else %}
-                <tr>
-                  <td colspan="5" class="text-center text-muted">Aucune candidature reçue.</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
 
-        <!-- Pagination -->
-        <div class="d-flex justify-content-center mt-4 mb-4">
-          {{ knp_pagination_render(applications) }}
-        </div>
-
+      <!-- Ici on recharge dynamiquement seulement le tableau -->
+      <div id="table-container">
+        {% include 'application/_table.html.twig' %}
       </div>
+
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // 🎯 Gestion AJAX du formulaire de filtre
+    const form = document.getElementById('filter-form');
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+  
+      const url = new URL(form.action);
+      const params = new URLSearchParams(new FormData(form));
+      url.search = params.toString();
+  
+      fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('table-container').innerHTML = html;
+          attachSortableColumnHandlers(); // ⚡ rebrancher les colonnes après rechargement
+        })
+        .catch(error => console.error('Erreur AJAX', error));
+    });
+  
+    // 🎯 Gestion AJAX du tri par colonnes
+    function attachSortableColumnHandlers() {
+      document.querySelectorAll('a.sortable-column').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          fetch(link.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(response => response.text())
+            .then(html => {
+              document.getElementById('table-container').innerHTML = html;
+              attachSortableColumnHandlers(); // ⚡ reboucler après mise à jour
+            })
+            .catch(error => console.error('Erreur AJAX:', error));
+        });
+      });
+    }
+  
+    // Initialiser au chargement
+    attachSortableColumnHandlers();
+  });
+  </script>
+  
 {% endblock %}
