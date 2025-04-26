@@ -7,6 +7,9 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use App\Entity\Application;
 
 #[ORM\Entity(repositoryClass: CandidatRepository::class)]
 class Candidat
@@ -48,7 +51,7 @@ class Candidat
     private ?\DateTimeInterface $dateOfBirth = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le chemin du CV est obligatoire.")]
+
     private ?string $resumePath = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -78,6 +81,39 @@ class Candidat
         message: "Le lien LinkedIn doit commencer par https://www.linkedin.com/"
     )]
     private ?string $linkedinUrl = null;
+    #[ORM\OneToMany(mappedBy: 'candidat', targetEntity: Application::class, orphanRemoval: true)]
+    private Collection $applications;
+
+    public function __construct()
+    {
+        $this->applications = new ArrayCollection();
+    }
+
+    public function getApplications(): Collection
+    {
+        return $this->applications;
+    }
+
+    public function addApplication(Application $application): static
+    {
+        if (!$this->applications->contains($application)) {
+            $this->applications[] = $application;
+            $application->setCandidat($this);
+        }
+
+        return $this;
+    }
+
+    public function removeApplication(Application $application): static
+    {
+        if ($this->applications->removeElement($application)) {
+            if ($application->getCandidat() === $this) {
+                $application->setCandidat(null);
+            }
+        }
+
+        return $this;
+    }
 
     // ---------------- Getters / Setters ----------------
 

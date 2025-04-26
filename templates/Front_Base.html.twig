@@ -86,9 +86,22 @@
             </div>
             <!-- Navbar End -->
 
-        {% endblock %}
-        <div class="pt-5 mb-5"></div>
-        {% block body %}{% endblock %}
+            {% endblock %}
+
+            <div class="pt-5 mb-5"></div>
+            
+            {# 🔔 MESSAGE FLASH ici #}
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }} alert-dismissible fade show mt-3 mx-3" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            
+            {% block body %}{% endblock %}
+            
     </div>
 
         {% block footer %}

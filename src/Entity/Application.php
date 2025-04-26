@@ -39,8 +39,7 @@ class Application
     private ?string $message = null;
 
     #[ORM\Column]
-    #[Assert\NotNull(message: "La date de soumission est obligatoire.")]
-    #[Assert\LessThanOrEqual("now", message: "La date de soumission ne peut pas être dans le futur.")]
+
     private ?\DateTimeImmutable $submittedAt = null;
 
     #[ORM\Column(length: 255, nullable: true)]
