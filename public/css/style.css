@@ -543,4 +543,7 @@ footer {
     width: 100%;
     position: relative;
   }
+  #table-container {
+    transition: opacity 0.4s ease;
+  }
   

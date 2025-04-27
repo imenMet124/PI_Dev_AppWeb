@@ -40,36 +40,57 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    // 🎯 Gestion AJAX du formulaire de filtre
     const form = document.getElementById('filter-form');
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
+    const tableContainer = document.getElementById('table-container');
+    const submitButton = form.querySelector('button[type="submit"]');
   
-      const url = new URL(form.action);
-      const params = new URLSearchParams(new FormData(form));
-      url.search = params.toString();
+    function showLoader() {
+      tableContainer.innerHTML = `
+        <div class="d-flex justify-content-center align-items-center p-5">
+          <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      `;
+    }
+  
+    function fetchAndReplace(url) {
+      showLoader();
+      submitButton.disabled = true;
   
       fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
         .then(response => response.text())
         .then(html => {
-          document.getElementById('table-container').innerHTML = html;
-          attachSortableColumnHandlers(); // ⚡ rebrancher les colonnes après rechargement
+          tableContainer.style.opacity = 0; // Start fade-out
+          setTimeout(() => {
+            tableContainer.innerHTML = html;
+            tableContainer.style.opacity = 1; // Fade-in effect
+            attachSortableColumnHandlers();
+            submitButton.disabled = false;
+          }, 200); // Time for fade
         })
-        .catch(error => console.error('Erreur AJAX', error));
+        .catch(error => {
+          console.error('Erreur AJAX:', error);
+          submitButton.disabled = false;
+        });
+    }
+  
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+  
+      const url = new URL(form.action, window.location.origin);
+      const params = new URLSearchParams(new FormData(form));
+      url.search = params.toString();
+  
+      fetchAndReplace(url);
     });
   
-    // 🎯 Gestion AJAX du tri par colonnes
     function attachSortableColumnHandlers() {
       document.querySelectorAll('a.sortable-column').forEach(function(link) {
         link.addEventListener('click', function(e) {
           e.preventDefault();
-          fetch(link.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(response => response.text())
-            .then(html => {
-              document.getElementById('table-container').innerHTML = html;
-              attachSortableColumnHandlers(); // ⚡ reboucler après mise à jour
-            })
-            .catch(error => console.error('Erreur AJAX:', error));
+          const url = new URL(link.href, window.location.origin);
+          fetchAndReplace(url);
         });
       });
     }
@@ -78,5 +99,6 @@
     attachSortableColumnHandlers();
   });
   </script>
+  
   
 {% endblock %}
