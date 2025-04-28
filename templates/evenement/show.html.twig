@@ -1,4 +1,48 @@
 {% extends "Front_Base.html.twig" %}
+{% block meta %}
+    <style>
+
+        .btn-linkedin {
+            color: #ffffff;
+            background-color: #0077b5; /* Couleur officielle de LinkedIn */
+            border-color: #0077b5;
+        }
+
+        .btn-linkedin:hover {
+            color: #ffffff;
+            background-color: #005582; /* Couleur plus foncée pour le hover */
+            border-color: #005582;
+        }
+        .btn-black {
+            color: #ffffff;
+            background-color: #000000; /* Noir */
+            border: 2px solid #000000; /* Bordure noire */
+            border-radius: 50%; /* Forme circulaire */
+            width: 50px; /* Taille fixe pour uniformité */
+            height: 50px; /* Taille fixe pour uniformité */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .btn-black:hover {
+            color: #ffffff;
+            background-color: #333333; /* Noir plus clair pour le hover */
+            border-color: #333333;
+        }
+    </style>
+    <meta property="og:title" content="{{ evenement.NomEvenement }}" />
+    <meta property="og:description" content="{{ evenement.Description }}" />
+    <meta property="og:image" content="{{ asset(evenement.ImagePath) }}" />
+    <meta property="og:url" content="{{ url('app_evenement_show', {id: evenement.id}, true) }}" />
+    <meta property="og:type" content="website" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{ evenement.NomEvenement }}" />
+    <meta name="twitter:description" content="{{ evenement.Description }}" />
+    <meta name="twitter:image" content="{{ asset(evenement.ImagePath) }}" />
+{% endblock %}
 {% block body %}
 <div class="container-fluid page-header mb-5 wow fadeIn" data-wow-delay="0.1s">
     <div class="container">
@@ -31,8 +75,43 @@
                 <a href="{{ path('app_evenement_participer', {'id': evenement.id}) }}" class="btn btn-primary">Participer</a>
 
                 <a href="{{ path('app_evenement') }}" class="btn btn-primary">Retour à la liste</a>
+                
+                 <!-- Boutons de partage -->
+               <div class="social-share mt-4">
+    <h3>Partager cet événement :</h3>
+    <a href="https://www.facebook.com/sharer/sharer.php?u={{ url('app_evenement_show', {id: evenement.id}, true) }}" target="_blank" class="btn btn-outline-primary btn-circle">
+        <i class="fab fa-facebook-f"></i>
+    </a>
+    <a href="https://twitter.com/intent/tweet?url={{ url('app_evenement_show', {id: evenement.id}, true) }}&text={{ evenement.NomEvenement }}" target="_blank" class="btn btn-outline-info btn-circle">
+        <i class="fab fa-twitter"></i>
+    </a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ url('app_evenement_show', {id: evenement.id}, true) }}&title={{ evenement.NomEvenement }}" target="_blank" class="btn btn-outline-primary btn-circle">
+        <i class="fab fa-linkedin-in"></i>
+    </a>
+    <button id="share-button" class="btn btn-black btn-circle" >
+        <i class="fas fa-share-alt"></i>
+    </button>
+</div>
             </div>
         </div>
     </div>
 </div>
+<script>
+    document.getElementById('share-button').addEventListener('click', async () => {
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: '{{ evenement.NomEvenement }}',
+                    text: '{{ evenement.Description }}',
+                    url: '{{ url('app_evenement_show', {id: evenement.id}, true) }}'
+                });
+                alert('Événement partagé avec succès !');
+            } catch (error) {
+                console.error('Erreur lors du partage :', error);
+            }
+        } else {
+            alert('Le partage n\'est pas pris en charge sur ce navigateur.');
+        }
+    });
+</script>
 {% endblock %}

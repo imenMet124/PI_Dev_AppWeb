@@ -27,13 +27,16 @@
 	<div class="container-xxl py-5">
 		<div class="container">
 			<div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
-				<p class="d-inline-block border rounded text-primary fw-semi-bold py-1 px-3">Nos Evenements </p>
+				<p class="d-inline-block border rounded text-primary fw-semi-bold py-1 px-3">Nos Evenements
+				</p>
 				<h1 class="display-5 mb-5">We Have Completed Latest Evenement</h1>
+			</div>
+			<div class="owl-carousel project-carousel wow fadeInUp" data-wow-delay="0.3s">
 			</div>
 			<div class="owl-carousel project-carousel wow fadeInUp" data-wow-delay="0.3s">
 
 				{% for evenement in evenements %}
-                
+
 					<div class="project-item pe-5 pb-5">
 						<div class="project-img mb-3">
 							<img class="img-fluid rounded" src="{{ asset(evenement.ImagePath) }}" alt="" width="200">

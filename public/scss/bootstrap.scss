@@ -35,3 +35,6 @@ $link-decoration: none;
 $enable-negative-margins: true;
 
 @import "bootstrap/scss/bootstrap";
+@import '~@fullcalendar/core/main.css';
+@import '~@fullcalendar/daygrid/main.css';
+@import '~@fullcalendar/timegrid/main.css';

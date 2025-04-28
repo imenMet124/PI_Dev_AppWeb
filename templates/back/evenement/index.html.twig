@@ -334,17 +334,15 @@
 															</tr>
 														</thead>
 
-													</thead>
+														</thead>
 
-													<tbody>
-														{% for evenement in evenements %}
-															<tr role="row" class="odd">
-																<td class="sorting_1">{{ evenement.NomEvenement }}</td>
-
+														<tbody>
+														{% for evenement in pagination.items %}
+															<tr>
+																<td>{{ evenement.NomEvenement }}</td>
 																<td>{{ evenement.Description }}</td>
 																<td>{{ evenement.Date|date('d/m/Y') }}</td>
-																<td>{{ evenement.Heure|date('H:i') }}
-																</td>
+																<td>{{ evenement.Heure|date('H:i') }}</td>
 																<td>
 																	<a href="{{ path('app_participation_by_evenement', {'id': evenement.id}) }}">
 																		<span class="badge badge-success">{{ evenement.NombreParticipants }}</span>
@@ -358,22 +356,21 @@
 																		<a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-link btn-primary btn-lg" data-bs-toggle="tooltip" title="Modifier l'événement">
 																			<i class="fa fa-edit"></i>
 																		</a>
-
-
 																		<form method="post" action="{{ path('app_back_evenement_delete', {'id': evenement.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?');" style="display: inline;">
 																			<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.id) }}">
 																			<button class="btn btn-link btn-danger btn-lg" type="submit" data-bs-toggle="tooltip" title="Supprimer l'événement">
 																				<i class="fa fa-times"></i>
 																			</button>
 																		</form>
-
 																	</div>
-
 																</td>
 															</tr>
 														{% endfor %}
-													</tbody>
-												</table>
+														</tbody>
+														<div class="pagination-wrapper">
+														{{ knp_pagination_render(pagination) }}
+														</div>
+													</table>
 											</div>
 										</div>
 										<div class="row">
