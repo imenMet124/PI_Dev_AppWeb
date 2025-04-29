@@ -29,7 +29,7 @@
 				<nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
 					<div class="container-fluid">
 						<nav class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex">
-							<div class="input-group">
+							<div class="input-group" hidden>
 								<div class="input-group-prepend">
 									<button type="submit" class="btn btn-search pe-1">
 										<i class="fa fa-search search-icon"></i>
@@ -321,6 +321,15 @@
 
 											<div class="row">
 												<div class="col-sm-12">
+												<div class="input-group d-flex mb-3">
+													<div class="input-group-append">
+														<input type="text" id="searchInput" placeholder="Rechercher ..." class="form-control col-sm-3"/>
+													</div>
+
+													<button id="exportExcelBtn" class="btn btn-success ms-auto" type="button">Exporter vers Excel</button></div>
+
+												
+												</div>
 													<table id="add-row" class="display table table-striped table-hover dataTable" role="grid" aria-describedby="add-row_info">
 														<thead>
 															<tr role="row">
@@ -450,4 +459,28 @@
 		</div>
 		<!-- End Custom template -->
 	</div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#searchInput').on('keyup', function() {
+      var value = $(this).val().toLowerCase();
+      $('#add-row tbody tr').filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+      });
+    });
+  });
+
+  document.getElementById("exportExcelBtn").addEventListener("click", function () {
+    let table = document.getElementById("add-row");
+    let html = table.outerHTML.replace(/ /g, '%20');
+
+    let a = document.createElement('a');
+    a.href = 'data:application/vnd.ms-excel,' + html;
+    a.download = 'evenements.xls';
+    a.click();
+  });
+</script>
+
+
+
 {% endblock %}

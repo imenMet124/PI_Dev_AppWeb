@@ -31,6 +31,8 @@
 		<link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}"/>
 		<link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}"/>
 		<link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}"/>
+		{# CSS FullCalendar #}
+		<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet" />
 
 	</head>
 	<body>
@@ -118,6 +120,8 @@
 		<!-- DEMO SCRIPTS - à ne pas inclure en prod -->
 		<script src="{{ asset('assets/js/setting-demo.js') }}"></script>
 		<script src="{{ asset('assets/js/demo.js') }}"></script>
+		<!-- JS FullCalendar + dépendances -->
+		<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 		<script>
 			$("#lineChart").sparkline([
 102,

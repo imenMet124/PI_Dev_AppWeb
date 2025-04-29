@@ -26,8 +26,22 @@ final class EvenementController extends AbstractController
     #[Route('/evenement', name: 'app_evenement')]
     public function index(EvenementRepository $evenementRepository): Response
     {
+        $evenements = $evenementRepository->findAll(); // Assurez-vous que cette méthode existe dans votre repository
+        $events = [];
+
+        foreach ($evenements as $evenement) {
+            $events[] = [
+                'title' => $evenement->getNomEvenement(),
+                'date' => $evenement->getDate()->format('Y-m-d'),
+                'heure'=> $evenement->getHeure()->format('H:i:s'),
+                'capacite' => $evenement->getCapacite(),
+                'nombre_participants' => $evenement->getNombreParticipants(),   
+                'url'   => $this->generateUrl('app_evenement_show', ['id' => $evenement->getId()]),
+            ];
+        }
         return $this->render('evenement/index.html.twig', [
-            'evenements' => $evenementRepository->findAll(),
+            'evenements' => $evenements,
+            'calendarEvents' => json_encode($events),
         ]);
     }
 
