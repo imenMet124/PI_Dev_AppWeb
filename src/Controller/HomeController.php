@@ -12,7 +12,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Candidat;
 use App\Form\CandidatType;
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 final class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
