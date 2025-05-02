@@ -1,0 +1,475 @@
+{% extends 'Back_Base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .loading-container {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .loading-animation {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+        }
+        
+        .loading-animation .circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 8px solid transparent;
+            border-top-color: var(--bs-primary);
+            border-radius: 50%;
+            animation: spin 2s linear infinite;
+        }
+        
+        .loading-animation .circle:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .loading-animation .circle:nth-child(2) {
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+            border-top-color: var(--bs-info);
+            animation-delay: -0.5s;
+        }
+        
+        .loading-animation .circle:nth-child(3) {
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+            border-top-color: var(--bs-warning);
+            animation-delay: -1s;
+        }
+        
+        .loading-animation .quiz-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            color: var(--bs-primary);
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-progress {
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1.5rem auto;
+            max-width: 300px;
+        }
+        
+        .loading-progress .progress-bar {
+            background: linear-gradient(90deg, var(--bs-primary), var(--bs-info));
+            background-size: 200% 100%;
+            animation: gradient-move 2s ease infinite;
+        }
+        
+        @keyframes gradient-move {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .loading-message {
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+        
+        .loading-description {
+            color: var(--bs-gray-600);
+            max-width: 400px;
+            margin: 0.5rem auto;
+        }
+        
+        .progress-text {
+            font-size: 0.85rem;
+            color: var(--bs-gray-600);
+            margin-bottom: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<!-- Page Header -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h2 class="fw-bold mb-2">Générer un Quiz avec l'IA</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_back') }}">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_quiz_index') }}">Quiz</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Générer un Quiz</li>
+            </ol>
+        </nav>
+    </div>
+    <div>
+        <a href="{{ path('app_quiz_index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i> Retour à la liste
+        </a>
+    </div>
+</div>
+
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endfor %}
+
+<div class="row">
+    <!-- Left Column: Form -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-transparent border-0 pt-4 pb-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">Options de génération</h5>
+                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+                        <i class="fas fa-robot me-1"></i> IA
+                    </span>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                {{ form_start(form, {'attr': {'id': 'quiz-generator-form'}}) }}
+
+                <div class="form-group mb-4">
+                    {{ form_label(form.title) }}
+                    {{ form_widget(form.title) }}
+                    <div class="text-danger">
+                        {{ form_errors(form.title) }}
+                    </div>
+                </div>
+
+                <div class="form-group mb-4">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description) }}
+                    <div class="text-danger">
+                        {{ form_errors(form.description) }}
+                    </div>
+                    <div class="form-text">
+                        Ajoutez une description pour aider l'IA à générer un quiz plus pertinent.
+                    </div>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="{{ form.numQuestions.vars.id }}" class="form-label d-flex justify-content-between">
+                        <span>{{ form.numQuestions.vars.label }}</span>
+                        <span class="badge bg-light text-dark" id="numQuestionsValue">5</span>
+                    </label>
+                    <div class="range-slider">
+                        {{ form_widget(form.numQuestions) }}
+                    </div>
+                    <div class="text-danger">
+                        {{ form_errors(form.numQuestions) }}
+                    </div>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="{{ form.numOptions.vars.id }}" class="form-label d-flex justify-content-between">
+                        <span>{{ form.numOptions.vars.label }}</span>
+                        <span class="badge bg-light text-dark" id="numOptionsValue">4</span>
+                    </label>
+                    <div class="range-slider">
+                        {{ form_widget(form.numOptions) }}
+                    </div>
+                    <div class="text-danger">
+                        {{ form_errors(form.numOptions) }}
+                    </div>
+                </div>
+
+                <div class="form-group mb-4">
+                    {{ form_label(form.difficulty) }}
+                    {{ form_widget(form.difficulty) }}
+                    <div class="text-danger">
+                        {{ form_errors(form.difficulty) }}
+                    </div>
+                </div>
+
+                <div class="form-group mb-4">
+                    {{ form_label(form.language) }}
+                    {{ form_widget(form.language) }}
+                    <div class="text-danger">
+                        {{ form_errors(form.language) }}
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary" id="generate-quiz-btn">
+                        <i class="fas fa-magic me-2"></i> Générer le Quiz
+                    </button>
+                    <button type="button" id="save-quiz-btn" class="btn btn-success" disabled>
+                        <i class="fas fa-save me-2"></i> Enregistrer le Quiz
+                    </button>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Preview -->
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-transparent border-0 pt-4 pb-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">Aperçu du Quiz</h5>
+                    <div>
+                        <button type="button" id="refresh-preview-btn" class="btn btn-sm btn-outline-primary" disabled>
+                            <i class="fas fa-sync-alt me-1"></i> Actualiser
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <div id="quiz-preview-container">
+                    <div class="text-center py-5" id="empty-state">
+                        <div class="mb-4">
+                            <i class="fas fa-lightbulb fa-4x text-warning opacity-50"></i>
+                        </div>
+                        <h4 class="text-muted">Aucun quiz généré</h4>
+                        <p class="text-muted">Configurez les options et cliquez sur "Générer le Quiz" pour créer un quiz avec l'IA.</p>
+                    </div>
+
+                    <div id="loading-state" class="loading-container d-none">
+                        <div class="loading-animation">
+                            <div class="circle"></div>
+                            <div class="circle"></div>
+                            <div class="circle"></div>
+                            <i class="fas fa-question-circle quiz-icon"></i>
+                        </div>
+                        <h4 class="loading-message">Génération en cours...</h4>
+                        <p class="loading-description">L'IA est en train de créer votre quiz. Veuillez patienter...</p>
+                        <div class="loading-progress progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <p class="progress-text mt-2">Analyse du sujet...</p>
+                    </div>
+
+                    <div id="quiz-content" class="d-none">
+                        <h3 class="mb-4" id="quiz-title"></h3>
+                        <div id="questions-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded');
+        
+        const form = document.getElementById('quiz-generator-form');
+        const generateBtn = document.getElementById('generate-quiz-btn');
+        const saveQuizBtn = document.getElementById('save-quiz-btn');
+        const emptyState = document.getElementById('empty-state');
+        const loadingState = document.getElementById('loading-state');
+        const quizContent = document.getElementById('quiz-content');
+        const progressText = document.querySelector('.progress-text');
+        
+        // Animation messages for quiz generation
+        const loadingMessages = [
+            "Analyse du sujet...",
+            "Recherche d'informations pertinentes...",
+            "Création des questions...",
+            "Génération des options de réponse...",
+            "Organisation du quiz...",
+            "Finalisation du contenu...",
+            "Presque terminé..."
+        ];
+        
+        if (form) {
+            form.addEventListener('submit', function(event) {
+                // Prevent default form submission to avoid page reload
+                event.preventDefault();
+                
+                // Show loading state
+                emptyState.classList.add('d-none');
+                quizContent.classList.add('d-none');
+                loadingState.classList.remove('d-none');
+                
+                // Disable the generate button to prevent multiple submissions
+                generateBtn.disabled = true;
+                
+                // Update progress bar with animated progression
+                const progressBar = document.querySelector('.progress-bar');
+                if (progressBar) {
+                    let width = 0;
+                    let messageIndex = 0;
+                    
+                    // Reset progress bar
+                    progressBar.style.width = '0%';
+                    
+                    // Update progress text initially
+                    if (progressText) {
+                        progressText.textContent = loadingMessages[0];
+                        progressText.style.opacity = '1';
+                    }
+                    
+                    // Progress animation
+                    const interval = setInterval(function() {
+                        if (width >= 95) {
+                            clearInterval(interval);
+                        } else {
+                            // Increase more slowly at first, then faster
+                            const increment = width < 30 ? 1 : (width < 60 ? 2 : 3);
+                            width += increment;
+                            progressBar.style.width = width + '%';
+                            
+                            // Update messages at specific progress points
+                            if (width % 15 === 0 && messageIndex < loadingMessages.length - 1) {
+                                messageIndex++;
+                                if (progressText) {
+                                    // Fade out effect for text change
+                                    progressText.style.opacity = '0';
+                                    setTimeout(() => {
+                                        progressText.textContent = loadingMessages[messageIndex];
+                                        progressText.style.opacity = '1';
+                                    }, 200);
+                                }
+                            }
+                        }
+                    }, 300);
+                }
+                
+                // Create FormData from the form
+                const formData = new FormData(form);
+                
+                // Send AJAX request
+                fetch(form.action, {
+                    method: form.method,
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // Check if the response is JSON or HTML
+                    try {
+                        const data = JSON.parse(html);
+                        // Handle JSON response (quiz data)
+                        displayQuizPreview(data);
+                    } catch (e) {
+                        // If not JSON, it's likely HTML with errors
+                        // Replace the entire page content, likely containing form errors
+                        document.open();
+                        document.write(html);
+                        document.close();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Handle errors, show alert
+                    const alertElement = document.createElement('div');
+                    alertElement.className = 'alert alert-danger alert-dismissible fade show';
+                    alertElement.role = 'alert';
+                    alertElement.innerHTML = `
+                        Une erreur s'est produite lors de la génération du quiz. Veuillez réessayer.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    `;
+                    form.parentNode.insertBefore(alertElement, form);
+                })
+                .finally(() => {
+                    // Re-enable the generate button
+                    generateBtn.disabled = false;
+                });
+            });
+        } else {
+            console.error('Form not found');
+        }
+        
+        // Function to display quiz preview
+        function displayQuizPreview(quizData) {
+            // Hide loading state
+            loadingState.classList.add('d-none');
+            
+            // Show quiz content
+            quizContent.classList.remove('d-none');
+            
+            // Set quiz title
+            const quizTitle = document.getElementById('quiz-title');
+            if (quizTitle) {
+                quizTitle.textContent = quizData.title;
+            }
+            
+            // Populate questions container
+            const questionsContainer = document.getElementById('questions-container');
+            if (questionsContainer) {
+                questionsContainer.innerHTML = '';
+                
+                quizData.questions.forEach((question, index) => {
+                    const questionElement = document.createElement('div');
+                    questionElement.className = 'card mb-4 border-0 shadow-sm';
+                    
+                    const questionHtml = `
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0 fw-bold">Question ${index + 1}</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-4">${question.text}</p>
+                            <div class="options">
+                                ${question.options.map((option, optIndex) => `
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" name="q${index}" id="q${index}_opt${optIndex}" ${option.isCorrect ? 'checked' : ''}>
+                                        <label class="form-check-label" for="q${index}_opt${optIndex}">
+                                            ${option.text}
+                                        </label>
+                                        ${option.isCorrect ? '<span class="badge bg-success ms-2"><i class="fas fa-check"></i> Correct</span>' : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                    
+                    questionElement.innerHTML = questionHtml;
+                    questionsContainer.appendChild(questionElement);
+                });
+            }
+            
+            // Enable save button
+            saveQuizBtn.disabled = false;
+        }
+        
+        // Update range sliders
+        const numQuestionsInput = document.getElementById('{{ form.numQuestions.vars.id }}');
+        const numOptionsInput = document.getElementById('{{ form.numOptions.vars.id }}');
+        const numQuestionsValue = document.getElementById('numQuestionsValue');
+        const numOptionsValue = document.getElementById('numOptionsValue');
+        
+        if (numQuestionsInput && numQuestionsValue) {
+            numQuestionsValue.textContent = numQuestionsInput.value;
+            numQuestionsInput.addEventListener('input', function() {
+                numQuestionsValue.textContent = this.value;
+            });
+        }
+        
+        if (numOptionsInput && numOptionsValue) {
+            numOptionsValue.textContent = numOptionsInput.value;
+            numOptionsInput.addEventListener('input', function() {
+                numOptionsValue.textContent = this.value;
+            });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'Back_Base.html.twig' %}
+
+{% block title %}Formations supprimées{% endblock %}
+
+{% block body %}
+<div class="container-fluid px-4 py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="h3 mb-2 fw-bold">Formations supprimées</h1>
+            <p class="text-muted">Gérez les formations qui ont été supprimées.</p>
+        </div>
+        <div class="col-auto d-flex align-items-center">
+            <a href="{{ path('app_formation_index') }}" class="btn btn-outline-primary me-2">
+                <i class="fas fa-arrow-left me-1"></i> Retour aux formations
+            </a>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold">Liste des formations supprimées</h5>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">ID</th>
+                            <th>Titre</th>
+                            <th>Description</th>
+                            <th>Date de création</th>
+                            <th>Date de suppression</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% if formations|length > 0 %}
+                        {% for formation in formations %}
+                            <tr>
+                                <td class="ps-4">{{ formation.id }}</td>
+                                <td>{{ formation.titre }}</td>
+                                <td>{{ formation.description|striptags|length > 50 ? formation.description|striptags|slice(0, 50) ~ '...' : formation.description|striptags }}</td>
+                                <td>{{ formation.dateCreation ? formation.dateCreation|date('d/m/Y H:i') : '' }}</td>
+                                <td>{{ formation.deletedAt ? formation.deletedAt|date('d/m/Y H:i') : '' }}</td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group">
+                                        <form method="post" action="{{ path('app_formation_restore', {'id': formation.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir restaurer cette formation?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('restore' ~ formation.id) }}">
+                                            <button class="btn btn-sm btn-success" type="submit" data-bs-toggle="tooltip" title="Restaurer">
+                                                <i class="fas fa-trash-restore"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <div class="d-flex flex-column align-items-center">
+                                    <i class="fas fa-trash-alt fa-3x text-muted mb-3"></i>
+                                    <h5 class="fw-bold">Aucune formation supprimée</h5>
+                                    <p class="text-muted">Il n'y a pas de formations dans la corbeille.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

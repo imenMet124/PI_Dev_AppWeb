@@ -1,0 +1,197 @@
+{% extends 'Back_Base.html.twig' %}
+
+{% block body %}
+<!-- Page Header -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h2 class="fw-bold mb-2">Modifier la Question</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_back') }}">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_question_index') }}">Questions</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Modifier</li>
+            </ol>
+        </nav>
+    </div>
+    <div>
+        <a href="{{ path('app_question_index') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+        </a>
+    </div>
+</div>
+
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endfor %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-transparent border-0 pt-4 pb-2">
+                <h5 class="mb-0 fw-bold">Modifier la question</h5>
+                <p class="text-muted mb-0">Remplissez le formulaire ci-dessous pour modifier la question</p>
+            </div>
+            <div class="card-body p-4">
+                                {{ form_start(form) }}
+                                <div class="form-group">
+                                    {{ form_label(form.text) }}
+                                    {{ form_widget(form.text) }}
+                                    <div class="text-danger">
+                                        {{ form_errors(form.text) }}
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    {{ form_label(form.quiz) }}
+                                    {{ form_widget(form.quiz) }}
+                                    <div class="text-danger">
+                                        {{ form_errors(form.quiz) }}
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <h5>Options</h5>
+                                    <p class="text-muted">Assurez-vous qu'au moins une option est marquée comme correcte.</p>
+
+                                    <div class="options-wrapper"
+                                         data-prototype="{{ form_widget(form.options.vars.prototype)|e('html_attr') }}">
+                                        {% for optionForm in form.options %}
+                                            <div class="option-item mb-3 p-3 border rounded">
+                                                <div class="row">
+                                                    <div class="col-md-9">
+                                                        {{ form_label(optionForm.text) }}
+                                                        {{ form_widget(optionForm.text) }}
+                                                        {{ form_errors(optionForm.text) }}
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-check mt-4">
+                                                            {{ form_widget(optionForm.is_correct) }}
+                                                            {{ form_label(optionForm.is_correct) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="text-end mt-2">
+                                                    <button type="button" class="btn btn-sm btn-danger remove-option-btn" data-index="{{ loop.index0 }}">
+                                                        <i class="fas fa-trash"></i> Supprimer
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    {# Hidden field for deleted options #}
+                                    <div id="deleted-options-container"></div>
+
+                                    <button type="button" class="btn btn-sm btn-success add-option-btn mt-2">
+                                        <i class="fas fa-plus"></i> Ajouter une option
+                                    </button>
+                                </div>
+
+                                <div class="form-group mt-4">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i> Enregistrer
+                                    </button>
+                                    <a href="{{ path('app_question_index') }}" class="btn btn-outline-secondary ms-2">
+                                        <i class="fas fa-times me-2"></i> Annuler
+                                    </a>
+                                </div>
+                                {{ form_end(form) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Setup for adding new options dynamically
+    const optionsWrapper = document.querySelector('.options-wrapper');
+    const addOptionBtn = document.querySelector('.add-option-btn');
+
+    if (optionsWrapper && addOptionBtn) {
+        let optionIndex = optionsWrapper.querySelectorAll('.option-item').length;
+
+        // Add event listeners to existing remove buttons
+        document.querySelectorAll('.remove-option-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const optionItem = this.closest('.option-item');
+                const index = this.getAttribute('data-index');
+
+                // Create a hidden input to mark this option for deletion
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = `question[options][${index}][_delete]`;
+                hiddenInput.value = '1';
+                document.getElementById('deleted-options-container').appendChild(hiddenInput);
+
+                // Hide the option item instead of removing it
+                optionItem.style.display = 'none';
+
+                // Show notification
+                showNotification('Option supprimée', 'warning');
+            });
+        });
+
+        addOptionBtn.addEventListener('click', function() {
+            const prototype = optionsWrapper.dataset.prototype;
+            const newForm = prototype.replace(/__name__/g, optionIndex);
+
+            const newOptionDiv = document.createElement('div');
+            newOptionDiv.className = 'option-item mb-3 p-3 border rounded shadow-sm';
+            newOptionDiv.innerHTML = newForm;
+
+            // Add a remove button
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'btn btn-sm btn-outline-danger mt-2 remove-option-btn';
+            removeBtn.innerHTML = '<i class="fas fa-trash me-1"></i> Supprimer';
+            removeBtn.addEventListener('click', function() {
+                // For newly added options, we can just remove them from the DOM
+                // since they haven't been persisted to the database yet
+                optionsWrapper.removeChild(newOptionDiv);
+
+                // Show notification
+                showNotification('Option supprimée', 'warning');
+            });
+
+            // Wrap the form elements in a row/col structure
+            const formContent = newOptionDiv.innerHTML;
+            newOptionDiv.innerHTML = `
+                <div class="row">
+                    <div class="col-md-9">
+                        ${formContent}
+                    </div>
+                    <div class="col-md-3 d-flex align-items-center">
+                        <div class="form-check">
+                            <input type="checkbox" id="option_is_correct_${optionIndex}" name="option[${optionIndex}][is_correct]" class="form-check-input">
+                            <label for="option_is_correct_${optionIndex}" class="form-check-label">Réponse correcte</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-end">
+                    ${removeBtn.outerHTML}
+                </div>
+            `;
+
+            optionsWrapper.appendChild(newOptionDiv);
+            optionIndex++;
+
+            // Show notification
+            showNotification('Nouvelle option ajoutée', 'success');
+        });
+    }
+
+    // Add animation to option items
+    const optionItems = document.querySelectorAll('.option-item');
+    optionItems.forEach((item, index) => {
+        item.style.animationDelay = `${index * 0.1}s`;
+        item.classList.add('animate__animated', 'animate__fadeIn');
+    });
+});
+</script>
+{% endblock %}

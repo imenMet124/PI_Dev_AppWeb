@@ -2,204 +2,1490 @@
 <html lang="en">
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-		<title>EasyHR</title>
+		<title>EasyHR - Admin Dashboard</title>
 		<meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport"/>
-		<link
-		rel="icon" href="{{ asset('assets/img/kaiadmin/logo_icone.ico') }}" type="image/x-icon"/>
 
-		<!-- Fonts and icons -->
-		<script src="{{ asset('assets/js/plugin/webfont/webfont.min.js') }}"></script>
-		  <script>
-        WebFont.load({
-            google: {
-                families: ["Public Sans:300,400,500,600,700"]
-            },
-            custom: {
-                families: [
-                    "Font Awesome 5 Solid", "Font Awesome 5 Regular",
-                    "Font Awesome 5 Brands", "simple-line-icons"
-                ],
-                urls: ["{{ asset('assets/css/fonts.min.css') }}"]
-            },
-            active: function () {
-                sessionStorage.fonts = true;
+		<!-- Bootstrap CSS (CDN) -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+		<!-- Font Awesome (Direct CDN) -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+		<!-- Google Fonts -->
+		<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+		<style>
+			/* Basic styling */
+			body {
+				font-family: 'Public Sans', sans-serif;
+				background-color: #f8f9fa;
+				color: #333;
+			}
+
+			/* Sidebar styling */
+			.sidebar {
+				background-color: #2c3e50;
+				color: white;
+				min-height: 100vh;
+				width: 250px;
+				position: fixed;
+				left: 0;
+				top: 0;
+				z-index: 100;
+				transition: all 0.3s;
+			}
+
+			.sidebar-content {
+				padding: 20px;
+			}
+
+			.sidebar .nav-item {
+				margin-bottom: 5px;
+			}
+
+			.sidebar .nav-link {
+				color: rgba(255, 255, 255, 0.8);
+				padding: 10px 15px;
+				border-radius: 5px;
+				transition: all 0.3s;
+			}
+
+			.sidebar .nav-link:hover,
+			.sidebar .nav-link.active {
+				background-color: rgba(255, 255, 255, 0.1);
+				color: white;
+			}
+
+			.sidebar .nav-link i {
+				margin-right: 10px;
+			}
+
+			/* Main content area */
+			.main-panel {
+				margin-left: 250px;
+				padding: 20px;
+				transition: all 0.3s;
+			}
+
+			/* Form styling */
+			.form-control {
+				border-radius: 8px;
+				padding: 0.6rem 1rem;
+				border: 1px solid #e2e8f0;
+				font-size: 0.95rem;
+				transition: all 0.2s ease;
+			}
+
+			.form-control:focus {
+				border-color: #355EFC;
+				box-shadow: 0 0 0 3px rgba(53, 94, 252, 0.15);
+			}
+
+			.form-label {
+				font-weight: 500;
+				margin-bottom: 0.5rem;
+				color: #1e293b;
+			}
+
+			.form-group {
+				margin-bottom: 1.5rem;
+				position: relative;
+			}
+
+			/* Custom validation styles */
+			.invalid-feedback {
+				display: none;
+				width: 100%;
+				margin-top: 0.25rem;
+				font-size: 0.875em;
+				color: #ef4444;
+			}
+
+			.was-validated .form-control:invalid,
+			.form-control.is-invalid {
+				border-color: #ef4444;
+				padding-right: calc(1.5em + 0.75rem);
+				background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23ef4444'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23ef4444' stroke='none'/%3e%3c/svg%3e");
+				background-repeat: no-repeat;
+				background-position: right calc(0.375em + 0.1875rem) center;
+				background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+			}
+
+			.was-validated .form-control:invalid:focus,
+			.form-control.is-invalid:focus {
+				border-color: #ef4444;
+				box-shadow: 0 0 0 0.25rem rgba(239, 68, 68, 0.25);
+			}
+
+			.was-validated .form-control:valid,
+			.form-control.is-valid {
+				border-color: #10b981;
+				padding-right: calc(1.5em + 0.75rem);
+				background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2310b981' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+				background-repeat: no-repeat;
+				background-position: right calc(0.375em + 0.1875rem) center;
+				background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+			}
+
+			.was-validated .form-control:valid:focus,
+			.form-control.is-valid:focus {
+				border-color: #10b981;
+				box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.25);
+			}
+
+			/* Mobile responsiveness */
+			@media (max-width: 768px) {
+				.sidebar {
+					transform: translateX(-100%);
+				}
+
+				.sidebar.show {
+					transform: translateX(0);
+				}
+
+				.main-panel {
+					margin-left: 0;
+				}
+
+				.mobile-header {
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					padding: 15px;
+					background-color: white;
+					box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+				}
+			}
+		</style>
+
+        <!-- Custom Admin Dashboard CSS -->
+        <style>
+            /* General improvements */
+            body {
+                font-family: 'Public Sans', sans-serif;
+                background-color: #f8fafc;
+                color: #333;
+                line-height: 1.6;
             }
-        });
-    </script
 
-		<!-- CSS Files -->
-		<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}"/>
-		<link rel="stylesheet" href="{{ asset('assets/css/plugins.min.css') }}"/>
-		<link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}"/>
-		<link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}"/>
+            /* Typography */
+            h1, h2, h3, h4, h5, h6 {
+                font-weight: 600;
+                color: #1e293b;
+                margin-bottom: 0.75rem;
+            }
 
+            p {
+                margin-bottom: 1rem;
+                color: #64748b;
+            }
+
+            /* Card improvements */
+            .card {
+                border: none;
+                border-radius: 12px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+                margin-bottom: 1.5rem;
+                transition: all 0.2s ease;
+                overflow: hidden;
+            }
+
+            .card:hover {
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 15px rgba(0, 0, 0, 0.1);
+                transform: translateY(-2px);
+            }
+
+            .card-header {
+                background-color: #fff;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                padding: 1.25rem 1.5rem;
+                border-top-left-radius: 12px !important;
+                border-top-right-radius: 12px !important;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .card-body {
+                padding: 1.5rem;
+            }
+
+            /* Button improvements */
+            .btn {
+                border-radius: 8px;
+                padding: 0.6rem 1.2rem;
+                font-weight: 500;
+                transition: all 0.2s ease;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            }
+
+            .btn:active {
+                transform: translateY(1px);
+            }
+
+            /* Table action buttons */
+            .btn-sm {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.875rem;
+                border-radius: 6px;
+            }
+
+            /* Ensure all action buttons have icons */
+            .btn i {
+                display: inline-flex !important;
+                align-items: center;
+                justify-content: center;
+                font-style: normal;
+            }
+
+            /* Fix for Font Awesome icons */
+            .fas, .far, .fab, .fa {
+                font-family: "Font Awesome 5 Free", "Font Awesome 5 Brands" !important;
+                font-weight: 900;
+                display: inline-flex !important;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* Button variants */
+            .btn-primary {
+                background-color: #355EFC;
+                border-color: #355EFC;
+                color: white;
+            }
+
+            .btn-primary:hover {
+                background-color: #2a4cd9;
+                border-color: #2a4cd9;
+            }
+
+            .btn-success {
+                background-color: #10b981;
+                border-color: #10b981;
+                color: white;
+            }
+
+            .btn-success:hover {
+                background-color: #0ea271;
+                border-color: #0ea271;
+            }
+
+            .btn-danger {
+                background-color: #ef4444;
+                border-color: #ef4444;
+                color: white;
+            }
+
+            .btn-danger:hover {
+                background-color: #dc2626;
+                border-color: #dc2626;
+            }
+
+            .btn-warning {
+                background-color: #f59e0b;
+                border-color: #f59e0b;
+                color: white;
+            }
+
+            .btn-warning:hover {
+                background-color: #d97706;
+                border-color: #d97706;
+            }
+
+            .btn-info {
+                background-color: #3b82f6;
+                border-color: #3b82f6;
+                color: white;
+            }
+
+            .btn-info:hover {
+                background-color: #2563eb;
+                border-color: #2563eb;
+            }
+
+            .btn-outline-primary {
+                color: #355EFC;
+                border-color: #355EFC;
+            }
+
+            .btn-outline-primary:hover {
+                background-color: #355EFC;
+                color: white;
+            }
+
+            .btn-outline-info {
+                color: #3b82f6;
+                border-color: #3b82f6;
+            }
+
+            .btn-outline-info:hover {
+                background-color: #3b82f6;
+                color: white;
+            }
+
+            .btn-outline-warning {
+                color: #f59e0b;
+                border-color: #f59e0b;
+            }
+
+            .btn-outline-warning:hover {
+                background-color: #f59e0b;
+                color: white;
+            }
+
+            .btn-outline-danger {
+                color: #ef4444;
+                border-color: #ef4444;
+            }
+
+            .btn-outline-danger:hover {
+                background-color: #ef4444;
+                color: white;
+            }
+
+            /* Table improvements */
+            .table {
+                margin-bottom: 0;
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+            }
+
+            .table th {
+                font-weight: 600;
+                color: #1e293b;
+                border-top: none;
+                background-color: #f1f5f9;
+                padding: 0.75rem 1rem;
+                text-transform: uppercase;
+                font-size: 0.75rem;
+                letter-spacing: 0.05em;
+            }
+
+            .table td {
+                padding: 1rem;
+                vertical-align: middle;
+                border-top: 1px solid #e2e8f0;
+                color: #475569;
+            }
+
+            .table-hover tbody tr:hover {
+                background-color: #f8fafc;
+            }
+
+            .table-responsive {
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            }
+
+            /* Form improvements */
+            .form-control {
+                border-radius: 8px;
+                padding: 0.6rem 1rem;
+                border: 1px solid #e2e8f0;
+                font-size: 0.95rem;
+                transition: all 0.2s ease;
+            }
+
+            .form-control:focus {
+                border-color: #355EFC;
+                box-shadow: 0 0 0 3px rgba(53, 94, 252, 0.15);
+            }
+
+            .form-label {
+                font-weight: 500;
+                margin-bottom: 0.5rem;
+                color: #1e293b;
+            }
+
+            .form-group {
+                margin-bottom: 1.5rem;
+                position: relative;
+            }
+
+            /* Custom validation styles */
+            .invalid-feedback {
+                display: none;
+                width: 100%;
+                margin-top: 0.25rem;
+                font-size: 0.875em;
+                color: #ef4444;
+            }
+
+            .was-validated .form-control:invalid,
+            .form-control.is-invalid {
+                border-color: #ef4444;
+                padding-right: calc(1.5em + 0.75rem);
+                background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23ef4444'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23ef4444' stroke='none'/%3e%3c/svg%3e");
+                background-repeat: no-repeat;
+                background-position: right calc(0.375em + 0.1875rem) center;
+                background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+            }
+
+            .was-validated .form-control:invalid:focus,
+            .form-control.is-invalid:focus {
+                border-color: #ef4444;
+                box-shadow: 0 0 0 0.25rem rgba(239, 68, 68, 0.25);
+            }
+
+            .was-validated .form-control:valid,
+            .form-control.is-valid {
+                border-color: #10b981;
+                padding-right: calc(1.5em + 0.75rem);
+                background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2310b981' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+                background-repeat: no-repeat;
+                background-position: right calc(0.375em + 0.1875rem) center;
+                background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+            }
+
+            .was-validated .form-control:valid:focus,
+            .form-control.is-valid:focus {
+                border-color: #10b981;
+                box-shadow: 0 0 0 0.25rem rgba(16, 185, 129, 0.25);
+            }
+
+            /* Alert improvements */
+            .alert {
+                border-radius: 8px;
+                padding: 1rem 1.25rem;
+                margin-bottom: 1.5rem;
+                border: none;
+                display: flex;
+                align-items: center;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            }
+
+            .alert-success {
+                background-color: #ecfdf5;
+                color: #065f46;
+            }
+
+            .alert-danger {
+                background-color: #fef2f2;
+                color: #b91c1c;
+            }
+
+            .alert-warning {
+                background-color: #fffbeb;
+                color: #92400e;
+            }
+
+            .alert-info {
+                background-color: #eff6ff;
+                color: #1e40af;
+            }
+
+            .alert-dismissible .btn-close {
+                padding: 1.25rem;
+                color: inherit;
+            }
+
+            /* Sidebar improvements */
+            .sidebar {
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 260px;
+                height: 100%;
+                z-index: 1000;
+                background-color: #1e293b;
+                transition: all 0.3s ease;
+                overflow-y: auto;
+            }
+
+            /* Main panel adjustments to account for sidebar */
+            .main-panel {
+                margin-left: 260px !important; /* Match sidebar width */
+                width: calc(100% - 260px) !important;
+                transition: all 0.3s ease;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .content {
+                flex: 1;
+                padding: 2rem 2rem 1rem 2rem !important;
+            }
+
+            /* Sidebar navigation */
+            .sidebar .nav {
+                margin-top: 1rem;
+            }
+
+            .sidebar .nav-item {
+                margin-bottom: 0.5rem;
+                width: 100%;
+            }
+
+            .sidebar .nav-item a {
+                padding: 0.875rem 1.5rem;
+                color: #e2e8f0;
+                border-radius: 8px;
+                transition: all 0.2s ease;
+                display: flex;
+                align-items: center;
+                margin: 0 0.75rem;
+                text-decoration: none;
+                white-space: nowrap;
+            }
+
+            .sidebar .nav-item:hover a {
+                background-color: rgba(255, 255, 255, 0.1);
+                color: #ffffff;
+            }
+
+            .sidebar .nav-item.active a {
+                background-color: #355EFC;
+                color: #fff;
+                box-shadow: 0 4px 6px rgba(53, 94, 252, 0.25);
+            }
+
+            .sidebar .nav-item a i {
+                margin-right: 12px;
+                font-size: 1.1rem;
+                opacity: 0.8;
+                width: 20px;
+                text-align: center;
+            }
+
+            .sidebar .nav-item a p {
+                margin: 0;
+                font-weight: 500;
+                color: inherit;
+            }
+
+            .sidebar-content {
+                padding: 1rem 0.75rem;
+            }
+
+            .sidebar-logo {
+                padding: 1rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .logo-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            .logo-header .logo {
+                display: flex;
+                align-items: center;
+            }
+
+            .logo-header .logo img {
+                height: 40px;
+                max-width: 100%;
+            }
+
+            .nav-toggle {
+                display: none;
+            }
+
+            .nav-toggle .btn-toggle {
+                background: transparent;
+                border: none;
+                color: #fff;
+                font-size: 1.25rem;
+                cursor: pointer;
+                padding: 0.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .user-profile {
+                padding: 1.5rem;
+                margin-bottom: 1rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                text-align: center;
+            }
+
+            .user-profile img {
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                margin-bottom: 1rem;
+                border: 3px solid rgba(255, 255, 255, 0.2);
+                object-fit: cover;
+            }
+
+            .user-profile h5 {
+                color: #fff;
+                margin-bottom: 0.25rem;
+                font-weight: 600;
+            }
+
+            .user-profile p {
+                color: rgba(255, 255, 255, 0.7);
+                font-size: 0.85rem;
+                margin-bottom: 0;
+            }
+
+            /* Sidebar overlay for mobile */
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+                display: none;
+                transition: all 0.3s ease;
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+
+            /* Body class when sidebar is open on mobile */
+            body.sidebar-open {
+                overflow: hidden;
+            }
+
+            /* Footer */
+            .footer {
+                padding: 1.5rem 2rem;
+                background-color: #fff;
+                border-top: 1px solid rgba(0, 0, 0, 0.05);
+            }
+
+            /* Breadcrumb */
+            .breadcrumb {
+                background-color: transparent;
+                padding: 0;
+                margin-bottom: 1rem;
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+
+            .breadcrumb-item {
+                display: flex;
+                align-items: center;
+                font-size: 0.875rem;
+                color: #64748b;
+            }
+
+            .breadcrumb-item a {
+                color: #64748b;
+                text-decoration: none;
+            }
+
+            .breadcrumb-item a:hover {
+                color: #355EFC;
+                text-decoration: none;
+            }
+
+            .breadcrumb-item + .breadcrumb-item::before {
+                content: "/";
+                color: #94a3b8;
+                padding: 0 0.5rem;
+            }
+
+            .breadcrumb-item.active {
+                color: #355EFC;
+                font-weight: 500;
+            }
+
+            /* Badges */
+            .badge {
+                padding: 0.35em 0.65em;
+                font-weight: 500;
+                border-radius: 6px;
+                font-size: 0.75em;
+            }
+
+            /* Responsive adjustments */
+            @media (max-width: 991.98px) {
+                .sidebar {
+                    transform: translateX(-100%);
+                    width: 260px;
+                }
+
+                .sidebar.show {
+                    transform: translateX(0);
+                }
+
+                .sidebar.mobile {
+                    box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+                }
+
+                .main-panel {
+                    margin-left: 0 !important;
+                    width: 100% !important;
+                }
+
+                .content {
+                    padding: 1.5rem 1.5rem 1rem 1.5rem !important;
+                }
+
+                .nav-toggle {
+                    display: flex !important;
+                    align-items: center;
+                }
+
+                .topbar-toggler {
+                    display: none !important;
+                }
+
+                /* Add a mobile header with toggle button */
+                .mobile-header {
+                    display: flex !important;
+                    align-items: center;
+                    padding: 1rem;
+                    background-color: #fff;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+                    position: sticky;
+                    top: 0;
+                    z-index: 990;
+                }
+
+                .mobile-header .toggle-button {
+                    background: transparent;
+                    border: none;
+                    font-size: 1.25rem;
+                    margin-right: 1rem;
+                    cursor: pointer;
+                    color: #1e293b;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 8px;
+                }
+
+                .mobile-header .toggle-button:hover {
+                    background-color: #f8fafc;
+                }
+
+                .mobile-header .logo img {
+                    height: 40px;
+                }
+            }
+
+            @media (max-width: 767.98px) {
+                .card-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 1rem;
+                }
+
+                .row [class*="col-"] {
+                    margin-bottom: 1rem;
+                }
+
+                .sidebar {
+                    width: 240px;
+                }
+
+                .sidebar-logo {
+                    padding: 0.75rem;
+                }
+
+                .user-profile {
+                    padding: 1rem;
+                }
+
+                .user-profile img {
+                    width: 60px;
+                    height: 60px;
+                }
+
+                .sidebar .nav-item a {
+                    padding: 0.75rem 1rem;
+                    margin: 0 0.5rem;
+                }
+            }
+
+            @media (min-width: 992px) {
+                .mobile-header {
+                    display: none !important;
+                }
+            }
+
+            /* Utilities */
+            .shadow-sm {
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+            }
+
+            .rounded-circle {
+                border-radius: 50% !important;
+            }
+
+            .bg-opacity-10 {
+                --bs-bg-opacity: 0.1;
+            }
+
+            /* Toast notifications */
+            .toast-container {
+                position: fixed;
+                top: 1rem;
+                right: 1rem;
+                z-index: 1060;
+            }
+
+            .toast {
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+                overflow: hidden;
+                margin-bottom: 0.75rem;
+                width: 350px;
+                max-width: 100%;
+                font-size: 0.875rem;
+                backdrop-filter: blur(10px);
+                border: none;
+                opacity: 1;
+            }
+
+            .toast.bg-success {
+                background-color: #10b981 !important;
+                color: white;
+            }
+
+            .toast.bg-danger {
+                background-color: #ef4444 !important;
+                color: white;
+            }
+
+            .toast.bg-warning {
+                background-color: #f59e0b !important;
+                color: white;
+            }
+
+            .toast.bg-info {
+                background-color: #3b82f6 !important;
+                color: white;
+            }
+
+            .toast-header {
+                display: flex;
+                align-items: center;
+                padding: 0.75rem 1rem;
+                background-color: rgba(255, 255, 255, 0.1);
+                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            }
+
+            .toast-body {
+                padding: 1rem;
+            }
+
+            /* Dropdown improvements */
+            .dropdown-menu {
+                border: none;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+                padding: 0.5rem;
+            }
+
+            .dropdown-item {
+                border-radius: 6px;
+                padding: 0.5rem 1rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                transition: all 0.2s ease;
+            }
+
+            .dropdown-item:hover {
+                background-color: #f1f5f9;
+            }
+
+            .dropdown-item i {
+                font-size: 1rem;
+                opacity: 0.8;
+            }
+        </style>
 	</head>
 	<body>
 		<!-- Sidebar -->
 		<div class="sidebar" data-background-color="dark">
-			<div
-				class="sidebar-logo">
+			<div class="sidebar-logo">
 				<!-- Logo Header -->
 				<div class="logo-header" data-background-color="dark">
 					<a href="{{ path('app_back') }}" class="logo">
-						<img src="{{ asset('assets/img/kaiadmin/logos.svg') }}" alt="navbar brand" class="navbar-brand" height="80"/>
+						<span class="navbar-brand text-white">EasyHR</span>
 					</a>
 					<div class="nav-toggle">
 						<button class="btn btn-toggle toggle-sidebar">
-							<i class="gg-menu-right"></i>
-						</button>
-						<button class="btn btn-toggle sidenav-toggler">
-							<i class="gg-menu-left"></i>
+							<i class="fas fa-times"></i>
 						</button>
 					</div>
-					<button class="topbar-toggler more">
-						<i class="gg-more-vertical-alt"></i>
-					</button>
 				</div>
-
 				<!-- End Logo Header -->
 			</div>
-			<div class="sidebar-wrapper scrollbar scrollbar-inner">
+			<div class="sidebar-wrapper">
 				<div class="sidebar-content">
+					<!-- User Profile -->
+					<div class="user-profile">
+						<div class="bg-primary rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+							<i class="fas fa-user-circle text-white" style="font-size: 40px;"></i>
+						</div>
+						<h5>Admin User</h5>
+						<p>Administrator</p>
+					</div>
+
 					<ul class="nav nav-secondary">
-						<li class="nav-item active">
-							<a href="{{ path('app_back') }}" aria-expanded="false">
+						<li class="nav-item {{ app.request.get('_route') == 'app_back' ? 'active' : '' }}">
+							<a href="{{ path('app_back') }}">
 								<i class="fas fa-home"></i>
 								<p>Dashboard</p>
 							</a>
 						</li>
 
-						<li class="nav-item">
-							<a href="{{ path('app_back_evenement') }}">
-								<i class="fas fa-th-list"></i>
-								<p>Evenements</p>
+						<li class="nav-item {{ app.request.get('_route') starts with 'app_formation' ? 'active' : '' }}">
+							<a href="{{ path('app_formation_index') }}">
+								<i class="fas fa-graduation-cap"></i>
+								<p>Formations</p>
 							</a>
 						</li>
-						
+
+						<li class="nav-item {{ app.request.get('_route') starts with 'app_quiz' ? 'active' : '' }}">
+							<a href="{{ path('app_quiz_index') }}">
+								<i class="fas fa-question-circle"></i>
+								<p>Quiz</p>
+							</a>
+						</li>
+
+						<li class="nav-item {{ app.request.get('_route') starts with 'app_question' ? 'active' : '' }}">
+							<a href="{{ path('app_question_index') }}">
+								<i class="fas fa-list-ol"></i>
+								<p>Questions</p>
+							</a>
+						</li>
+
+						<li class="nav-item {{ app.request.get('_route') starts with 'app_option' ? 'active' : '' }}">
+							<a href="{{ path('app_option_index') }}">
+								<i class="fas fa-check-square"></i>
+								<p>Options</p>
+							</a>
+						</li>
 					</ul>
 				</div>
 			</div>
 		</div>
 		<!-- End Sidebar -->
 
-		{% block body %}{% endblock %}
-		<!--   Core JS Files   -->
-		<script src="{{ asset('assets/js/core/jquery-3.7.1.min.js') }}"></script>
-		<script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
-		<script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
+		<!-- Main Content Wrapper -->
+		<div class="wrapper">
+			<!-- Mobile Header (visible only on mobile) -->
+			<div class="mobile-header">
+				<button class="toggle-button toggle-sidebar">
+					<i class="fas fa-bars"></i>
+				</button>
+				<a href="{{ path('app_back') }}" class="logo">
+					<span class="text-primary fw-bold">EasyHR</span>
+				</a>
+			</div>
 
-		<!-- jQuery Scrollbar -->
-		<script src="{{ asset('assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js') }}"></script>
+			<div class="main-panel">
+				<!-- Main Content Area -->
+				<div class="content">
+					<!-- Alert Container for Dynamic Alerts -->
+					<div id="alert-container" class="container-fluid mt-3 ps-3 pe-4">
+						{% for label, messages in app.flashes %}
+							{% for message in messages %}
+								<div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+									{{ message }}
+									<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+								</div>
+							{% endfor %}
+						{% endfor %}
+					</div>
 
-		<!-- Chart JS -->
-		<script src="{{ asset('assets/js/plugin/chart.js/chart.min.js') }}"></script>
+					<!-- Main Content Block -->
+					<div class="container-fluid ps-3 pe-4">
+						{% block body %}{% endblock %}
+					</div>
+				</div>
 
-		<!-- jQuery Sparkline -->
-		<script src="{{ asset('assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js') }}"></script>
-
-		<!-- Chart Circle -->
-		<script src="{{ asset('assets/js/plugin/chart-circle/circles.min.js') }}"></script>
-
-		<!-- Datatables -->
-		<script src="{{ asset('assets/js/plugin/datatables/datatables.min.js') }}"></script>
-
-		<!-- Bootstrap Notify -->
-		<script src="{{ asset('assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js') }}"></script>
-
-		<!-- jQuery Vector Maps -->
-		<script src="{{ asset('assets/js/plugin/jsvectormap/jsvectormap.min.js') }}"></script>
-		<script src="{{ asset('assets/js/plugin/jsvectormap/world.js') }}"></script>
-
-		<!-- Sweet Alert -->
-		<script src="{{ asset('assets/js/plugin/sweetalert/sweetalert.min.js') }}"></script>
-
-		<!-- Kaiadmin JS -->
-		<script src="{{ asset('assets/js/kaiadmin.min.js') }}"></script>
-
-		<!-- DEMO SCRIPTS - à ne pas inclure en prod -->
-		<script src="{{ asset('assets/js/setting-demo.js') }}"></script>
-		<script src="{{ asset('assets/js/demo.js') }}"></script>
-		<script>
-			$("#lineChart").sparkline([
-102,
-109,
-120,
-99,
-110,
-105,
-115
-], {
-type: "line",
-height: "70",
-width: "100%",
-lineWidth: "2",
-lineColor: "#177dff",
-fillColor: "rgba(23, 125, 255, 0.14)"
-});
-
-$("#lineChart2").sparkline([
-99,
-125,
-122,
-105,
-110,
-124,
-115
-], {
-type: "line",
-height: "70",
-width: "100%",
-lineWidth: "2",
-lineColor: "#f3545d",
-fillColor: "rgba(243, 84, 93, .14)"
-});
-
-$("#lineChart3").sparkline([
-105,
-103,
-123,
-100,
-95,
-105,
-115
-], {
-type: "line",
-height: "70",
-width: "100%",
-lineWidth: "2",
-lineColor: "#ffa534",
-fillColor: "rgba(255, 165, 52, .14)"
-});
-		</script>
-		{# <footer class="footer">
-					<div class="container-fluid d-flex justify-content-between">
-						<nav class="pull-left">
-							<ul class="nav">
-								<li class="nav-item">
-									<a class="nav-link" >
-										DevLand
-									</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link" href="#">
-										Help
-									</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link" href="#">
-										Licenses
-									</a>
-								</li>
-							</ul>
-						</nav>
-						<div class="copyright">
-							2025, made by DevLand
-						</div>
-						<div>
-							Distributed by
-							<a target="_blank" >DevLand</a>.
+				<!-- Footer -->
+				<footer class="footer">
+					<div class="container-fluid ps-3 pe-4">
+						<div class="row mx-0">
+							<div class="col-md-6">
+								<p class="mb-0">© 2024 EasyHR. All rights reserved.</p>
+							</div>
+							<div class="col-md-6 text-md-end">
+								<ul class="list-inline mb-0">
+									<li class="list-inline-item"><a href="#">Privacy Policy</a></li>
+									<li class="list-inline-item"><a href="#">Terms of Use</a></li>
+									<li class="list-inline-item"><a href="#">Support</a></li>
+								</ul>
+							</div>
 						</div>
 					</div>
-				</footer> #}
+				</footer>
+			</div>
+		</div>
+
+		<!-- Core JS Files (CDN) -->
+		<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+		<!-- Sweet Alert (CDN) -->
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+		<!-- Custom Admin Dashboard JS -->
+		<script>
+			// Initialize DataTables
+			$(document).ready(function() {
+				// Initialize DataTables if available
+				if ($.fn.DataTable) {
+					$('.datatable').DataTable({
+						responsive: true,
+						language: {
+							search: "_INPUT_",
+							searchPlaceholder: "Rechercher...",
+							lengthMenu: "Afficher _MENU_ éléments par page",
+							info: "Affichage de _START_ à _END_ sur _TOTAL_ éléments",
+							infoEmpty: "Aucun élément à afficher",
+							infoFiltered: "(filtré à partir de _MAX_ éléments au total)",
+							paginate: {
+								first: "Premier",
+								last: "Dernier",
+								next: "Suivant",
+								previous: "Précédent"
+							}
+						}
+					});
+				}
+
+				// Auto-dismiss alerts after 5 seconds
+				setTimeout(function() {
+					$('.alert').alert('close');
+				}, 5000);
+
+				// Initialize tooltips (Bootstrap 5 way)
+				initTooltips();
+
+				// Initialize form validation for all forms
+				initFormValidation();
+
+				// Initialize delete buttons
+				initDeleteButtons();
+
+				// Sparkline charts (if needed)
+				initSparklineCharts();
+			});
+
+			// Initialize tooltips
+			function initTooltips() {
+				const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+				tooltipTriggerList.map(function(tooltipTriggerEl) {
+					return new bootstrap.Tooltip(tooltipTriggerEl, {
+						delay: { show: 100, hide: 100 }
+					});
+				});
+
+				// For backward compatibility
+				$('[data-toggle="tooltip"]').tooltip();
+			}
+
+			// Initialize sparkline charts
+			function initSparklineCharts() {
+				if ($("#lineChart").length > 0 && $.fn.sparkline) {
+					$("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
+						type: "line",
+						height: "70",
+						width: "100%",
+						lineWidth: "2",
+						lineColor: "#355EFC",
+						fillColor: "rgba(53, 94, 252, 0.14)"
+					});
+				}
+
+				if ($("#lineChart2").length > 0 && $.fn.sparkline) {
+					$("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
+						type: "line",
+						height: "70",
+						width: "100%",
+						lineWidth: "2",
+						lineColor: "#3b82f6",
+						fillColor: "rgba(59, 130, 246, 0.14)"
+					});
+				}
+
+				if ($("#lineChart3").length > 0 && $.fn.sparkline) {
+					$("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
+						type: "line",
+						height: "70",
+						width: "100%",
+						lineWidth: "2",
+						lineColor: "#10b981",
+						fillColor: "rgba(16, 185, 129, 0.14)"
+					});
+				}
+			}
+
+			// Initialize form validation for all forms
+			function initFormValidation() {
+				// Get all forms
+				const forms = document.querySelectorAll('form');
+
+				// Loop over them and prevent submission if validation fails
+				Array.from(forms).forEach(form => {
+					// Disable HTML5 default validation
+					form.setAttribute('novalidate', 'novalidate');
+
+					form.addEventListener('submit', event => {
+						if (!validateForm(form)) {
+							event.preventDefault();
+							event.stopPropagation();
+							showToast('Veuillez corriger les erreurs dans le formulaire', 'danger');
+						}
+					}, false);
+
+					// Add validation on input change
+					const inputs = form.querySelectorAll('input, select, textarea');
+					inputs.forEach(input => {
+						// Add initial validation message for required fields
+						if (input.hasAttribute('required')) {
+							// Create validation message container if it doesn't exist
+							let feedbackElement = input.nextElementSibling;
+							if (!feedbackElement || !feedbackElement.classList.contains('invalid-feedback')) {
+								feedbackElement = document.createElement('div');
+								feedbackElement.className = 'invalid-feedback';
+								feedbackElement.style.display = 'none';
+								feedbackElement.textContent = 'Ce champ est requis';
+								input.parentNode.insertBefore(feedbackElement, input.nextElementSibling);
+							}
+
+							// Add event listener to show validation message on invalid attempt
+							input.addEventListener('invalid', (e) => {
+								e.preventDefault();
+								input.classList.add('is-invalid');
+								feedbackElement.style.display = 'block';
+							});
+						}
+
+						// Add validation on input change
+						input.addEventListener('change', () => {
+							validateInput(input);
+						});
+						input.addEventListener('blur', () => {
+							validateInput(input);
+						});
+						input.addEventListener('input', () => {
+							if (input.classList.contains('is-invalid')) {
+								validateInput(input);
+							}
+						});
+					});
+				});
+			}
+
+			// Initialize delete buttons
+			function initDeleteButtons() {
+				// Find all delete buttons with data attributes
+				const deleteButtons = document.querySelectorAll('[data-delete-url]');
+				deleteButtons.forEach(button => {
+					button.addEventListener('click', function(e) {
+						e.preventDefault();
+						const url = this.getAttribute('data-delete-url');
+						const token = this.getAttribute('data-delete-token');
+						const entityName = this.getAttribute('data-entity-name') || 'Élément';
+						confirmDelete(url, token, entityName);
+					});
+				});
+			}
+
+			// Validate a single input
+			function validateInput(input) {
+				// Skip inputs that don't need validation
+				if (!input.hasAttribute('required') && !input.hasAttribute('pattern') &&
+					!input.hasAttribute('min') && !input.hasAttribute('max') &&
+					!input.hasAttribute('minlength') && !input.hasAttribute('maxlength')) {
+					return true;
+				}
+
+				let isValid = true;
+				let errorMessage = '';
+
+				// Required validation
+				if (input.hasAttribute('required') && !input.value.trim()) {
+					isValid = false;
+					errorMessage = 'Ce champ est requis';
+				}
+
+				// Pattern validation
+				if (isValid && input.hasAttribute('pattern')) {
+					const pattern = new RegExp(input.getAttribute('pattern'));
+					if (!pattern.test(input.value)) {
+						isValid = false;
+						errorMessage = input.getAttribute('data-pattern-message') || 'Format invalide';
+					}
+				}
+
+				// Min/max validation for number inputs
+				if (isValid && input.type === 'number') {
+					const value = parseFloat(input.value);
+					if (input.hasAttribute('min') && value < parseFloat(input.getAttribute('min'))) {
+						isValid = false;
+						errorMessage = `La valeur minimum est ${input.getAttribute('min')}`;
+					}
+					if (input.hasAttribute('max') && value > parseFloat(input.getAttribute('max'))) {
+						isValid = false;
+						errorMessage = `La valeur maximum est ${input.getAttribute('max')}`;
+					}
+				}
+
+				// Minlength/maxlength validation
+				if (isValid && (input.type === 'text' || input.type === 'textarea' || input.type === 'password')) {
+					if (input.hasAttribute('minlength') && input.value.length < parseInt(input.getAttribute('minlength'))) {
+						isValid = false;
+						errorMessage = `Minimum ${input.getAttribute('minlength')} caractères requis`;
+					}
+					if (input.hasAttribute('maxlength') && input.value.length > parseInt(input.getAttribute('maxlength'))) {
+						isValid = false;
+						errorMessage = `Maximum ${input.getAttribute('maxlength')} caractères autorisés`;
+					}
+				}
+
+				// Email validation
+				if (isValid && input.type === 'email' && input.value) {
+					const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+					if (!emailPattern.test(input.value)) {
+						isValid = false;
+						errorMessage = 'Adresse email invalide';
+					}
+				}
+
+				// Update UI based on validation result
+				if (!isValid) {
+					input.classList.add('is-invalid');
+					input.classList.remove('is-valid');
+
+					// Create or update feedback message
+					let feedback = input.nextElementSibling;
+					if (!feedback || !feedback.classList.contains('invalid-feedback')) {
+						feedback = document.createElement('div');
+						feedback.className = 'invalid-feedback';
+						input.parentNode.insertBefore(feedback, input.nextElementSibling);
+					}
+					feedback.textContent = errorMessage;
+					feedback.style.display = 'block'; // Make sure it's visible
+				} else if (input.value) {
+					input.classList.remove('is-invalid');
+					input.classList.add('is-valid');
+
+					// Remove error message if it exists
+					const feedback = input.nextElementSibling;
+					if (feedback && feedback.classList.contains('invalid-feedback')) {
+						feedback.textContent = '';
+						feedback.style.display = 'none';
+					}
+				} else {
+					input.classList.remove('is-invalid');
+					input.classList.remove('is-valid');
+
+					// Hide error message if it exists
+					const feedback = input.nextElementSibling;
+					if (feedback && feedback.classList.contains('invalid-feedback')) {
+						feedback.style.display = 'none';
+					}
+				}
+
+				return isValid;
+			}
+
+			// Validate an entire form
+			function validateForm(form) {
+				let isValid = true;
+				const inputs = form.querySelectorAll('input, select, textarea');
+
+				// First pass: validate all inputs
+				inputs.forEach(input => {
+					if (!validateInput(input)) {
+						isValid = false;
+					}
+				});
+
+				// Second pass: focus on the first invalid input to draw user's attention
+				if (!isValid) {
+					const firstInvalid = form.querySelector('.is-invalid');
+					if (firstInvalid) {
+						firstInvalid.focus();
+
+						// Scroll to the first invalid input if it's not in view
+						const rect = firstInvalid.getBoundingClientRect();
+						if (rect.top < 0 || rect.bottom > window.innerHeight) {
+							firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+						}
+					}
+				}
+
+				return isValid;
+			}
+
+			// Function to confirm deletion of an entity
+			function confirmDelete(url, token, entityName) {
+				// Use SweetAlert2
+				Swal.fire({
+					title: `Supprimer ${entityName}`,
+					text: `Êtes-vous sûr de vouloir supprimer cet élément ? Cette action est irréversible.`,
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#ef4444',
+					cancelButtonColor: '#6c757d',
+					confirmButtonText: 'Oui, supprimer',
+					cancelButtonText: 'Annuler'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						// Create and submit a form to handle the DELETE request with CSRF token
+						const form = document.createElement('form');
+						form.method = 'POST';
+						form.action = url;
+						form.style.display = 'none';
+
+						// Add CSRF token - this is what Symfony expects
+						const tokenInput = document.createElement('input');
+						tokenInput.type = 'hidden';
+						tokenInput.name = '_token';
+						tokenInput.value = token;
+						form.appendChild(tokenInput);
+
+						document.body.appendChild(form);
+
+						// Show loading notification
+						showToast('Suppression en cours...', 'info');
+
+						// Submit the form
+						form.submit();
+					}
+				});
+			}
+
+			// Function to show toast notifications using SweetAlert2
+			function showToast(message, type = 'info') {
+				// Map type to SweetAlert2 icon
+				const iconMap = {
+					'success': 'success',
+					'danger': 'error',
+					'warning': 'warning',
+					'info': 'info'
+				};
+
+				// Show toast notification
+				const Toast = Swal.mixin({
+					toast: true,
+					position: 'top-end',
+					showConfirmButton: false,
+					timer: 3000,
+					timerProgressBar: true,
+					didOpen: (toast) => {
+						toast.addEventListener('mouseenter', Swal.stopTimer)
+						toast.addEventListener('mouseleave', Swal.resumeTimer)
+					}
+				});
+
+				Toast.fire({
+					icon: iconMap[type] || 'info',
+					title: message
+				});
+			}
+
+			// Function for backward compatibility
+			function showNotification(message, type = 'info') {
+				showToast(message, type);
+			}
+
+
+
+
+
+			// Function for backward compatibility
+			function showNotification(message, type = 'info') {
+				showToast(message, type);
+			}
+
+			// Add event listener for page load to initialize all components
+			document.addEventListener('DOMContentLoaded', function() {
+				// Initialize form validation
+				initFormValidation();
+
+				// Initialize sidebar toggle
+				const toggleButtons = document.querySelectorAll('.toggle-sidebar');
+				toggleButtons.forEach(button => {
+					button.addEventListener('click', function() {
+						document.querySelector('.sidebar').classList.toggle('show');
+					});
+				});
+
+				// Show flash messages
+				{% for message in app.flashes('success') %}
+					showToast("{{ message }}", "success");
+				{% endfor %}
+
+				{% for message in app.flashes('error') %}
+					showToast("{{ message }}", "danger");
+				{% endfor %}
+
+				{% for message in app.flashes('info') %}
+					showToast("{{ message }}", "info");
+				{% endfor %}
+
+				{% for message in app.flashes('warning') %}
+					showToast("{{ message }}", "warning");
+				{% endfor %}
+
+				console.log("Custom scripts loaded");
+			});
+
+			// Add overlay for mobile sidebar
+			document.addEventListener('DOMContentLoaded', function() {
+				// Create overlay for mobile sidebar if it doesn't exist
+				const sidebar = document.querySelector('.sidebar');
+				let overlay = document.getElementById('sidebar-overlay');
+
+				if (!overlay && sidebar) {
+					overlay = document.createElement('div');
+					overlay.id = 'sidebar-overlay';
+					overlay.style.position = 'fixed';
+					overlay.style.top = '0';
+					overlay.style.left = '0';
+					overlay.style.width = '100%';
+					overlay.style.height = '100%';
+					overlay.style.backgroundColor = 'rgba(0,0,0,0.5)';
+					overlay.style.zIndex = '99';
+					overlay.style.display = 'none';
+					document.body.appendChild(overlay);
+
+					// Close sidebar when overlay is clicked
+					overlay.addEventListener('click', function() {
+						sidebar.classList.remove('show');
+						overlay.style.display = 'none';
+					});
+
+					// Show overlay when sidebar is shown
+					const toggleButtons = document.querySelectorAll('.toggle-sidebar');
+					toggleButtons.forEach(button => {
+						button.addEventListener('click', function() {
+							if (sidebar.classList.contains('show')) {
+								overlay.style.display = 'none';
+							} else {
+								overlay.style.display = 'block';
+							}
+						});
+					});
+				}
+			});
+		</script>
 	</body>
-</html></div></body></html>
+</html>

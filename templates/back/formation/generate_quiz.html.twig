@@ -1,0 +1,372 @@
+{% extends 'Back_Base.html.twig' %}
+
+{% block body %}
+<!-- Page Header -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h2 class="fw-bold mb-2">Générer un Quiz avec l'IA</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_back') }}">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_formation_index') }}">Formations</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_formation_show', {'id': formation.id}) }}">{{ formation.titre }}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Générer un Quiz</li>
+            </ol>
+        </nav>
+    </div>
+    <div>
+        <a href="{{ path('app_formation_show', {'id': formation.id}) }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i> Retour à la formation
+        </a>
+    </div>
+</div>
+
+<!-- Alert Container -->
+<div id="alert-container">
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+</div>
+
+<div class="row">
+    <!-- Left Column: Form -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-transparent border-0 pt-4 pb-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">Options de génération</h5>
+                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+                        <i class="fas fa-robot me-1"></i> IA
+                    </span>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                {{ form_start(form, {'attr': {'id': 'quiz-generator-form'}}) }}
+                
+                <div class="form-group mb-4">
+                    <label for="{{ form.numQuestions.vars.id }}" class="form-label d-flex justify-content-between">
+                        <span>{{ form.numQuestions.vars.label }}</span>
+                        <span class="badge bg-light text-dark" id="numQuestionsValue">5</span>
+                    </label>
+                    <div class="range-slider">
+                        {{ form_widget(form.numQuestions) }}
+                    </div>
+                    <div class="text-danger">
+                        {{ form_errors(form.numQuestions) }}
+                    </div>
+                </div>
+                
+                <div class="form-group mb-4">
+                    <label for="{{ form.numOptions.vars.id }}" class="form-label d-flex justify-content-between">
+                        <span>{{ form.numOptions.vars.label }}</span>
+                        <span class="badge bg-light text-dark" id="numOptionsValue">4</span>
+                    </label>
+                    <div class="range-slider">
+                        {{ form_widget(form.numOptions) }}
+                    </div>
+                    <div class="text-danger">
+                        {{ form_errors(form.numOptions) }}
+                    </div>
+                </div>
+                
+                <div class="form-group mb-4">
+                    {{ form_label(form.difficulty) }}
+                    {{ form_widget(form.difficulty) }}
+                    <div class="text-danger">
+                        {{ form_errors(form.difficulty) }}
+                    </div>
+                </div>
+                
+                <div class="form-group mb-4">
+                    {{ form_label(form.language) }}
+                    {{ form_widget(form.language) }}
+                    <div class="text-danger">
+                        {{ form_errors(form.language) }}
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2 mt-4">
+                    <button type="button" id="generate-quiz-btn" class="btn btn-primary">
+                        <i class="fas fa-magic me-2"></i> Générer le Quiz
+                    </button>
+                    <button type="button" id="save-quiz-btn" class="btn btn-success" disabled>
+                        <i class="fas fa-save me-2"></i> Enregistrer le Quiz
+                    </button>
+                </div>
+                
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Right Column: Preview -->
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-transparent border-0 pt-4 pb-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">Aperçu du Quiz</h5>
+                    <div>
+                        <button type="button" id="refresh-preview-btn" class="btn btn-sm btn-outline-primary" disabled>
+                            <i class="fas fa-sync-alt me-1"></i> Actualiser
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <div id="quiz-preview-container">
+                    <div class="text-center py-5" id="empty-state">
+                        <div class="mb-4">
+                            <i class="fas fa-lightbulb fa-4x text-warning opacity-50"></i>
+                        </div>
+                        <h4 class="text-muted">Aucun quiz généré</h4>
+                        <p class="text-muted">Configurez les options et cliquez sur "Générer le Quiz" pour créer un quiz avec l'IA.</p>
+                    </div>
+                    
+                    <div id="loading-state" class="text-center py-5 d-none">
+                        <div class="spinner-border text-primary mb-3" role="status">
+                            <span class="visually-hidden">Chargement...</span>
+                        </div>
+                        <h4>Génération en cours...</h4>
+                        <p class="text-muted">L'IA est en train de créer votre quiz. Veuillez patienter...</p>
+                        <div class="progress mt-3" style="height: 10px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <div id="quiz-content" class="d-none">
+                        <h3 class="mb-4">Quiz: {{ formation.titre }}</h3>
+                        <div id="questions-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Elements
+        const form = document.getElementById('quiz-generator-form');
+        const generateBtn = document.getElementById('generate-quiz-btn');
+        const saveBtn = document.getElementById('save-quiz-btn');
+        const refreshBtn = document.getElementById('refresh-preview-btn');
+        const numQuestionsInput = document.getElementById('{{ form.numQuestions.vars.id }}');
+        const numOptionsInput = document.getElementById('{{ form.numOptions.vars.id }}');
+        const numQuestionsValue = document.getElementById('numQuestionsValue');
+        const numOptionsValue = document.getElementById('numOptionsValue');
+        const emptyState = document.getElementById('empty-state');
+        const loadingState = document.getElementById('loading-state');
+        const quizContent = document.getElementById('quiz-content');
+        const questionsContainer = document.getElementById('questions-container');
+        const progressBar = document.querySelector('.progress-bar');
+        
+        // Quiz data
+        let quizData = null;
+        
+        // Update range slider values
+        numQuestionsInput.addEventListener('input', function() {
+            numQuestionsValue.textContent = this.value;
+        });
+        
+        numOptionsInput.addEventListener('input', function() {
+            numOptionsValue.textContent = this.value;
+        });
+        
+        // Generate quiz
+        generateBtn.addEventListener('click', function() {
+            // Show loading state
+            emptyState.classList.add('d-none');
+            quizContent.classList.add('d-none');
+            loadingState.classList.remove('d-none');
+            saveBtn.disabled = true;
+            refreshBtn.disabled = true;
+            
+            // Start progress animation
+            let progress = 0;
+            const progressInterval = setInterval(function() {
+                progress += 1;
+                progressBar.style.width = Math.min(progress, 95) + '%';
+            }, 300);
+            
+            // Get form data
+            const formData = {
+                numQuestions: parseInt(numQuestionsInput.value),
+                numOptions: parseInt(numOptionsInput.value),
+                difficulty: document.getElementById('{{ form.difficulty.vars.id }}').value,
+                language: document.getElementById('{{ form.language.vars.id }}').value
+            };
+            
+            // Call API
+            fetch('{{ path('app_formation_generate_quiz_ajax', {'id': formation.id}) }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ options: formData })
+            })
+            .then(response => response.json())
+            .then(data => {
+                clearInterval(progressInterval);
+                progressBar.style.width = '100%';
+                
+                setTimeout(() => {
+                    loadingState.classList.add('d-none');
+                    
+                    if (data.success) {
+                        quizData = data.data;
+                        renderQuizPreview(quizData);
+                        quizContent.classList.remove('d-none');
+                        saveBtn.disabled = false;
+                        refreshBtn.disabled = false;
+                        showAlert('Quiz généré avec succès !', 'success');
+                    } else {
+                        emptyState.classList.remove('d-none');
+                        showAlert('Erreur lors de la génération du quiz: ' + data.error, 'danger');
+                    }
+                }, 500);
+            })
+            .catch(error => {
+                clearInterval(progressInterval);
+                loadingState.classList.add('d-none');
+                emptyState.classList.remove('d-none');
+                showAlert('Erreur lors de la génération du quiz: ' + error.message, 'danger');
+            });
+        });
+        
+        // Save quiz
+        saveBtn.addEventListener('click', function() {
+            if (!quizData) {
+                showAlert('Aucun quiz à enregistrer', 'warning');
+                return;
+            }
+            
+            // Show loading
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Enregistrement...';
+            
+            // Call API to save quiz
+            fetch('{{ path('app_formation_save_generated_quiz', {'id': formation.id}) }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ quiz: quizData })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert('Quiz enregistré avec succès !', 'success');
+                    // Redirect to quiz page
+                    setTimeout(() => {
+                        window.location.href = data.redirectUrl;
+                    }, 1000);
+                } else {
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = '<i class="fas fa-save me-2"></i> Enregistrer le Quiz';
+                    showAlert('Erreur lors de l\'enregistrement du quiz: ' + data.error, 'danger');
+                }
+            })
+            .catch(error => {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="fas fa-save me-2"></i> Enregistrer le Quiz';
+                showAlert('Erreur lors de l\'enregistrement du quiz: ' + error.message, 'danger');
+            });
+        });
+        
+        // Refresh preview
+        refreshBtn.addEventListener('click', function() {
+            if (quizData) {
+                renderQuizPreview(quizData);
+                showAlert('Aperçu actualisé', 'info');
+            }
+        });
+        
+        // Render quiz preview
+        function renderQuizPreview(data) {
+            questionsContainer.innerHTML = '';
+            
+            if (!data.questions || !data.questions.length) {
+                questionsContainer.innerHTML = '<div class="alert alert-warning">Aucune question trouvée dans les données générées.</div>';
+                return;
+            }
+            
+            data.questions.forEach((question, qIndex) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'card mb-4 border-0 shadow-sm';
+                
+                const questionHeader = document.createElement('div');
+                questionHeader.className = 'card-header bg-light';
+                questionHeader.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-primary rounded-circle me-3">${qIndex + 1}</span>
+                        <h5 class="mb-0">${question.text}</h5>
+                    </div>
+                `;
+                
+                const questionBody = document.createElement('div');
+                questionBody.className = 'card-body';
+                
+                const optionsList = document.createElement('div');
+                optionsList.className = 'list-group';
+                
+                question.options.forEach((option, oIndex) => {
+                    const optionItem = document.createElement('div');
+                    optionItem.className = `list-group-item list-group-item-action d-flex align-items-center ${option.isCorrect ? 'list-group-item-success' : ''}`;
+                    
+                    const optionPrefix = String.fromCharCode(65 + oIndex); // A, B, C, D...
+                    
+                    optionItem.innerHTML = `
+                        <div class="me-3 d-flex align-items-center justify-content-center rounded-circle ${option.isCorrect ? 'bg-success text-white' : 'bg-light'}" style="width: 30px; height: 30px;">
+                            ${optionPrefix}
+                        </div>
+                        <div>${option.text}</div>
+                        ${option.isCorrect ? '<div class="ms-auto"><i class="fas fa-check-circle text-success"></i></div>' : ''}
+                    `;
+                    
+                    optionsList.appendChild(optionItem);
+                });
+                
+                questionBody.appendChild(optionsList);
+                questionCard.appendChild(questionHeader);
+                questionCard.appendChild(questionBody);
+                questionsContainer.appendChild(questionCard);
+            });
+        }
+        
+        // Show alert
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alert-container');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show`;
+            alert.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            alertContainer.appendChild(alert);
+            
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                alert.classList.remove('show');
+                setTimeout(() => {
+                    alertContainer.removeChild(alert);
+                }, 150);
+            }, 5000);
+        }
+        
+        // Initialize range sliders
+        numQuestionsValue.textContent = numQuestionsInput.value;
+        numOptionsValue.textContent = numOptionsInput.value;
+    });
+</script>
+{% endblock %}

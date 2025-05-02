@@ -1,0 +1,217 @@
+{% extends 'Back_Base.html.twig' %}
+
+{% block body %}
+<!-- Page Header -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h2 class="fw-bold mb-2">
+            {% if quiz is defined %}
+                Questions du Quiz "{{ quiz.title }}"
+            {% else %}
+                Gestion des Questions
+            {% endif %}
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_back') }}">Accueil</a></li>
+                {% if quiz is defined %}
+                    <li class="breadcrumb-item"><a href="{{ path('app_quiz_index') }}">Quiz</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_quiz_show', {'id': quiz.id}) }}">{{ quiz.title }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Questions</li>
+                {% else %}
+                    <li class="breadcrumb-item active" aria-current="page">Questions</li>
+                {% endif %}
+            </ol>
+        </nav>
+    </div>
+    <div>
+        {% if quiz is defined %}
+            <a href="{{ path('app_quiz_show', {'id': quiz.id}) }}" class="btn btn-outline-secondary me-2">
+                <i class="fas fa-arrow-left me-2"></i> Retour au Quiz
+            </a>
+            <a href="{{ path('app_question_new_for_quiz', {'quiz_id': quiz.id}) }}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i> Ajouter une Question
+            </a>
+        {% else %}
+            <a href="{{ path('app_question_new') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i> Ajouter une Question
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Search and Filter Card -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-4">
+        <div class="row g-3">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-0">
+                        <i class="fas fa-search text-muted"></i>
+                    </span>
+                    <input type="text" id="searchInput" class="form-control border-0 bg-light" placeholder="Rechercher une question...">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select border-0 bg-light" id="filterOptions">
+                    <option value="">Toutes les questions</option>
+                    <option value="with">Avec options</option>
+                    <option value="without">Sans options</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Questions List Card -->
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-transparent border-0 pt-4 pb-2">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="mb-0 fw-bold">Liste des Questions</h5>
+                <p class="text-muted mb-0">{{ questions|length }} question(s) trouvée(s)</p>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-sm btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Exporter</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-print me-2"></i>Imprimer</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="showNotification('Liste actualisée', 'info')"><i class="fas fa-sync-alt me-2"></i>Actualiser</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover datatable mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="border-0 ps-4">ID</th>
+                        <th class="border-0">Question</th>
+                        <th class="border-0">Quiz</th>
+                        <th class="border-0">Options</th>
+                        <th class="border-0 text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for question in questions %}
+                        <tr>
+                            <td class="ps-4">{{ question.id }}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-success bg-opacity-10 rounded-circle p-2 me-3">
+                                        <i class="fas fa-list-ol text-success"></i>
+                                    </div>
+                                    <span class="fw-medium">{{ question.text|length > 50 ? question.text|slice(0, 50) ~ '...' : question.text }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-info bg-opacity-10 text-info px-3 py-2 rounded-pill">
+                                    <i class="fas fa-question-circle me-1"></i> {{ question.quiz.title }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 rounded-pill">
+                                    <i class="fas fa-check-circle me-1"></i> {{ question.options|length }} option(s)
+                                </span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <a href="{{ path('app_question_show', {'id': question.id}) }}" class="btn btn-sm btn-outline-info me-1" data-toggle="tooltip" title="Voir détails">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ path('app_question_edit', {'id': question.id}) }}" class="btn btn-sm btn-outline-warning me-1" data-toggle="tooltip" title="Modifier">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{{ path('app_option_by_question', {'question_id': question.id}) }}" class="btn btn-sm btn-outline-primary me-1" data-toggle="tooltip" title="Gérer les options">
+                                    <i class="fas fa-list"></i>
+                                </a>
+                                <form method="post" action="{{ path('app_question_delete', {'id': question.id}) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette question?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ question.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Supprimer">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <div class="d-flex flex-column align-items-center">
+                                    <i class="fas fa-folder-open text-muted mb-3" style="font-size: 3rem;"></i>
+                                    <h5 class="mb-2">Aucune question trouvée</h5>
+                                    <p class="text-muted mb-3">Commencez par ajouter une nouvelle question</p>
+                                    {% if quiz is defined %}
+                                        <a href="{{ path('app_question_new_for_quiz', {'quiz_id': quiz.id}) }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-plus me-2"></i> Ajouter une Question
+                                        </a>
+                                    {% else %}
+                                        <a href="{{ path('app_question_new') }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-plus me-2"></i> Ajouter une Question
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    // Initialize search functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const filterOptions = document.getElementById('filterOptions');
+        const table = document.querySelector('.datatable');
+
+        if (searchInput && table) {
+            searchInput.addEventListener('keyup', function() {
+                const searchText = this.value.toLowerCase();
+                const rows = table.querySelectorAll('tbody tr');
+
+                rows.forEach(row => {
+                    const question = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+
+                    if (question.includes(searchText)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Filter by options
+        if (filterOptions && table) {
+            filterOptions.addEventListener('change', function() {
+                const filterValue = this.value;
+                const rows = table.querySelectorAll('tbody tr');
+
+                rows.forEach(row => {
+                    const optionsCell = row.querySelector('td:nth-child(4)');
+                    const optionsCount = parseInt(optionsCell.textContent.match(/\d+/)[0]);
+                    const hasOptions = optionsCount > 0;
+
+                    if (filterValue === '' ||
+                        (filterValue === 'with' && hasOptions) ||
+                        (filterValue === 'without' && !hasOptions)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Initialize tooltips
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+
+{% include 'back/includes/custom_scripts.html.twig' %}
+{% endblock %}

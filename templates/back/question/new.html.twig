@@ -1,0 +1,207 @@
+{% extends 'Back_Base.html.twig' %}
+
+{% block body %}
+<!-- Page Header -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h2 class="fw-bold mb-2">
+            {% if quiz is defined %}
+                Nouvelle Question pour "{{ quiz.title }}"
+            {% else %}
+                Nouvelle Question
+            {% endif %}
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_back') }}">Accueil</a></li>
+                {% if quiz is defined %}
+                    <li class="breadcrumb-item"><a href="{{ path('app_quiz_index') }}">Quiz</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_quiz_show', {'id': quiz.id}) }}">{{ quiz.title }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Nouvelle Question</li>
+                {% else %}
+                    <li class="breadcrumb-item"><a href="{{ path('app_question_index') }}">Questions</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Nouvelle</li>
+                {% endif %}
+            </ol>
+        </nav>
+    </div>
+    <div>
+        {% if quiz is defined %}
+            <a href="{{ path('app_question_by_quiz', {'quiz_id': quiz.id}) }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i> Retour aux questions
+            </a>
+        {% else %}
+            <a href="{{ path('app_question_index') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i> Retour à la liste
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Question Form Card -->
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-transparent border-0 pt-4 pb-2">
+        <h5 class="mb-0 fw-bold">Créer une nouvelle question</h5>
+    </div>
+    <div class="card-body p-4">
+        {{ form_start(form) }}
+        <div class="form-group">
+            {{ form_label(form.text) }}
+            {{ form_widget(form.text, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+            <div class="text-danger">
+                {{ form_errors(form.text) }}
+            </div>
+        </div>
+
+        {% if quiz is not defined %}
+        <div class="form-group">
+            {{ form_label(form.quiz) }}
+            {{ form_widget(form.quiz, {'attr': {'class': 'form-control'}}) }}
+            <div class="text-danger">
+                {{ form_errors(form.quiz) }}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="form-group mt-4">
+            <h5 class="fw-bold">Options</h5>
+            <p class="text-muted mb-3">Ajoutez au moins deux options et marquez au moins une comme correcte.</p>
+
+            <div class="options-wrapper"
+                 data-prototype="{{ form_widget(form.options.vars.prototype)|e('html_attr') }}">
+                {% for optionForm in form.options %}
+                    <div class="option-item mb-3 p-3 border rounded bg-light">
+                        <div class="row">
+                            <div class="col-md-9">
+                                {{ form_label(optionForm.text) }}
+                                {{ form_widget(optionForm.text, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(optionForm.text) }}
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check mt-4">
+                                    {{ form_widget(optionForm.is_correct, {'attr': {'class': 'form-check-input'}}) }}
+                                    {{ form_label(optionForm.is_correct, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-end mt-2">
+                            <button type="button" class="btn btn-sm btn-danger remove-option-btn" data-index="{{ loop.index0 }}">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {# Hidden field for deleted options #}
+            <div id="deleted-options-container"></div>
+
+            <button type="button" class="btn btn-sm btn-success add-option-btn mt-2">
+                <i class="fas fa-plus me-2"></i> Ajouter une option
+            </button>
+        </div>
+
+        <div class="form-group mt-4">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-2"></i> Enregistrer
+            </button>
+            {% if quiz is defined %}
+                <a href="{{ path('app_question_by_quiz', {'quiz_id': quiz.id}) }}" class="btn btn-outline-secondary ms-2">
+                    <i class="fas fa-times me-2"></i> Annuler
+                </a>
+            {% else %}
+                <a href="{{ path('app_question_index') }}" class="btn btn-outline-secondary ms-2">
+                    <i class="fas fa-times me-2"></i> Annuler
+                </a>
+            {% endif %}
+        </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Setup for adding new options dynamically
+    const optionsWrapper = document.querySelector('.options-wrapper');
+    const addOptionBtn = document.querySelector('.add-option-btn');
+
+    if (optionsWrapper && addOptionBtn) {
+        let optionIndex = optionsWrapper.querySelectorAll('.option-item').length;
+
+        // Add event listeners to existing remove buttons
+        document.querySelectorAll('.remove-option-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const optionItem = this.closest('.option-item');
+                const index = this.getAttribute('data-index');
+
+                // Create a hidden input to mark this option for deletion
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = `question[options][${index}][_delete]`;
+                hiddenInput.value = '1';
+                document.getElementById('deleted-options-container').appendChild(hiddenInput);
+
+                // Hide the option item instead of removing it
+                optionItem.style.display = 'none';
+
+                // Show notification
+                showNotification('Option supprimée', 'info');
+            });
+        });
+
+        addOptionBtn.addEventListener('click', function() {
+            const prototype = optionsWrapper.dataset.prototype;
+            const newForm = prototype.replace(/__name__/g, optionIndex);
+
+            const newOptionDiv = document.createElement('div');
+            newOptionDiv.className = 'option-item mb-3 p-3 border rounded bg-light';
+            newOptionDiv.innerHTML = newForm;
+
+            // Add a remove button
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'btn btn-sm btn-danger mt-2';
+            removeBtn.innerHTML = '<i class="fas fa-trash me-2"></i> Supprimer';
+            removeBtn.addEventListener('click', function() {
+                // For newly added options, we can just remove them from the DOM
+                // since they haven't been persisted to the database yet
+                optionsWrapper.removeChild(newOptionDiv);
+                showNotification('Option supprimée', 'info');
+            });
+
+            // Wrap the form elements in a row/col structure
+            const formContent = newOptionDiv.innerHTML;
+            newOptionDiv.innerHTML = `
+                <div class="row">
+                    <div class="col-md-9">
+                        ${formContent}
+                    </div>
+                    <div class="col-md-3 d-flex align-items-center">
+                        <div class="form-check">
+                            <input type="checkbox" id="option_is_correct_${optionIndex}" name="option[${optionIndex}][is_correct]" class="form-check-input">
+                            <label for="option_is_correct_${optionIndex}" class="form-check-label">Réponse correcte</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-end">
+                    ${removeBtn.outerHTML}
+                </div>
+            `;
+
+            optionsWrapper.appendChild(newOptionDiv);
+
+            // Add form-control class to the new input
+            const newInput = newOptionDiv.querySelector('input[type="text"]');
+            if (newInput) {
+                newInput.className = 'form-control';
+            }
+
+            // Show notification
+            showNotification('Nouvelle option ajoutée', 'success');
+
+            optionIndex++;
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,197 @@
+{% extends 'Back_Base.html.twig' %}
+
+{% block body %}
+<!-- Page Header -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h2 class="fw-bold mb-2">Gestion des Quiz</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_back') }}">Accueil</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Quiz</li>
+            </ol>
+        </nav>
+    </div>
+    <div>
+        <a href="{{ path('app_quiz_generate') }}" class="btn btn-success me-2">
+            <i class="fas fa-magic me-2"></i> Générer avec l'IA
+        </a>
+        <a href="{{ path('app_quiz_new') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i> Ajouter un Quiz
+        </a>
+    </div>
+</div>
+
+<!-- Search and Filter Card -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-4">
+        <div class="row g-3">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-0">
+                        <i class="fas fa-search text-muted"></i>
+                    </span>
+                    <input type="text" id="searchInput" class="form-control border-0 bg-light" placeholder="Rechercher un quiz...">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select border-0 bg-light" id="filterFormation">
+                    <option value="">Toutes les formations</option>
+                    <option value="with">Avec formation</option>
+                    <option value="without">Sans formation</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quiz List Card -->
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-transparent border-0 pt-4 pb-2">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="mb-0 fw-bold">Liste des Quiz</h5>
+                <p class="text-muted mb-0">{{ quizzes|length }} quiz trouvé(s)</p>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-sm btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Exporter</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-print me-2"></i>Imprimer</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="showNotification('Liste actualisée', 'info')"><i class="fas fa-sync-alt me-2"></i>Actualiser</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover datatable mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="border-0 ps-4">ID</th>
+                        <th class="border-0">Titre</th>
+                        <th class="border-0">Formation</th>
+                        <th class="border-0 text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for quiz in quizzes %}
+                        <tr>
+                            <td class="ps-4">{{ quiz.id }}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-info bg-opacity-10 rounded-circle p-2 me-3">
+                                        <i class="fas fa-question-circle text-info"></i>
+                                    </div>
+                                    <span class="fw-medium">{{ quiz.title }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                {% if quiz.formation %}
+                                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+                                        <i class="fas fa-graduation-cap me-1"></i> {{ quiz.formation.titre }}
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-light text-secondary px-3 py-2 rounded-pill">
+                                        <i class="fas fa-times-circle me-1"></i> Aucune
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end pe-4">
+                                <a href="{{ path('app_quiz_show', {'id': quiz.id}) }}" class="btn btn-sm btn-outline-info me-1" data-toggle="tooltip" title="Voir détails">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ path('app_quiz_edit', {'id': quiz.id}) }}" class="btn btn-sm btn-outline-warning me-1" data-toggle="tooltip" title="Modifier">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{{ path('app_question_by_quiz', {'quiz_id': quiz.id}) }}" class="btn btn-sm btn-outline-primary me-1" data-toggle="tooltip" title="Voir les questions">
+                                    <i class="fas fa-list"></i>
+                                </a>
+                                <form method="post" action="{{ path('app_quiz_delete', {'id': quiz.id}) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce quiz?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ quiz.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" data-bs-toggle="tooltip" title="Supprimer">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center py-5">
+                                <div class="d-flex flex-column align-items-center">
+                                    <i class="fas fa-folder-open text-muted mb-3" style="font-size: 3rem;"></i>
+                                    <h5 class="mb-2">Aucun quiz trouvé</h5>
+                                    <p class="text-muted mb-3">Commencez par ajouter ou générer un nouveau quiz</p>
+                                    <div class="d-flex gap-2">
+                                        <a href="{{ path('app_quiz_generate') }}" class="btn btn-sm btn-success">
+                                            <i class="fas fa-magic me-2"></i> Générer avec l'IA
+                                        </a>
+                                        <a href="{{ path('app_quiz_new') }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-plus me-2"></i> Ajouter un Quiz
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    // Initialize search functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const filterFormation = document.getElementById('filterFormation');
+        const table = document.querySelector('.datatable');
+
+        if (searchInput && table) {
+            searchInput.addEventListener('keyup', function() {
+                const searchText = this.value.toLowerCase();
+                const rows = table.querySelectorAll('tbody tr');
+
+                rows.forEach(row => {
+                    const title = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+
+                    if (title.includes(searchText)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Filter by formation
+        if (filterFormation && table) {
+            filterFormation.addEventListener('change', function() {
+                const filterValue = this.value;
+                const rows = table.querySelectorAll('tbody tr');
+
+                rows.forEach(row => {
+                    const formationCell = row.querySelector('td:nth-child(3)');
+                    const hasFormation = !formationCell.textContent.includes('Aucune');
+
+                    if (filterValue === '' ||
+                        (filterValue === 'with' && hasFormation) ||
+                        (filterValue === 'without' && !hasFormation)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Initialize tooltips
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+
+{% include 'back/includes/custom_scripts.html.twig' %}
+{% endblock %}

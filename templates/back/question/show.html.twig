@@ -1,0 +1,206 @@
+{% extends 'Back_Base.html.twig' %}
+
+{% block body %}
+<!-- Page Header -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h2 class="fw-bold mb-2">Détails de la Question</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_back') }}">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_question_index') }}">Questions</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Détails</li>
+            </ol>
+        </nav>
+    </div>
+    <div>
+        <a href="{{ path('app_question_index') }}" class="btn btn-outline-secondary me-2">
+            <i class="fas fa-arrow-left me-1"></i> Retour
+        </a>
+        <a href="{{ path('app_question_edit', {'id': question.id}) }}" class="btn btn-warning me-2">
+            <i class="fas fa-edit me-1"></i> Modifier
+        </a>
+        <a href="{{ path('app_option_new_for_question', {'question_id': question.id}) }}" class="btn btn-success">
+            <i class="fas fa-plus me-1"></i> Ajouter une Option
+        </a>
+    </div>
+</div>
+
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endfor %}
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-transparent border-0 pt-4 pb-2">
+                <h5 class="mb-0 fw-bold">Informations</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="bg-success bg-opacity-10 rounded-circle p-3 d-flex align-items-center justify-content-center me-3" style="width: 64px; height: 64px;">
+                            <i class="fas fa-list-ol text-success fa-2x"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted mb-1">Question ID #{{ question.id }}</h6>
+                            <h4 class="mb-0 fw-bold">{{ question.text }}</h4>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-2">Quiz associé</h6>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-info bg-opacity-10 rounded-circle p-2 me-2" style="width: 40px; height: 40px;">
+                                <i class="fas fa-question-circle text-info d-flex justify-content-center align-items-center h-100"></i>
+                            </div>
+                            <a href="{{ path('app_quiz_show', {'id': question.quiz.id}) }}" class="text-decoration-none">
+                                <span class="fw-medium">{{ question.quiz.title }}</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <a href="{{ path('app_question_edit', {'id': question.id}) }}" class="btn btn-warning">
+                        <i class="fas fa-edit me-2"></i> Modifier
+                    </a>
+                    <button type="button" class="btn btn-danger" onclick="confirmDelete('{{ path('app_question_delete', {'id': question.id}) }}', '{{ csrf_token('delete' ~ question.id) }}')">
+                        <i class="fas fa-trash me-2"></i> Supprimer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-transparent border-0 pt-4 pb-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-0 fw-bold">Options</h5>
+                        <p class="text-muted mb-0">{{ question.options|length }} option(s) disponible(s)</p>
+                    </div>
+                    <a href="{{ path('app_option_new_for_question', {'question_id': question.id}) }}" class="btn btn-sm btn-success">
+                        <i class="fas fa-plus me-1"></i> Ajouter
+                    </a>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="border-0 ps-4">ID</th>
+                                <th class="border-0">Texte</th>
+                                <th class="border-0">Correcte</th>
+                                <th class="border-0 text-end pe-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for option in question.options %}
+                                <tr>
+                                    <td class="ps-4">{{ option.id }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-warning bg-opacity-10 rounded-circle p-2 me-3">
+                                                <i class="fas fa-check-circle text-warning"></i>
+                                            </div>
+                                            <span>{{ option.text }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if option.isCorrect %}
+                                            <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">
+                                                <i class="fas fa-check-circle me-1"></i> Oui
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill">
+                                                <i class="fas fa-times-circle me-1"></i> Non
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <a href="{{ path('app_option_edit', {'id': option.id}) }}" class="btn btn-sm btn-outline-warning me-1" data-toggle="tooltip" title="Modifier">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="tooltip" title="Supprimer"
+                                                onclick="confirmDeleteOption('{{ path('app_option_delete', {'id': option.id}) }}', '{{ csrf_token('delete' ~ option.id) }}')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-5">
+                                        <div class="d-flex flex-column align-items-center">
+                                            <i class="fas fa-folder-open text-muted mb-3" style="font-size: 3rem;"></i>
+                                            <h5 class="mb-2">Aucune option trouvée</h5>
+                                            <p class="text-muted mb-3">Ajoutez des options pour cette question</p>
+                                            <a href="{{ path('app_option_new_for_question', {'question_id': question.id}) }}" class="btn btn-sm btn-success">
+                                                <i class="fas fa-plus me-2"></i> Ajouter une option
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Function to confirm delete option - specialized for options
+    function confirmDeleteOption(url, token) {
+        swal({
+            title: 'Supprimer cette option?',
+            text: "Cette action ne peut pas être annulée!",
+            icon: 'warning',
+            buttons: {
+                cancel: {
+                    text: "Annuler",
+                    value: null,
+                    visible: true,
+                    className: "btn btn-secondary",
+                    closeModal: true,
+                },
+                confirm: {
+                    text: "Oui, supprimer!",
+                    value: true,
+                    visible: true,
+                    className: "btn btn-danger",
+                    closeModal: true
+                }
+            }
+        }).then((willDelete) => {
+            if (willDelete) {
+                // Create and submit a form for the delete action
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = url;
+
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = '_token';
+                tokenInput.value = token;
+
+                form.appendChild(tokenInput);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    }
+
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+{% endblock %}

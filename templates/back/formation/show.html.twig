@@ -1,0 +1,120 @@
+{% extends 'Back_Base.html.twig' %}
+
+{% block body %}
+<!-- Page Header -->
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h2 class="fw-bold mb-2">Détails de la Formation</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ path('app_back') }}">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_formation_index') }}">Formations</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Détails</li>
+            </ol>
+        </nav>
+    </div>
+    <div>
+        <a href="{{ path('app_formation_index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i> Retour à la liste
+        </a>
+        <a href="{{ path('app_formation_edit', {'id': formation.id}) }}" class="btn btn-warning">
+            <i class="fas fa-edit me-2"></i> Modifier
+        </a>
+    </div>
+</div>
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endfor %}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">{{ formation.titre }}</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>ID</th>
+                                <td>{{ formation.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Titre</th>
+                                <td>{{ formation.titre }}</td>
+                            </tr>
+                            <tr>
+                                <th>Description</th>
+                                <td>{{ formation.description }}</td>
+                            </tr>
+                            <tr>
+                                <th>Date de création</th>
+                                <td>{{ formation.dateCreation ? formation.dateCreation|date('d/m/Y H:i') : '' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Quiz</th>
+                                <td>
+                                    {% if formation.quiz %}
+                                        <a href="{{ path('app_quiz_show', {'id': formation.quiz.id}) }}">{{ formation.quiz.title }}</a>
+                                    {% else %}
+                                        Aucun quiz associé
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Fichier PDF</th>
+                                <td>
+                                    {% if formation.filePath %}
+                                        <a href="{{ asset(formation.filePath) }}" target="_blank" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-file-pdf me-2"></i> Voir le PDF
+                                        </a>
+                                    {% else %}
+                                        Aucun fichier
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">Actions</h4>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ path('app_formation_edit', {'id': formation.id}) }}" class="btn btn-warning btn-block">
+                        <i class="fas fa-edit me-2"></i> Modifier
+                    </a>
+                    {% if formation.quiz %}
+                        <a href="{{ path('app_quiz_show', {'id': formation.quiz.id}) }}" class="btn btn-info btn-block">
+                            <i class="fas fa-question-circle me-2"></i> Voir le Quiz
+                        </a>
+                    {% else %}
+                        <a href="{{ path('app_quiz_new') }}" class="btn btn-success btn-block">
+                            <i class="fas fa-plus me-2"></i> Créer un Quiz
+                        </a>
+                    {% endif %}
+
+                    <a href="{{ path('app_formation_generate_quiz', {'id': formation.id}) }}" class="btn btn-primary btn-block">
+                        <i class="fas fa-magic me-2"></i> Générer un Quiz avec l'IA
+                    </a>
+                    <form method="post" action="{{ path('app_formation_delete', {'id': formation.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette formation?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ formation.id) }}">
+                        <button class="btn btn-danger btn-block"><i class="fas fa-trash me-2"></i> Supprimer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

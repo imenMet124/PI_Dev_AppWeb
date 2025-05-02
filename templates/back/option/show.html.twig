@@ -1,0 +1,121 @@
+{% extends 'Back_Base.html.twig' %}
+
+{% block body %}
+<div class="wrapper">
+    <div class="main-panel">
+        <div class="main-header">
+            <!-- Navbar Header -->
+            <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
+                <div class="container-fluid">
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_back') }}">
+                                    <i class="fas fa-home"></i> Dashboard
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <!-- End Navbar Header -->
+        </div>
+
+        <div class="container">
+            <div class="page-inner">
+                <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+                    <div>
+                        <h3 class="fw-bold mb-3">Détails de l'Option</h3>
+                    </div>
+                    <div class="ms-md-auto py-2 py-md-0">
+                        {% if option.question %}
+                            <a href="{{ path('app_option_by_question', {'question_id': option.question.id}) }}" class="btn btn-secondary btn-round">
+                                <i class="fas fa-arrow-left"></i> Retour aux options
+                            </a>
+                        {% else %}
+                            <a href="{{ path('app_option_index') }}" class="btn btn-secondary btn-round">
+                                <i class="fas fa-arrow-left"></i> Retour à la liste
+                            </a>
+                        {% endif %}
+                        <a href="{{ path('app_option_edit', {'id': option.id}) }}" class="btn btn-warning btn-round">
+                            <i class="fas fa-edit"></i> Modifier
+                        </a>
+                    </div>
+                </div>
+
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Informations</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr>
+                                                <th>ID</th>
+                                                <td>{{ option.id }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Texte</th>
+                                                <td>{{ option.text }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Correcte</th>
+                                                <td>
+                                                    {% if option.isCorrect %}
+                                                        <span class="badge bg-success">Oui</span>
+                                                    {% else %}
+                                                        <span class="badge bg-danger">Non</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Question</th>
+                                                <td>
+                                                    <a href="{{ path('app_question_show', {'id': option.question.id}) }}">{{ option.question.text|length > 50 ? option.question.text|slice(0, 50) ~ '...' : option.question.text }}</a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Actions</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <a href="{{ path('app_option_edit', {'id': option.id}) }}" class="btn btn-warning btn-block">
+                                        <i class="fas fa-edit"></i> Modifier
+                                    </a>
+                                    <a href="{{ path('app_question_show', {'id': option.question.id}) }}" class="btn btn-info btn-block">
+                                        <i class="fas fa-question-circle"></i> Voir la Question
+                                    </a>
+                                    <form method="post" action="{{ path('app_option_delete', {'id': option.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette option?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ option.id) }}">
+                                        <button class="btn btn-danger btn-block"><i class="fas fa-trash"></i> Supprimer</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
