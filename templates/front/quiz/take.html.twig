@@ -1,0 +1,172 @@
+{% extends 'Front_Base.html.twig' %}
+
+{% block body %}
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container py-5">
+        <h1 class="display-3 text-white animated slideInRight">Quiz: {{ quiz.title }}</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb animated slideInRight mb-0">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_front_formation_index') }}">Formations</a></li>
+                {% if quiz.formation %}
+                    <li class="breadcrumb-item"><a href="{{ path('app_front_formation_show', {'id': quiz.formation.id}) }}">{{ quiz.formation.titre }}</a></li>
+                {% endif %}
+                <li class="breadcrumb-item active" aria-current="page">Quiz</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Quiz Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+            <h1 class="mb-3">{{ quiz.title }}</h1>
+            {% if quiz.formation %}
+                <p>Quiz associé à la formation: {{ quiz.formation.titre }}</p>
+            {% endif %}
+        </div>
+
+        {% if quiz.questions.empty %}
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-exclamation-circle fa-4x text-warning opacity-50"></i>
+                </div>
+                <h4 class="text-muted">Ce quiz ne contient aucune question</h4>
+                <p class="text-muted">Veuillez revenir plus tard.</p>
+                <a href="{{ path('app_front_formation_index') }}" class="btn btn-primary mt-3">
+                    <i class="fas fa-arrow-left me-2"></i> Retour aux formations
+                </a>
+            </div>
+        {% else %}
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="formation-detail-card">
+                        <div class="card-header bg-light p-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4 class="mb-0 fw-bold">Questions du Quiz</h4>
+                                <span class="badge bg-primary rounded-pill py-2 px-3">
+                                    <i class="fas fa-question-circle me-1"></i> {{ quiz.questions|length }} questions
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-body p-4">
+                            <form method="post" action="{{ path('app_front_quiz_submit', {'id': quiz.id}) }}" id="quiz-form">
+                                {% for question in quiz.questions %}
+                                    <div class="quiz-question animate-fadeIn" style="animation-delay: {{ loop.index * 0.1 }}s">
+                                        <div class="quiz-question-header">
+                                            <div class="quiz-question-number">{{ loop.index }}</div>
+                                            <h4 class="quiz-question-text">{{ question.text }}</h4>
+                                        </div>
+
+                                        <div class="quiz-options">
+                                            {% for option in question.options %}
+                                                <div class="quiz-option" onclick="selectOption(this)">
+                                                    <input class="form-check-input" type="radio" name="question_{{ question.id }}"
+                                                           id="option_{{ option.id }}" value="{{ option.id }}" required>
+                                                    <label class="form-check-label" for="option_{{ option.id }}">
+                                                        {{ option.text }}
+                                                    </label>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+
+                                <div class="text-center mt-5">
+                                    <button type="submit" class="btn btn-primary btn-lg px-5 py-3">
+                                        <i class="fas fa-paper-plane me-2"></i> Soumettre mes réponses
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+<!-- Quiz End -->
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    // Function to select an option when clicking anywhere in the option div
+    function selectOption(optionDiv) {
+        const radio = optionDiv.querySelector('input[type="radio"]');
+        radio.checked = true;
+
+        // Remove selected class from all siblings
+        const allOptions = optionDiv.parentNode.querySelectorAll('.quiz-option');
+        allOptions.forEach(option => {
+            option.classList.remove('selected');
+        });
+
+        // Add selected class to the clicked option
+        optionDiv.classList.add('selected');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('quiz-form');
+
+        // Initialize options that are already checked (in case of page refresh)
+        document.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+            const optionDiv = radio.closest('.quiz-option');
+            if (optionDiv) {
+                optionDiv.classList.add('selected');
+            }
+        });
+
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                // Check if all questions are answered
+                const questions = document.querySelectorAll('.quiz-question');
+                let allAnswered = true;
+                let firstUnanswered = null;
+
+                questions.forEach(function(question) {
+                    const options = question.querySelectorAll('input[type="radio"]');
+                    const answered = Array.from(options).some(option => option.checked);
+
+                    if (!answered) {
+                        allAnswered = false;
+                        question.classList.add('border', 'border-danger');
+
+                        if (!firstUnanswered) {
+                            firstUnanswered = question;
+                        }
+                    } else {
+                        question.classList.remove('border', 'border-danger');
+                    }
+                });
+
+                if (!allAnswered) {
+                    e.preventDefault();
+
+                    // Show a nicer error message
+                    const errorMessage = document.createElement('div');
+                    errorMessage.className = 'alert alert-danger alert-dismissible fade show mt-4';
+                    errorMessage.innerHTML = `
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        Veuillez répondre à toutes les questions avant de soumettre le quiz.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    `;
+
+                    // Insert the error message at the top of the form
+                    form.insertBefore(errorMessage, form.firstChild);
+
+                    // Scroll to the first unanswered question
+                    if (firstUnanswered) {
+                        setTimeout(() => {
+                            firstUnanswered.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 100);
+                    }
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,182 @@
+{% extends 'Front_Base.html.twig' %}
+
+{% block body %}
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container py-5">
+        <h1 class="display-3 text-white animated slideInRight">Résultats du Quiz</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb animated slideInRight mb-0">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_front_formation_index') }}">Formations</a></li>
+                {% if quiz.formation %}
+                    <li class="breadcrumb-item"><a href="{{ path('app_front_formation_show', {'id': quiz.formation.id}) }}">{{ quiz.formation.titre }}</a></li>
+                {% endif %}
+                <li class="breadcrumb-item active" aria-current="page">Résultats</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Quiz Results Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+            <h1 class="mb-3">Résultats du Quiz</h1>
+            <p>{{ quiz.title }}</p>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Score Card -->
+                <div class="formation-detail-card mb-5 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="card-header bg-light p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0 fw-bold">Résultat du Quiz</h4>
+                            <span class="badge bg-primary rounded-pill py-2 px-3">
+                                <i class="fas fa-chart-bar me-1"></i> Score Final
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="result-card">
+                            <div class="result-icon">
+                                {% if results.percentage >= 80 %}
+                                    <i class="fas fa-trophy text-warning"></i>
+                                {% elseif results.percentage >= 50 %}
+                                    <i class="fas fa-medal text-primary"></i>
+                                {% else %}
+                                    <i class="fas fa-award text-secondary"></i>
+                                {% endif %}
+                            </div>
+
+                            <div class="result-score">{{ results.score }}/{{ results.total_questions }}</div>
+
+                            <div class="result-progress">
+                                <div class="progress">
+                                    <div class="progress-bar {% if results.percentage >= 80 %}bg-success{% elseif results.percentage >= 50 %}bg-primary{% else %}bg-danger{% endif %}"
+                                         role="progressbar" style="width: {{ results.percentage }}%;"
+                                         aria-valuenow="{{ results.percentage }}" aria-valuemin="0" aria-valuemax="100">
+                                        {{ results.percentage|round }}%
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="result-message">
+                                {% if results.percentage >= 80 %}
+                                    <div class="alert alert-success">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        <span class="fw-bold">Excellent!</span> Vous avez très bien compris cette formation.
+                                    </div>
+                                {% elseif results.percentage >= 50 %}
+                                    <div class="alert alert-primary">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <span class="fw-bold">Bien!</span> Vous avez une bonne compréhension de cette formation.
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-danger">
+                                        <i class="fas fa-exclamation-circle me-2"></i>
+                                        <span class="fw-bold">À améliorer.</span> Nous vous recommandons de revoir la formation.
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="result-actions">
+                                {% if quiz.formation %}
+                                    <a href="{{ path('app_front_formation_show', {'id': quiz.formation.id}) }}" class="btn btn-outline-primary">
+                                        <i class="fas fa-book me-2"></i> Revoir la formation
+                                    </a>
+                                {% endif %}
+                                <a href="{{ path('app_front_quiz_take', {'id': quiz.id}) }}" class="btn btn-primary">
+                                    <i class="fas fa-redo me-2"></i> Refaire le quiz
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Results -->
+                <div class="formation-detail-card mb-4 wow fadeInUp" data-wow-delay="0.2s">
+                    <div class="card-header bg-light p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0 fw-bold">Détail des réponses</h4>
+                            <span class="badge bg-primary rounded-pill py-2 px-3">
+                                <i class="fas fa-list-ol me-1"></i> {{ quiz.questions|length }} questions
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        {% for question in quiz.questions %}
+                            {% set isCorrect = false %}
+                            {% if results.user_answers[question.id] is defined %}
+                                {% for option in question.options %}
+                                    {% if option.id == results.user_answers[question.id] and option.isIsCorrect %}
+                                        {% set isCorrect = true %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+
+                            <div class="answer-review animate-fadeIn" style="animation-delay: {{ loop.index * 0.1 }}s">
+                                <div class="quiz-question-header">
+                                    <div class="quiz-question-number" style="background-color: {% if isCorrect %}var(--success){% else %}var(--danger){% endif %}">
+                                        {{ loop.index }}
+                                    </div>
+                                    <h4 class="quiz-question-text">{{ question.text }}</h4>
+                                </div>
+
+                                <div class="quiz-options">
+                                    {% for option in question.options %}
+                                        <div class="answer-option
+                                            {% if option.isIsCorrect %}
+                                                correct
+                                            {% elseif results.user_answers[question.id] is defined and results.user_answers[question.id] == option.id and not option.isIsCorrect %}
+                                                incorrect
+                                            {% else %}
+                                                neutral
+                                            {% endif %}">
+                                            <div class="answer-icon">
+                                                {% if option.isIsCorrect %}
+                                                    <i class="fas fa-check-circle text-success"></i>
+                                                {% elseif results.user_answers[question.id] is defined and results.user_answers[question.id] == option.id and not option.isIsCorrect %}
+                                                    <i class="fas fa-times-circle text-danger"></i>
+                                                {% else %}
+                                                    <i class="far fa-circle text-muted"></i>
+                                                {% endif %}
+                                            </div>
+                                            <div class="answer-text">
+                                                {{ option.text }}
+                                            </div>
+                                            {% if results.user_answers[question.id] is defined and results.user_answers[question.id] == option.id %}
+                                                <span class="badge bg-primary rounded-pill">Votre réponse</span>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="formation-detail-card p-4 text-center wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+                        <a href="{{ path('app_front_formation_index') }}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-graduation-cap me-2"></i> Explorer d'autres formations
+                        </a>
+                        {% if quiz.formation %}
+                            <a href="{{ path('app_front_formation_show', {'id': quiz.formation.id}) }}" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-arrow-left me-2"></i> Retour à la formation
+                            </a>
+                        {% endif %}
+                        <a href="{{ path('app_front_quiz_take', {'id': quiz.id}) }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-redo me-2"></i> Refaire le quiz
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Quiz Results End -->
+{% endblock %}

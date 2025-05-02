@@ -1,0 +1,126 @@
+{% extends 'Front_Base.html.twig' %}
+
+{% block body %}
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container py-5">
+        <h1 class="display-3 text-white animated slideInRight">{{ formation.titre }}</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb animated slideInRight mb-0">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{{ path('app_front_formation_index') }}">Formations</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ formation.titre }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Formation Details Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5">
+            <!-- Formation Content -->
+            <div class="col-lg-8 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="formation-detail-card">
+                    {% if formation.filePath %}
+                        <div class="position-relative">
+                            <div class="ratio ratio-16x9">
+                                <iframe src="{{ asset(formation.filePath) }}" allowfullscreen></iframe>
+                            </div>
+                            <div class="position-absolute top-0 end-0 m-3">
+                                <span class="badge bg-primary rounded-pill py-2 px-3">
+                                    <i class="far fa-calendar-alt me-1"></i> {{ formation.dateCreation|date('d/m/Y') }}
+                                </span>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="position-relative">
+                            <img src="{{ asset('img/service-1.jpg') }}" alt="{{ formation.titre }}" class="img-fluid w-100" style="height: 300px; object-fit: cover;">
+                            <div class="position-absolute top-0 end-0 m-3">
+                                <span class="badge bg-primary rounded-pill py-2 px-3">
+                                    <i class="far fa-calendar-alt me-1"></i> {{ formation.dateCreation|date('d/m/Y') }}
+                                </span>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="card-body p-4">
+                        <h2 class="mb-4 pb-2 border-bottom">{{ formation.titre }}</h2>
+
+                        <div class="formation-content">
+                            {{ formation.description|raw }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="formation-detail-card mb-4">
+                    <div class="card-header bg-light p-4">
+                        <h4 class="mb-0 fw-bold">À propos de cette formation</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="formation-meta-item">
+                            <div class="formation-meta-icon">
+                                <i class="fa fa-calendar-alt"></i>
+                            </div>
+                            <div class="formation-meta-text">
+                                <strong>Date de publication</strong>
+                                <div>{{ formation.dateCreation|date('d/m/Y') }}</div>
+                            </div>
+                        </div>
+
+                        <div class="formation-meta-item">
+                            <div class="formation-meta-icon">
+                                {% if formation.quiz %}
+                                    <i class="fa fa-check-circle"></i>
+                                {% else %}
+                                    <i class="fa fa-times-circle"></i>
+                                {% endif %}
+                            </div>
+                            <div class="formation-meta-text">
+                                <strong>Quiz</strong>
+                                <div>
+                                    {% if formation.quiz %}
+                                        Quiz disponible pour cette formation
+                                    {% else %}
+                                        Pas de quiz disponible pour cette formation
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if formation.quiz %}
+                            <div class="mt-4">
+                                <a href="{{ path('app_front_quiz_take', {'id': formation.quiz.id}) }}" class="btn btn-primary w-100 take-quiz-btn">
+                                    <i class="fas fa-question-circle me-2"></i> Passer le Quiz
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="formation-detail-card">
+                    <div class="card-header bg-light p-4">
+                        <h4 class="mb-0 fw-bold">Actions</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <a href="{{ path('app_front_formation_index') }}" class="btn btn-outline-primary w-100 mb-3">
+                            <i class="fas fa-arrow-left me-2"></i> Retour aux formations
+                        </a>
+
+                        {% if formation.quiz %}
+                            <a href="{{ path('app_front_quiz_take', {'id': formation.quiz.id}) }}" class="btn btn-primary w-100">
+                                <i class="fas fa-question-circle me-2"></i> Passer le Quiz
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Formation Details End -->
+{% endblock %}

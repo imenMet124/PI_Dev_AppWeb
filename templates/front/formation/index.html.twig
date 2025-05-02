@@ -1,0 +1,73 @@
+{% extends 'Front_Base.html.twig' %}
+
+{% block body %}
+<!-- Page Header Start -->
+<div class="container-fluid page-header py-5 mb-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container py-5">
+        <h1 class="display-3 text-white animated slideInRight">Formations</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb animated slideInRight mb-0">
+                <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Formations</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Formations List Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+            <h1 class="mb-3">Nos Formations</h1>
+            <p>Découvrez nos formations et améliorez vos compétences professionnelles.</p>
+        </div>
+
+        {% if formations is empty %}
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-book fa-4x text-primary opacity-50"></i>
+                </div>
+                <h4 class="text-muted">Aucune formation disponible pour le moment</h4>
+                <p class="text-muted">Revenez bientôt pour découvrir nos nouvelles formations.</p>
+            </div>
+        {% else %}
+            <div class="row g-4">
+                {% for formation in formations %}
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.{{ loop.index * 2 - 1 }}s">
+                        <div class="formation-card">
+                            <div class="position-relative overflow-hidden">
+                                <img class="card-img-top" src="{{ asset('img/service-' ~ (loop.index % 4 + 1) ~ '.jpg') }}" alt="{{ formation.titre }}">
+                                <div class="position-absolute top-0 end-0 m-3">
+                                    {% if formation.quiz %}
+                                        <span class="badge badge-quiz">
+                                            <i class="fas fa-check-circle me-1"></i> Quiz disponible
+                                        </span>
+                                    {% else %}
+                                        <span class="badge badge-no-quiz">
+                                            <i class="fas fa-times-circle me-1"></i> Pas de quiz
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ formation.titre }}</h5>
+                                <p class="card-text">{{ formation.description|striptags|length > 100 ? formation.description|striptags|slice(0, 100) ~ '...' : formation.description|striptags }}</p>
+                                <div class="card-date mb-3">
+                                    <i class="far fa-calendar-alt me-1"></i> Publié le {{ formation.dateCreation|date('d/m/Y') }}
+                                </div>
+                            </div>
+                            <div class="card-footer text-center">
+                                <a class="btn btn-primary w-100" href="{{ path('app_front_formation_show', {'id': formation.id}) }}">
+                                    Voir détails <i class="fa fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+<!-- Formations List End -->
+{% endblock %}
