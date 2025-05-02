@@ -17,16 +17,16 @@ class ParticipationRepository extends ServiceEntityRepository
         parent::__construct($registry, Participation::class);
     }
     public function findByEvenement(Evenement $evenement): array
-{
-    return $this->createQueryBuilder('p')
-        ->andWhere('p.evenement = :evenement')
-        ->setParameter('evenement', $evenement)
-        ->leftJoin('p.utilisateur', 'u') // pour accéder à l'utilisateur facilement dans le Twig
-        ->addSelect('u')
-        ->orderBy('p.dateParticipation', 'DESC')
-        ->getQuery()
-        ->getResult();
-}
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.evenement = :evenement')
+            ->setParameter('evenement', $evenement)
+            ->leftJoin('p.utilisateur', 'u') // Jointure avec l'utilisateur
+            ->addSelect('u') // Ajout de l'utilisateur dans la sélection
+            ->orderBy('p.dateParticipation', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 
 
 //    /**

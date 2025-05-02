@@ -40,4 +40,15 @@ class EvenementRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+public function getEvenementsAvailable($date): ?Array
+   {
+        
+      $result = $this->createQueryBuilder('e')
+           ->andWhere('e.Date  >= :date')
+           ->setParameter('date', $date)
+           ->getQuery()
+           ->getResult()
+        ;
+       return $result;
+   }
 }

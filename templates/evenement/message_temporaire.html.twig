@@ -1,0 +1,21 @@
+{% extends 'Front_Base.html.twig' %}
+
+{% block body %}
+	<div class="container mt-4">
+		{% for label, messages in app.flashes %}
+			{% for message in messages %}
+				<div class="alert alert-{{ label }}">
+					{{ message }}
+				</div>
+			{% endfor %}
+		{% endfor %}
+
+
+	</div>
+
+	<script>
+		setTimeout(function () {
+window.location.href = "{{ path('app_evenement') }}";
+}, 5000); // 5000 ms = 5 secondes
+	</script>
+{% endblock %}

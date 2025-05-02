@@ -335,7 +335,7 @@
 													<tbody>
 														{% for participation in participations %}
 															<tr>
-																<td>{{ participation.id }}</td>
+																<td>{{ participation.utilisateur.nom }}</td>
 																<td>{{ participation.dateParticipation ? participation.dateParticipation|date('Y-m-d H:i:s') : '' }}</td>
 																<td>{{ participation.statut }}</td>
 																<td>
