@@ -4,29 +4,29 @@
 
 {% block body %}
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">
+        <div class="row">
+            <div class="col-md-9" style="margin-left: 280px;">
+                <div class="card shadow-lg border-0" style="border-radius: 18px;">
+                    <div class="card-header bg-primary text-white" style="border-radius: 18px 18px 0 0;">
                         <h1 class="h3 mb-0"><i class="fas fa-plus me-2"></i>Create New Assignment</h1>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body bg-light">
                         {{ form_start(form) }}
-                            <div class="mb-3">
-                                {{ form_label(form.tache, 'Task', {'label_attr': {'class': 'form-label'}}) }}
-                                {{ form_widget(form.tache, {'attr': {'class': 'form-control'}}) }}
+                            <div class="mb-4">
+                                {{ form_label(form.tache, 'Task', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                {{ form_widget(form.tache, {'attr': {'class': 'form-control shadow-sm'}}) }}
                                 {{ form_errors(form.tache) }}
                             </div>
 
-                            <div class="mb-3">
-                                {{ form_label(form.employe, 'Employee', {'label_attr': {'class': 'form-label'}}) }}
-                                {{ form_widget(form.employe, {'attr': {'class': 'form-control'}}) }}
+                            <div class="mb-4">
+                                {{ form_label(form.employe, 'Employee', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                {{ form_widget(form.employe, {'attr': {'class': 'form-control shadow-sm'}}) }}
                                 {{ form_errors(form.employe) }}
                             </div>
 
-                            <div class="mb-3">
-                                {{ form_label(form.date_affectation, 'Assignment Date', {'label_attr': {'class': 'form-label'}}) }}
-                                {{ form_widget(form.date_affectation, {'attr': {'class': 'form-control'}}) }}
+                            <div class="mb-4">
+                                {{ form_label(form.date_affectation, 'Assignment Date', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                {{ form_widget(form.date_affectation, {'attr': {'class': 'form-control shadow-sm'}}) }}
                                 {{ form_errors(form.date_affectation) }}
                             </div>
 
@@ -44,4 +44,4 @@
             </div>
         </div>
     </div>
-{% endblock %} 
+{% endblock %}

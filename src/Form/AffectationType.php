@@ -30,7 +30,7 @@ class AffectationType extends AbstractType
             ])
             ->add('employe', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => 'iyedNomUser',
+                'choice_label' => 'name',
                 'label' => 'Employee',
                 'attr' => ['class' => 'form-control']
             ]);
@@ -42,4 +42,4 @@ class AffectationType extends AbstractType
             'data_class' => Affectation::class,
         ]);
     }
-} 
+}

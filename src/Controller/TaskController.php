@@ -65,16 +65,28 @@ class TaskController extends AbstractController
             throw $this->createAccessDeniedException('You must be logged in to view your tasks.');
         }
         $search = $request->query->get('search');
+        $filter = $request->query->get('filter');
         $page = $request->query->getInt('page', 1);
-        $queryBuilder = $tacheRepository->getSearchQueryBuilder($search);
+        $status = null;
+        if ($filter === 'completed') {
+            $status = 'Completed';
+        } elseif ($filter === 'pending') {
+            $status = null; // We'll filter out completed below
+        }
+        $queryBuilder = $tacheRepository->getSearchQueryBuilder($search, $status);
         $queryBuilder->leftJoin('t.affectations', 'a')
             ->leftJoin('a.employe', 'e')
             ->andWhere('e.id = :employeeId')
             ->setParameter('employeeId', $user->getId());
+        if ($filter === 'pending') {
+            $queryBuilder->andWhere('t.statut_tache != :completedStatus')
+                ->setParameter('completedStatus', 'Completed');
+        }
         $pagination = $paginator->paginate($queryBuilder, $page, 8);
         return $this->render('task/employee/index.html.twig', [
             'tasks' => $pagination,
             'search' => $search,
+            'filter' => $filter,
         ]);
     }
 
@@ -194,6 +206,13 @@ class TaskController extends AbstractController
     #[Route('/task/{id_tache}/update-progress', name: 'app_task_update_progress', methods: ['POST'])]
     public function updateProgress(Request $request, Tache $tache, EntityManagerInterface $entityManager): Response
     {
+        $now = new \DateTime();
+        $deadline = $tache->getDeadline();
+        if ($deadline && $now > $deadline) {
+            $this->addFlash('error', 'You cannot update the progress after the deadline has passed.');
+            return $this->redirectToRoute('app_employee_tasks');
+        }
+
         $newProgression = $request->request->get('progression');
 
         if ($newProgression !== null && is_numeric($newProgression)) {
