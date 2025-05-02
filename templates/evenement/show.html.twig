@@ -112,53 +112,60 @@
 	<script>
 		document.addEventListener('DOMContentLoaded', function () { // Sélectionner le bouton par son id dynamique (ex: btn-participer-7)
 const btn = document.getElementById('btn-participer');
+const loadingOverlay = new LoadingOverlay();
 
-                    if (btn) {
-                    btn.addEventListener('click', function () {
-                    const evenementId = this.dataset.id;
+if (btn) {
+btn.addEventListener('click', function () {
+const evenementId = this.dataset.id;
+if (typeof loadingOverlay !== 'undefined' && loadingOverlay.show) {
+loadingOverlay.show();
+}
 
-                    fetch (`/evenement/${evenementId}/participer`, {
-                    method: 'POST',
-                    headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Content-Type': 'application/json'
-                    }
-                    }).then(response => response.json()).then(data => {
-                    if (data.success) {
-                    console.log('Réponse AJAX :', data.success);
-                    showSuccess(data.success);
-                    setTimeout(function () {
-                        window.location.href = "{{ path('app_evenement') }}";
-                    }, 2000); 
-                    
-                    } else if (data.error) {
-                    console.log('Réponse AJAX :', data.error);
-                    showError('Erreur : ' + data.error);
-                    setTimeout(function () {
-                        window.location.href = "{{ path('app_evenement') }}";
-                    }, 2000); 
-                    }
-                    }).catch(error => {
-                    console.log('Réponse AJAX :', error);
-                    console.error('Erreur AJAX :', error);
-                    });
-                    });
-                    }
-                    });
-                        </script>
+fetch (`/evenement/${evenementId}/participer`, {
+method: 'POST',
+headers: {
+'X-Requested-With': 'XMLHttpRequest',
+'Content-Type': 'application/json'
+}
+}).then(response => response.json()).then(data => { // Masquer l'indicateur de chargement
+if (typeof loadingOverlay !== 'undefined' && loadingOverlay.hide) {
+loadingOverlay.hide();
+}
+if (data.success) {
+console.log('Réponse AJAX :', data.success);
+showSuccess(data.success);
+setTimeout(function () {
+window.location.href = "{{ path('app_evenement') }}";
+}, 2000);
 
-                        <script>
-                            document.getElementById('share-button').addEventListener('click', async () => {
-                    if (navigator.share) {
-                    try {
-                    await navigator.share({title: '{{ evenement.NomEvenement }}', text: '{{ evenement.Description }}', url: '{{ url('app_evenement_show', {id: evenement.id}, true) }}'});
-                    alert('Événement partagé avec succès !');
-                    } catch (error) {
-                    console.error('Erreur lors du partage :', error);
-                    }
-                    } else {
-                    alert('Le partage n\'est pas pris en charge sur ce navigateur.');
-                    }
-                    });
+} else if (data.error) {
+console.log('Réponse AJAX :', data.error);
+showError('Erreur : ' + data.error);
+setTimeout(function () {
+window.location.href = "{{ path('app_evenement') }}";
+}, 2000);
+}
+}).catch(error => {
+console.log('Réponse AJAX :', error);
+console.error('Erreur AJAX :', error);
+});
+});
+}
+});
+	</script>
+
+	<script>
+		document.getElementById('share-button').addEventListener('click', async () => {
+if (navigator.share) {
+try {
+await navigator.share({title: '{{ evenement.NomEvenement }}', text: '{{ evenement.Description }}', url: '{{ url('app_evenement_show', {id: evenement.id}, true) }}'});
+alert('Événement partagé avec succès !');
+} catch (error) {
+console.error('Erreur lors du partage :', error);
+}
+} else {
+alert('Le partage n\'est pas pris en charge sur ce navigateur.');
+}
+});
 	</script>
 {% endblock %}

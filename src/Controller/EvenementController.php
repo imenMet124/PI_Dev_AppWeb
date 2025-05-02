@@ -206,7 +206,7 @@ final class EvenementController extends AbstractController
     public function participer(Request $request, Evenement $evenement, EntityManagerInterface $entityManager): JsonResponse
     {
         // Simuler un utilisateur connecté (temporaire)
-        $utilisateur = $entityManager->getRepository(Utilisateur::class)->find(1);
+        $utilisateur = $entityManager->getRepository(Utilisateur::class)->find(3);
     
         if (!$utilisateur) {
             return new JsonResponse(['error' => 'Utilisateur non trouvé.'], 404);
