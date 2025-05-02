@@ -47,6 +47,11 @@
                                         </a>
                                     </div>
                                 </div>
+                                <form method="POST" action="{{ path('app_task_update_progress', {'id_tache': task.idTache}) }}" class="mt-3 d-flex align-items-center">
+                                    <input type="number" name="progression" min="0" max="100" value="{{ task.progression }}" class="form-control form-control-sm me-2" style="width: 80px;" {% if task.progression == 100 %}disabled{% endif %}>
+                                    <button type="submit" class="btn btn-sm btn-success" {% if task.progression == 100 %}disabled{% endif %}>Update</button>
+                                    <span class="ms-2">{{ task.progression }}%</span>
+                                </form>
                             </div>
                         </div>
                     </div>

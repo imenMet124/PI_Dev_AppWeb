@@ -37,16 +37,6 @@ class TacheType extends AbstractType
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control']
             ])
-            ->add('statutTache', ChoiceType::class, [
-                'label' => 'Status',
-                'required' => true,
-                'choices' => [
-                    'Not Started' => 'Not Started',
-                    'In Progress' => 'In Progress',
-                    'Completed' => 'Completed'
-                ],
-                'attr' => ['class' => 'form-control']
-            ])
             ->add('priorite', ChoiceType::class, [
                 'label' => 'Priority',
                 'required' => true,

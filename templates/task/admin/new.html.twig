@@ -117,20 +117,6 @@
                                         <div class="row g-3">
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    {{ form_label(form.statutTache, 'Status', {'label_attr': {'class': 'form-label fw-medium'}}) }}
-                                                    <div class="input-group">
-                                                        <span class="input-group-text bg-light border-end-0">
-                                                            <i class="fas fa-tasks text-muted"></i>
-                                                        </span>
-                                                        {{ form_widget(form.statutTache, {
-                                                            'attr': {'class': 'form-select shadow-sm border-start-0'}
-                                                        }) }}
-                                                    </div>
-                                                    {{ form_errors(form.statutTache, {'attr': {'class': 'text-danger small mt-1'}}) }}
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
                                                     {{ form_label(form.priorite, 'Priority', {'label_attr': {'class': 'form-label fw-medium'}}) }}
                                                     <div class="input-group">
                                                         <span class="input-group-text bg-light border-end-0">
@@ -160,6 +146,20 @@
                                                         }) }}
                                                     </div>
                                                     {{ form_errors(form.progression, {'attr': {'class': 'text-danger small mt-1'}}) }}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    {{ form_label(form.projet, 'Project', {'label_attr': {'class': 'form-label fw-medium'}}) }}
+                                                    <div class="input-group">
+                                                        <span class="input-group-text bg-light border-end-0">
+                                                            <i class="fas fa-project-diagram text-muted"></i>
+                                                        </span>
+                                                        {{ form_widget(form.projet, {
+                                                            'attr': {'class': 'form-select shadow-sm border-start-0'}
+                                                        }) }}
+                                                    </div>
+                                                    {{ form_errors(form.projet, {'attr': {'class': 'text-danger small mt-1'}}) }}
                                                 </div>
                                             </div>
                                         </div>

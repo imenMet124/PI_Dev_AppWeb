@@ -115,14 +115,22 @@ class TacheRepository extends ServiceEntityRepository
     }
 
     /**
-     * Returns a QueryBuilder for searching tasks by a term (title or description)
+     * Returns a QueryBuilder for searching tasks by a term (title or description), status, and priority
      */
-    public function getSearchQueryBuilder(?string $term): QueryBuilder
+    public function getSearchQueryBuilder(?string $term, ?string $status = null, ?string $priority = null): QueryBuilder
     {
         $qb = $this->createQueryBuilder('t');
         if ($term) {
             $qb->andWhere('t.titre_tache LIKE :term OR t.desc_tache LIKE :term')
                ->setParameter('term', '%' . $term . '%');
+        }
+        if ($status && $status !== 'Filter by Status') {
+            $qb->andWhere('t.statut_tache = :status')
+               ->setParameter('status', $status);
+        }
+        if ($priority && $priority !== 'Filter by Priority') {
+            $qb->andWhere('t.priorite = :priority')
+               ->setParameter('priority', $priority);
         }
         return $qb->orderBy('t.id_tache', 'DESC');
     }

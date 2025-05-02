@@ -32,9 +32,20 @@ class TaskController extends AbstractController
         $isAdmin = true; // Change this to false to test employee view
 
         $search = $request->query->get('search');
+        $status = $request->query->get('status');
+        $priority = $request->query->get('priority');
         $page = $request->query->getInt('page', 1);
-        $queryBuilder = $tacheRepository->getSearchQueryBuilder($search);
+        $queryBuilder = $tacheRepository->getSearchQueryBuilder($search, $status, $priority);
         $pagination = $paginator->paginate($queryBuilder, $page, 8);
+
+        if ($request->isXmlHttpRequest()) {
+            // Render only the table for AJAX
+            return $this->render('task/admin/index.html.twig', [
+                'tasks' => $pagination,
+                'search' => $search,
+                'ajax' => true,
+            ]);
+        }
 
         if ($isAdmin) {
             return $this->render('task/admin/index.html.twig', [
@@ -82,6 +93,16 @@ class TaskController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Set status automatically based on progression
+            $progression = $tache->getProgression();
+            if ($progression == 0) {
+                $tache->setStatutTache('Not Started');
+            } elseif ($progression == 100) {
+                $tache->setStatutTache('Completed');
+            } else {
+                $tache->setStatutTache('In Progress');
+            }
+
             // Handle user assignments
             if ($form->has('users')) {
                 $users = $form->get('users')->getData();
@@ -182,8 +203,12 @@ class TaskController extends AbstractController
             if ($newProgression > $tache->getProgression()) {
                 $tache->setProgression($newProgression);
 
-                // Update task status if it was "Not Started"
-                if ($tache->getStatutTache() === 'Not Started') {
+                // Set status based on progression
+                if ($newProgression == 0) {
+                    $tache->setStatutTache('Not Started');
+                } elseif ($newProgression == 100) {
+                    $tache->setStatutTache('Completed');
+                } else {
                     $tache->setStatutTache('In Progress');
                 }
 
