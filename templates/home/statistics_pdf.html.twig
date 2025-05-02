@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Task Statistics PDF</title>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 14px; }
+        h2 { text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #333; padding: 8px; text-align: center; }
+        th { background: #eee; }
+        .section { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h2>Task Statistics</h2>
+    <div class="section">
+        <strong>Total Tasks:</strong> {{ totalTasks }}<br>
+        <strong>Completed Tasks:</strong> {{ totalCompleted }}<br>
+        <strong>Completion Rate:</strong>
+        {% if totalTasks > 0 %}
+            {{ (totalCompleted / totalTasks * 100)|number_format(1) }}%
+        {% else %}
+            0%
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <strong>Top Completer:</strong>
+        {% if topCompleter %}
+            {{ topCompleter.userName }} ({{ topCompleter.completed }}/{{ topCompleter.total }})
+        {% else %}
+            No data available.
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <strong>Least Completer:</strong>
+        {% if leastCompleter %}
+            {{ leastCompleter.userName }} ({{ leastCompleter.completed }}/{{ leastCompleter.total }})
+        {% else %}
+            No data available.
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <strong>Completion Rate Per User</strong>
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Completed</th>
+                    <th>Total</th>
+                    <th>Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat in completionRates %}
+                    <tr>
+                        <td>{{ stat.userName }}</td>
+                        <td>{{ stat.completed }}</td>
+                        <td>{{ stat.total }}</td>
+                        <td>
+                            {% if stat.total > 0 %}
+                                {{ (stat.completed / stat.total * 100)|number_format(1) }}%
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">No data available.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

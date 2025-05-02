@@ -1,61 +1,107 @@
-{% extends 'base.html.twig' %}
+{% extends 'Back_Base.html.twig' %}
 
 {% block title %}Edit Project{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">
-                        <h1 class="h3 mb-0"><i class="fas fa-edit me-2"></i>Edit Project</h1>
+<div class="wrapper">
+    <div class="main-panel">
+        <div class="content">
+            <div class="page-inner">
+                <div class="page-header d-flex align-items-center justify-content-between mb-4">
+                    <div>
+                        <h4 class="page-title fw-bold">Edit Project</h4>
+                        <p class="text-muted">Modify project details and settings</p>
                     </div>
-                    <div class="card-body">
-                        {{ form_start(form) }}
-                            <div class="mb-3">
-                                {{ form_label(form.nom_projet, 'Project Name', {'label_attr': {'class': 'form-label'}}) }}
-                                {{ form_widget(form.nom_projet, {'attr': {'class': 'form-control'}}) }}
-                                {{ form_errors(form.nom_projet) }}
-                            </div>
+                    <div>
+                        <a href="{{ path('app_project_index') }}" class="btn btn-outline-primary btn-rounded shadow-sm">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Project List
+                        </a>
+                    </div>
+                </div>
 
-                            <div class="mb-3">
-                                {{ form_label(form.desc_projet, 'Description', {'label_attr': {'class': 'form-label'}}) }}
-                                {{ form_widget(form.desc_projet, {'attr': {'class': 'form-control', 'rows': '4'}}) }}
-                                {{ form_errors(form.desc_projet) }}
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                            <div class="card-header bg-white border-0 pt-4 pb-0">
+                                <h5 class="card-title fw-bold mb-0">{{ projet.nomProjet }}</h5>
                             </div>
+                            <div class="card-body p-4">
+                                {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+                                    <div class="mb-3">
+                                        {{ form_label(form.nom_projet, 'Project Name', {'label_attr': {'class': 'form-label fw-medium'}}) }}
+                                        {{ form_widget(form.nom_projet, {'attr': {'class': 'form-control form-control-lg shadow-sm border-gray-300', 'placeholder': 'Enter project name'}}) }}
+                                        {{ form_errors(form.nom_projet) }}
+                                    </div>
 
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    {{ form_label(form.date_debut_projet, 'Start Date', {'label_attr': {'class': 'form-label'}}) }}
-                                    {{ form_widget(form.date_debut_projet, {'attr': {'class': 'form-control'}}) }}
-                                    {{ form_errors(form.date_debut_projet) }}
-                                </div>
+                                    <div class="mb-4">
+                                        {{ form_label(form.desc_projet, 'Description', {'label_attr': {'class': 'form-label fw-medium'}}) }}
+                                        {{ form_widget(form.desc_projet, {'attr': {'class': 'form-control shadow-sm border-gray-300', 'rows': '4', 'placeholder': 'Enter project description'}}) }}
+                                        {{ form_errors(form.desc_projet) }}
+                                    </div>
 
-                                <div class="col-md-6 mb-3">
-                                    {{ form_label(form.date_fin_projet, 'End Date', {'label_attr': {'class': 'form-label'}}) }}
-                                    {{ form_widget(form.date_fin_projet, {'attr': {'class': 'form-control'}}) }}
-                                    {{ form_errors(form.date_fin_projet) }}
-                                </div>
+                                    <div class="row mb-4">
+                                        <div class="col-md-6">
+                                            {{ form_label(form.date_debut_projet, 'Start Date', {'label_attr': {'class': 'form-label fw-medium'}}) }}
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light border-gray-300">
+                                                    <i class="fas fa-calendar-alt text-primary"></i>
+                                                </span>
+                                                {{ form_widget(form.date_debut_projet, {'attr': {'class': 'form-control shadow-sm border-gray-300'}}) }}
+                                            </div>
+                                            {{ form_errors(form.date_debut_projet) }}
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            {{ form_label(form.date_fin_projet, 'End Date', {'label_attr': {'class': 'form-label fw-medium'}}) }}
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light border-gray-300">
+                                                    <i class="fas fa-calendar-check text-primary"></i>
+                                                </span>
+                                                {{ form_widget(form.date_fin_projet, {'attr': {'class': 'form-control shadow-sm border-gray-300'}}) }}
+                                            </div>
+                                            {{ form_errors(form.date_fin_projet) }}
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        {{ form_label(form.statut_projet, 'Status', {'label_attr': {'class': 'form-label fw-medium'}}) }}
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light border-gray-300">
+                                                <i class="fas fa-tag text-primary"></i>
+                                            </span>
+                                            {{ form_widget(form.statut_projet, {'attr': {'class': 'form-select shadow-sm border-gray-300'}}) }}
+                                        </div>
+                                        {{ form_errors(form.statut_projet) }}
+                                    </div>
+
+                                    <div class="d-flex justify-content-between mt-4 pt-2">
+                                        <a href="{{ path('app_project_show', {'id_projet': projet.idProjet}) }}" class="btn btn-outline-secondary">
+                                            <i class="fas fa-times me-2"></i>Cancel
+                                        </a>
+                                        <button type="submit" class="btn btn-primary px-4">
+                                            <i class="fas fa-save me-2"></i>Save Changes
+                                        </button>
+                                    </div>
+                                {{ form_end(form) }}
                             </div>
-
-                            <div class="mb-3">
-                                {{ form_label(form.statut_projet, 'Status', {'label_attr': {'class': 'form-label'}}) }}
-                                {{ form_widget(form.statut_projet, {'attr': {'class': 'form-control'}}) }}
-                                {{ form_errors(form.statut_projet) }}
-                            </div>
-
-                            <div class="d-flex justify-content-between">
-                                <a href="{{ path('app_project_index') }}" class="btn btn-secondary">
-                                    <i class="fas fa-arrow-left me-2"></i>Back to list
-                                </a>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-2"></i>Update Project
-                                </button>
-                            </div>
-                        {{ form_end(form) }}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-{% endblock %} 
+</div>
+
+{% block stylesheets %}
+<style>
+    .form-control:focus, .form-select:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    .border-gray-300 {
+        border-color: #dee2e6;
+    }
+</style>
+{% endblock %}
+{% endblock %}

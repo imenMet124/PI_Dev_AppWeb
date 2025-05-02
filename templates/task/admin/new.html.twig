@@ -7,96 +7,190 @@
     <div class="main-panel">
         <div class="content">
             <div class="page-inner">
-                <div class="page-header">
-                    <h4 class="page-title">Create New Task</h4>
-                    <div class="btn-group btn-group-page-header ml-auto">
-                        <a href="{{ path('app_task_index') }}" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left me-2"></i>Back to List
+                <div class="page-header d-flex align-items-center justify-content-between mb-4">
+                    <div>
+                        <h4 class="page-title fw-bold">Create New Task</h4>
+                        <p class="text-muted">Create a new task and assign it to employees</p>
+                    </div>
+                    <div>
+                        <a href="{{ path('app_task_index') }}" class="btn btn-outline-primary btn-rounded shadow-sm">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Task List
                         </a>
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
+                <div class="row justify-content-center">
+                    <div class="col-md-10">
+                        <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                            <div class="card-body p-4">
+                                <div class="row mb-4">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-info border-0 shadow-sm" style="border-radius: 10px; background: linear-gradient(45deg, #f5f9ff, #eef5ff);">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <i class="fas fa-info-circle text-primary me-3" style="font-size: 1.5rem;"></i>
+                                                <h5 class="alert-heading m-0 fw-bold">Task Requirements</h5>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <ul class="mb-0 ps-3">
+                                                        <li><strong>Title:</strong> Required, between 3-150 characters</li>
+                                                        <li><strong>Description:</strong> Optional, max 1000 characters</li>
+                                                        <li><strong>Priority:</strong> Low, Medium, or High</li>
+                                                        <li><strong>Status:</strong> Not Started, In Progress, Completed</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <ul class="mb-0 ps-3">
+                                                        <li><strong>Deadline:</strong> Must be a future date</li>
+                                                        <li><strong>Progress:</strong> Between 0% and 100%</li>
+                                                        <li><strong>Project:</strong> Required</li>
+                                                        <li><strong>Assignment:</strong> At least one employee</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {% if not form.vars.valid %}
+                                    <div class="alert alert-danger border-0 shadow-sm mb-4" style="border-radius: 10px;">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-exclamation-circle text-danger me-3" style="font-size: 1.5rem;"></i>
+                                            <div>
+                                                <h5 class="alert-heading m-0 fw-bold">Form contains errors</h5>
+                                                <p class="mb-0 mt-1">Please correct the highlighted fields before submitting.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
                                 {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                {{ form_label(form.titreTache, 'Title', {'label_attr': {'class': 'form-label'}}) }}
-                                                {{ form_widget(form.titreTache, {'attr': {'class': 'form-control'}}) }}
+                                    <div class="card border shadow-sm p-3 mb-4" style="border-radius: 10px; border-left: 4px solid #007bff !important;">
+                                        <h5 class="fw-bold text-primary mb-3"><i class="fas fa-info me-2"></i>Basic Information</h5>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    {{ form_label(form.titreTache, 'Task Title', {'label_attr': {'class': 'form-label fw-medium'}}) }}
+                                                    {{ form_widget(form.titreTache, {'attr': {
+                                                        'class': 'form-control form-control-lg shadow-sm',
+                                                        'placeholder': 'Enter task title...'
+                                                    }}) }}
+                                                    {{ form_errors(form.titreTache, {'attr': {'class': 'text-danger mt-1 small'}}) }}
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                {{ form_label(form.deadline, 'Deadline', {'label_attr': {'class': 'form-label'}}) }}
-                                                {{ form_widget(form.deadline, {'attr': {'class': 'form-control datepicker'}}) }}
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    {{ form_label(form.deadline, 'Deadline', {'label_attr': {'class': 'form-label fw-medium'}}) }}
+                                                    <div class="input-group">
+                                                        <span class="input-group-text bg-light border-end-0">
+                                                            <i class="far fa-calendar-alt text-muted"></i>
+                                                        </span>
+                                                        {{ form_widget(form.deadline, {'attr': {
+                                                            'class': 'form-control datepicker border-start-0',
+                                                            'placeholder': 'Select deadline date...'
+                                                        }}) }}
+                                                    </div>
+                                                    {{ form_errors(form.deadline, {'attr': {'class': 'text-danger mt-1 small'}}) }}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="row mb-3">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                {{ form_label(form.descTache, 'Description', {'label_attr': {'class': 'form-label'}}) }}
-                                                {{ form_widget(form.descTache, {
-                                                    'attr': {
-                                                        'class': 'form-control',
-                                                        'rows': 4
-                                                    }
-                                                }) }}
-                                            </div>
+                                    <div class="card border shadow-sm p-3 mb-4" style="border-radius: 10px; border-left: 4px solid #6f42c1 !important;">
+                                        <h5 class="fw-bold text-purple mb-3"><i class="fas fa-align-left me-2"></i>Task Details</h5>
+                                        <div class="form-group">
+                                            {{ form_label(form.descTache, 'Description', {'label_attr': {'class': 'form-label fw-medium'}}) }}
+                                            {{ form_widget(form.descTache, {
+                                                'attr': {
+                                                    'class': 'form-control shadow-sm',
+                                                    'rows': 4,
+                                                    'placeholder': 'Describe the task in detail...'
+                                                }
+                                            }) }}
+                                            <div class="small text-muted mt-1">Provide clear instructions and details about the task</div>
+                                            {{ form_errors(form.descTache, {'attr': {'class': 'text-danger small'}}) }}
                                         </div>
                                     </div>
 
-                                    <div class="row mb-3">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                {{ form_label(form.statutTache, 'Status', {'label_attr': {'class': 'form-label'}}) }}
-                                                {{ form_widget(form.statutTache, {'attr': {'class': 'form-select'}}) }}
+                                    <div class="card border shadow-sm p-3 mb-4" style="border-radius: 10px; border-left: 4px solid #fd7e14 !important;">
+                                        <h5 class="fw-bold text-orange mb-3"><i class="fas fa-sliders-h me-2"></i>Task Parameters</h5>
+                                        <div class="row g-3">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    {{ form_label(form.statutTache, 'Status', {'label_attr': {'class': 'form-label fw-medium'}}) }}
+                                                    <div class="input-group">
+                                                        <span class="input-group-text bg-light border-end-0">
+                                                            <i class="fas fa-tasks text-muted"></i>
+                                                        </span>
+                                                        {{ form_widget(form.statutTache, {
+                                                            'attr': {'class': 'form-select shadow-sm border-start-0'}
+                                                        }) }}
+                                                    </div>
+                                                    {{ form_errors(form.statutTache, {'attr': {'class': 'text-danger small mt-1'}}) }}
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                {{ form_label(form.priorite, 'Priority', {'label_attr': {'class': 'form-label'}}) }}
-                                                {{ form_widget(form.priorite, {'attr': {'class': 'form-select'}}) }}
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    {{ form_label(form.priorite, 'Priority', {'label_attr': {'class': 'form-label fw-medium'}}) }}
+                                                    <div class="input-group">
+                                                        <span class="input-group-text bg-light border-end-0">
+                                                            <i class="fas fa-flag text-muted"></i>
+                                                        </span>
+                                                        {{ form_widget(form.priorite, {
+                                                            'attr': {'class': 'form-select shadow-sm border-start-0'}
+                                                        }) }}
+                                                    </div>
+                                                    {{ form_errors(form.priorite, {'attr': {'class': 'text-danger small mt-1'}}) }}
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                {{ form_label(form.progression, 'Progress', {'label_attr': {'class': 'form-label'}}) }}
-                                                {{ form_widget(form.progression, {
-                                                    'attr': {
-                                                        'class': 'form-control',
-                                                        'min': '0',
-                                                        'max': '100',
-                                                        'type': 'number'
-                                                    }
-                                                }) }}
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    {{ form_label(form.progression, 'Progress', {'label_attr': {'class': 'form-label fw-medium'}}) }}
+                                                    <div class="input-group">
+                                                        <span class="input-group-text bg-light border-end-0">
+                                                            <i class="fas fa-percentage text-muted"></i>
+                                                        </span>
+                                                        {{ form_widget(form.progression, {
+                                                            'attr': {
+                                                                'class': 'form-control shadow-sm border-start-0',
+                                                                'min': '0',
+                                                                'max': '100',
+                                                                'type': 'number'
+                                                            }
+                                                        }) }}
+                                                    </div>
+                                                    {{ form_errors(form.progression, {'attr': {'class': 'text-danger small mt-1'}}) }}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
                                     {% if form.users is defined %}
-                                    <div class="row mb-3">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                {{ form_label(form.users, 'Assign To', {'label_attr': {'class': 'form-label'}}) }}
-                                                {{ form_widget(form.users, {'attr': {'class': 'form-select'}}) }}
+                                    <div class="card border shadow-sm p-3 mb-4" style="border-radius: 10px; border-left: 4px solid #20c997 !important;">
+                                        <h5 class="fw-bold text-teal mb-3"><i class="fas fa-users me-2"></i>Assignment</h5>
+                                        <div class="form-group">
+                                            {{ form_label(form.users, 'Assign To', {'label_attr': {'class': 'form-label fw-medium'}}) }}
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-light border-end-0">
+                                                    <i class="fas fa-user-check text-muted"></i>
+                                                </span>
+                                                {{ form_widget(form.users, {
+                                                    'attr': {'class': 'form-select shadow-sm border-start-0'}
+                                                }) }}
                                             </div>
+                                            <div class="small text-muted mt-1">Select one or more employees to assign this task to</div>
+                                            {{ form_errors(form.users, {'attr': {'class': 'text-danger small'}}) }}
                                         </div>
                                     </div>
                                     {% endif %}
 
-                                    <div class="row mt-4">
-                                        <div class="col-12">
-                                            <div class="d-flex justify-content-end">
-                                                <button type="submit" class="btn btn-primary">
-                                                    <i class="fas fa-save me-2"></i>Create Task
-                                                </button>
-                                            </div>
-                                        </div>
+                                    <div class="d-flex justify-content-between mt-4">
+                                        <a href="{{ path('app_task_index') }}" class="btn btn-light shadow-sm">
+                                            <i class="fas fa-times me-1"></i> Cancel
+                                        </a>
+                                        <button type="submit" class="btn btn-primary btn-lg px-5 shadow">
+                                            <i class="fas fa-save me-2"></i>Create Task
+                                        </button>
                                     </div>
                                 {{ form_end(form) }}
                             </div>
@@ -107,4 +201,85 @@
         </div>
     </div>
 </div>
-{% endblock %} 
+
+<style>
+    .card {
+        transition: all 0.3s;
+    }
+    
+    .card:hover {
+        transform: translateY(-3px);
+    }
+    
+    .form-control, .form-select, .input-group-text {
+        border-radius: 8px;
+        padding: 0.6rem 1rem;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.1);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(45deg, #007bff, #0069d9);
+        border: none;
+        border-radius: 10px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(45deg, #0069d9, #0056b3);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 105, 217, 0.3);
+    }
+    
+    .btn-outline-primary {
+        border: 1px solid #007bff;
+        color: #007bff;
+        border-radius: 10px;
+        transition: all 0.3s;
+    }
+    
+    .btn-outline-primary:hover {
+        background: rgba(0, 123, 255, 0.1);
+        border-color: #007bff;
+        color: #007bff;
+    }
+    
+    .btn-light {
+        background: #f8f9fa;
+        border: 1px solid #ddd;
+        color: #6c757d;
+        border-radius: 10px;
+    }
+    
+    .text-purple {
+        color: #6f42c1;
+    }
+    
+    .text-orange {
+        color: #fd7e14;
+    }
+    
+    .text-teal {
+        color: #20c997;
+    }
+    
+    /* Custom animation for validation feedback */
+    .is-invalid {
+        animation: shake 0.5s;
+    }
+    
+    @keyframes shake {
+        0% { transform: translateX(0); }
+        25% { transform: translateX(5px); }
+        50% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+        100% { transform: translateX(0); }
+    }
+</style>
+
+{% endblock %}

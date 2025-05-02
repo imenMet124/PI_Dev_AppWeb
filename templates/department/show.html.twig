@@ -1,0 +1,48 @@
+{% extends 'Back_Base.html.twig' %}
+
+{% block title %}Department Details{% endblock %}
+
+{% block body %}
+<div class="content" style="margin-left:260px;">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="card-title mb-0">Department Details</h4>
+                        <div>
+                            <a href="{{ path('app_department_index') }}" class="btn btn-secondary mx-1">
+                                <i class="fa fa-arrow-left"></i> Back to List
+                            </a>
+                            <a href="{{ path('app_department_edit', {'id': department.id}) }}" class="btn btn-primary mx-1">
+                                <i class="fa fa-edit"></i> Edit Department
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>ID:</strong> {{ department.id }}</li>
+                            <li class="list-group-item"><strong>Name:</strong> {{ department.name }}</li>
+                            <li class="list-group-item"><strong>Description:</strong> {{ department.description }}</li>
+                            <li class="list-group-item"><strong>Location:</strong> {{ department.location }}</li>
+                            <li class="list-group-item"><strong>Manager:</strong> {% if department.manager %}{{ department.manager.name }}{% else %}<span class="text-muted">No manager assigned</span>{% endif %}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center mt-4">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Danger Zone</h4>
+                    </div>
+                    <div class="card-body">
+                        {{ include('department/_delete_form.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

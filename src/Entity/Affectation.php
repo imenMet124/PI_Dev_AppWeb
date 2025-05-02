@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'affectation')]
@@ -14,14 +15,21 @@ class Affectation
     private ?int $id_affectation = null;
 
     #[ORM\Column(name: 'date_affectation', type: 'date', nullable: true)]
+    #[Assert\Type("\DateTimeInterface", message: "La date d'affectation doit être une date valide")]
+    #[Assert\LessThanOrEqual(
+        "today",
+        message: "La date d'affectation ne peut pas être dans le futur"
+    )]
     private ?\DateTimeInterface $date_affectation;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(name: 'id_tache', referencedColumnName: 'id_tache')]
+    #[Assert\NotNull(message: "Une tâche doit être associée à l'affectation")]
     private ?Tache $tache = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(name: 'id_emp', referencedColumnName: 'iyed_id_user')]
+    #[ORM\JoinColumn(name: 'id_emp', referencedColumnName: 'iyedIdUser')]
+    #[Assert\NotNull(message: "Un employé doit être associé à l'affectation")]
     private ?User $employe = null;
 
     // Getters and setters for all properties

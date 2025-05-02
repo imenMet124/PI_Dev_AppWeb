@@ -1,6 +1,22 @@
 {% extends "Front_Base.html.twig" %}
 
 {% block body %}
+    <!-- Weather Widget - Top of Home Page -->
+    <div id="weather-widget" class="mb-4" style="max-width: 400px; margin: 0 auto;">
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center">
+                <div id="weather-loading" class="mb-2" style="display:none;">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div>Fetching your local weather...</div>
+                </div>
+                <div id="weather-content"></div>
+                <div id="weather-error" class="text-danger" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Carousel Start -->
     <div class="container-fluid p-0 mb-5 wow fadeIn" data-wow-delay="0.1s">
         <div id="header-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
@@ -588,6 +604,134 @@
         </div>
     </div>
     <!-- Testimonial End -->
+
+    <!-- Task Statistics Start -->
+    <div class="container mt-5">
+        <h2 class="mb-4">Task Statistics</h2>
+        <div class="mb-3 text-end">
+            <a href="{{ path('download_statistics_pdf') }}" class="btn btn-outline-primary">
+                <i class="fas fa-file-pdf me-2"></i>Download PDF
+            </a>
+        </div>
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Tasks</h5>
+                        <p class="display-6">{{ totalTasks }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Completed Tasks</h5>
+                        <p class="display-6">{{ totalCompleted }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Completion Rate</h5>
+                        <p class="display-6">
+                            {% if totalTasks > 0 %}
+                                {{ (totalCompleted / totalTasks * 100)|number_format(1) }}%
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h4>Top Completer</h4>
+        {% if topCompleter %}
+            <div class="alert alert-success">
+                {{ topCompleter.userName }} ({{ topCompleter.completed }}/{{ topCompleter.total }} tasks completed)
+            </div>
+        {% else %}
+            <div class="alert alert-warning">No data available.</div>
+        {% endif %}
+
+        <h4>Least Completer</h4>
+        {% if leastCompleter %}
+            <div class="alert alert-danger">
+                {{ leastCompleter.userName }} ({{ leastCompleter.completed }}/{{ leastCompleter.total }} tasks completed)
+            </div>
+        {% else %}
+            <div class="alert alert-warning">No data available.</div>
+        {% endif %}
+
+        <h4 class="mt-4">Completion Rate Per User</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Completed</th>
+                    <th>Total</th>
+                    <th>Rate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat in completionRates %}
+                    <tr>
+                        <td>{{ stat.userName }}</td>
+                        <td>{{ stat.completed }}</td>
+                        <td>{{ stat.total }}</td>
+                        <td>
+                            {% if stat.total > 0 %}
+                                {{ (stat.completed / stat.total * 100)|number_format(1) }}%
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center">No data available.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- Task Statistics End -->
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+const WEATHER_API_KEY = 'd72acde9fb091218811d3589f11873ff';
+const WEATHER_API_URL = 'https://api.openweathermap.org/data/2.5/weather';
+
+function showWeather(city) {
+    const url = `${WEATHER_API_URL}?q=${encodeURIComponent(city)}&appid=${WEATHER_API_KEY}&units=metric`;
+    fetch(url)
+        .then(res => res.json())
+        .then(weather => {
+            if (weather.cod !== 200) throw new Error(weather.message);
+            const icon = weather.weather[0].icon;
+            const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+            document.getElementById('weather-content').innerHTML = `
+                <div style="font-size: 1.2rem; font-weight: 500;">📍 ${weather.name}</div>
+                <img src="${iconUrl}" alt="Weather icon" style="width: 80px; height: 80px;">
+                <div style="font-size: 1.1rem; text-transform: capitalize;">${weather.weather[0].description}</div>
+                <div style="font-size: 2rem; font-weight: bold;">${Math.round(weather.main.temp)}°C</div>
+            `;
+            document.getElementById('weather-content').style.display = '';
+            document.getElementById('weather-error').style.display = 'none';
+        })
+        .catch(err => {
+            document.getElementById('weather-content').innerHTML = '';
+            document.getElementById('weather-error').textContent = 'Unable to fetch weather: ' + err.message;
+            document.getElementById('weather-error').style.display = '';
+        });
+}
+document.addEventListener('DOMContentLoaded', function () {
+    showWeather('Ariana,TN');
+});
+</script>
 {% endblock %}
 
 

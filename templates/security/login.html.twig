@@ -1,0 +1,52 @@
+{% extends 'Front_Base.html.twig' %}
+
+{% block title %}Login - EasyHR{% endblock %}
+
+{% block body %}
+    <!-- Login Start -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-5">
+                            <div class="text-center mb-4">
+                                <h1 class="display-5 mb-3">Welcome Back</h1>
+                                <p class="text-muted">Please login to your account</p>
+                            </div>
+
+                            {% if error %}
+                                <div class="alert alert-danger">
+                                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                                </div>
+                            {% endif %}
+
+                            <form method="post" action="{{ path('app_login') }}">
+                                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <input type="email" value="{{ last_username }}" name="email" id="email" class="form-control" required autofocus>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <input type="password" name="password" id="password" class="form-control" required>
+                                </div>
+
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-primary py-3" type="submit">Sign In</button>
+                                </div>
+
+                                <div class="text-center mt-3">
+                                    <p class="mb-0">Don't have an account? <a href="{{ path('app_register') }}" class="text-primary">Register here</a></p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Login End -->
+{% endblock %} 

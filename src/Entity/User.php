@@ -2,196 +2,247 @@
 
 namespace App\Entity;
 
-use App\Enum\RoleUserEnum;
-use App\Enum\StatutUserEnum;
+use App\Enum\UserRole;
+use App\Enum\UserStatus;
+use App\Repository\UserRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
-#[ORM\Entity]
-#[ORM\Table(name: 'user')]
-class User
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(name: 'iyed_id_user')]
-    private ?int $iyedIdUser = null;
+    #[ORM\Column(name: 'iyedIdUser', type: 'integer')]
+    private ?int $id = null;
 
-    #[ORM\Column(name: 'iyed_nom_user', length: 255)]
-    private string $iyedNomUser;
+    #[ORM\Column(length: 255, name: 'iyedNomUser')]
+    private ?string $name = null;
 
-    #[ORM\Column(name: 'iyed_email_user', length: 255)]
-    private string $iyedEmailUser;
+    #[ORM\Column(length: 255, unique: true, name: 'iyedEmailUser')]
+    private ?string $email = null;
 
-    #[ORM\Column(name: 'iyed_phone_user', length: 20)]
-    private string $iyedPhoneUser;
+    #[ORM\Column(length: 20, nullable: true, name: 'iyedPhoneUser')]
+    private ?string $phone = null;
 
-    #[ORM\Column(name: 'iyed_password_user', length: 255)]
-    private string $iyedPasswordUser;
+    #[ORM\Column(length: 255, name: 'iyedRoleUser')]
+    private ?string $role = null;
 
-    #[ORM\Column(name: 'iyed_role_user', type: 'string', enumType: RoleUserEnum::class)]
-    private RoleUserEnum $iyedRoleUser;
+    #[ORM\Column(length: 255, name: 'iyedPasswordUser')]
+    private ?string $password = null;
 
-    #[ORM\Column(name: 'iyed_position_user', length: 255)]
-    private string $iyedPositionUser;
+    #[ORM\Column(length: 255, name: 'iyedPositionUser')]
+    private ?string $position = null;
 
-    #[ORM\Column(name: 'iyed_salaire_user', type: 'decimal', precision: 10, scale: 2)]
-    private float $iyedSalaireUser;
+    #[ORM\Column(name: 'iyedSalaireUser')]
+    private ?float $salary = null;
 
-    #[ORM\Column(name: 'iyed_date_embauche_user', type: 'date')]
-    private \DateTimeInterface $iyedDateEmbaucheUser;
+    #[ORM\Column(type: Types::DATE_MUTABLE, name: 'iyedDateEmbaucheUser')]
+    private ?\DateTimeInterface $hireDate = null;
 
-    #[ORM\Column(name: 'iyed_statut_user', type: 'string', enumType: StatutUserEnum::class)]
-    private StatutUserEnum $iyedStatutUser;
+    #[ORM\Column(length: 255, name: 'iyedStatutUser')]
+    private ?string $status = null;
 
-    #[ORM\Column(name: 'iyed_id_dep_user', nullable: true)]
-    private ?int $iyedIdDepUser = null;
+    #[ORM\ManyToOne(inversedBy: 'employees', fetch: 'EAGER')]
+    #[ORM\JoinColumn(name: 'iyedIdDepUser', referencedColumnName: 'iyedIdDep', nullable: true)]
+    private ?Department $department = null;
 
-    #[ORM\OneToMany(mappedBy: 'employe', targetEntity: Affectation::class)]
-    private Collection $affectations;
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?UserPhoto $photo = null;
+
+    #[ORM\OneToOne(mappedBy: 'manager', cascade: ['persist', 'remove'])]
+    private ?Department $managedDepartment = null;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $todoistAccessToken = null;
 
     public function __construct()
     {
-        $this->affectations = new ArrayCollection();
+        $this->status = UserStatus::ACTIVE->value;
     }
 
-    // Getters and setters
-    public function getIyedIdUser(): ?int
+    public function getId(): ?int
     {
-        return $this->iyedIdUser;
+        return $this->id;
     }
 
-    public function getIyedNomUser(): string
+    public function getName(): ?string
     {
-        return $this->iyedNomUser;
+        return $this->name;
     }
 
-    public function setIyedNomUser(string $iyedNomUser): self
+    public function setName(string $name): static
     {
-        $this->iyedNomUser = $iyedNomUser;
+        $this->name = $name;
         return $this;
     }
 
-    public function getIyedEmailUser(): string
+    public function getEmail(): ?string
     {
-        return $this->iyedEmailUser;
+        return $this->email;
     }
 
-    public function setIyedEmailUser(string $iyedEmailUser): self
+    public function setEmail(string $email): static
     {
-        $this->iyedEmailUser = $iyedEmailUser;
+        $this->email = $email;
         return $this;
     }
 
-    public function getIyedPhoneUser(): string
+    public function getPhone(): ?string
     {
-        return $this->iyedPhoneUser;
+        return $this->phone;
     }
 
-    public function setIyedPhoneUser(string $iyedPhoneUser): self
+    public function setPhone(?string $phone): static
     {
-        $this->iyedPhoneUser = $iyedPhoneUser;
+        $this->phone = $phone;
         return $this;
     }
 
-    public function getIyedPasswordUser(): string
+    public function getUserIdentifier(): string
     {
-        return $this->iyedPasswordUser;
+        return (string) $this->email;
     }
 
-    public function setIyedPasswordUser(string $iyedPasswordUser): self
+    public function getRoles(): array
     {
-        $this->iyedPasswordUser = $iyedPasswordUser;
-        return $this;
-    }
-
-    public function getIyedRoleUser(): RoleUserEnum
-    {
-        return $this->iyedRoleUser;
-    }
-
-    public function setIyedRoleUser(RoleUserEnum $iyedRoleUser): self
-    {
-        $this->iyedRoleUser = $iyedRoleUser;
-        return $this;
-    }
-
-    public function getIyedPositionUser(): string
-    {
-        return $this->iyedPositionUser;
-    }
-
-    public function setIyedPositionUser(string $iyedPositionUser): self
-    {
-        $this->iyedPositionUser = $iyedPositionUser;
-        return $this;
-    }
-
-    public function getIyedSalaireUser(): float
-    {
-        return $this->iyedSalaireUser;
-    }
-
-    public function setIyedSalaireUser(float $iyedSalaireUser): self
-    {
-        $this->iyedSalaireUser = $iyedSalaireUser;
-        return $this;
-    }
-
-    public function getIyedDateEmbaucheUser(): \DateTimeInterface
-    {
-        return $this->iyedDateEmbaucheUser;
-    }
-
-    public function setIyedDateEmbaucheUser(\DateTimeInterface $iyedDateEmbaucheUser): self
-    {
-        $this->iyedDateEmbaucheUser = $iyedDateEmbaucheUser;
-        return $this;
-    }
-
-    public function getIyedStatutUser(): StatutUserEnum
-    {
-        return $this->iyedStatutUser;
-    }
-
-    public function setIyedStatutUser(StatutUserEnum $iyedStatutUser): self
-    {
-        $this->iyedStatutUser = $iyedStatutUser;
-        return $this;
-    }
-
-    public function getIyedIdDepUser(): ?int
-    {
-        return $this->iyedIdDepUser;
-    }
-
-    public function setIyedIdDepUser(?int $iyedIdDepUser): self
-    {
-        $this->iyedIdDepUser = $iyedIdDepUser;
-        return $this;
-    }
-
-    public function getAffectations(): Collection
-    {
-        return $this->affectations;
-    }
-
-    public function addAffectation(Affectation $affectation): self
-    {
-        if (!$this->affectations->contains($affectation)) {
-            $this->affectations[] = $affectation;
-            $affectation->setEmploye($this);
+        $roles = [];
+        if ($this->role) {
+            $roles[] = 'ROLE_' . $this->role;
         }
+        $roles[] = 'ROLE_USER';
+        return array_unique($roles);
+    }
+
+    public function getRole(): ?string
+    {
+        return $this->role;
+    }
+
+    public function setRole(?string $role): static
+    {
+        $this->role = $role;
         return $this;
     }
 
-    public function removeAffectation(Affectation $affectation): self
+    public function getPassword(): string
     {
-        if ($this->affectations->removeElement($affectation)) {
-            if ($affectation->getEmploye() === $this) {
-                $affectation->setEmploye(null);
-            }
+        return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+        return $this;
+    }
+
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+    }
+
+    public function getPosition(): ?string
+    {
+        return $this->position;
+    }
+
+    public function setPosition(string $position): static
+    {
+        $this->position = $position;
+        return $this;
+    }
+
+    public function getSalary(): ?float
+    {
+        return $this->salary;
+    }
+
+    public function setSalary(float $salary): static
+    {
+        $this->salary = $salary;
+        return $this;
+    }
+
+    public function getHireDate(): ?\DateTimeInterface
+    {
+        return $this->hireDate;
+    }
+
+    public function setHireDate(\DateTimeInterface $hireDate): static
+    {
+        $this->hireDate = $hireDate;
+        return $this;
+    }
+
+    public function getStatus(): UserStatus
+    {
+        return UserStatus::from($this->status);
+    }
+
+    public function setStatus(UserStatus $status): static
+    {
+        $this->status = $status->value;
+        return $this;
+    }
+
+    public function getDepartment(): ?Department
+    {
+        return $this->department;
+    }
+
+    public function setDepartment(?Department $department): static
+    {
+        // Avoid circular reference by not adding this user to the department's employees
+        $this->department = $department;
+        return $this;
+    }
+
+    public function getPhoto(): ?UserPhoto
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?UserPhoto $photo): static
+    {
+        if ($photo === null && $this->photo !== null) {
+            $this->photo->setUser(null);
         }
+
+        if ($photo !== null && $photo->getUser() !== $this) {
+            $photo->setUser($this);
+        }
+
+        $this->photo = $photo;
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->email ?? '';
+    }
+
+    public function getManagedDepartment(): ?Department
+    {
+        return $this->managedDepartment;
+    }
+
+    public function setManagedDepartment(?Department $managedDepartment): static
+    {
+        // Avoid circular reference by not setting the manager on the department
+        $this->managedDepartment = $managedDepartment;
+        return $this;
+    }
+
+    public function getTodoistAccessToken(): ?string
+    {
+        return $this->todoistAccessToken;
+    }
+
+    public function setTodoistAccessToken(?string $token): static
+    {
+        $this->todoistAccessToken = $token;
         return $this;
     }
 }

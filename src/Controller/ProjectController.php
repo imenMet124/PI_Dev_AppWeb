@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Projet;
 use App\Form\ProjetType;
 use App\Repository\ProjetRepository;
+use App\Service\GoogleCalendarService;
+use App\Service\ProjetService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +25,7 @@ class ProjectController extends AbstractController
     }
 
     #[Route('/new', name: 'app_project_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, ProjetService $projetService): Response
     {
         $projet = new Projet();
         $form = $this->createForm(ProjetType::class, $projet);
@@ -32,6 +34,19 @@ class ProjectController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($projet);
             $entityManager->flush();
+
+            // Sync project with Google Calendar
+            try {
+                $calendarLink = $projetService->ajouterProjetToGoogleCalendar(
+                    $projet->getNomProjet(),
+                    $projet->getDescProjet(),
+                    $projet->getDateDebutProjet(),
+                    $projet->getDateFinProjet()
+                );
+                $this->addFlash('success', 'Project added and synced with Google Calendar. View it <a href="' . $calendarLink . '" target="_blank">here</a>.');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Failed to sync project with Google Calendar: ' . $e->getMessage());
+            }
 
             return $this->redirectToRoute('app_project_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -51,13 +66,26 @@ class ProjectController extends AbstractController
     }
 
     #[Route('/{id_projet}/edit', name: 'app_project_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Projet $projet, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Projet $projet, EntityManagerInterface $entityManager, ProjetService $projetService): Response
     {
         $form = $this->createForm(ProjetType::class, $projet);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+
+            // Sync updated project with Google Calendar
+            try {
+                $calendarLink = $projetService->ajouterProjetToGoogleCalendar(
+                    $projet->getNomProjet(),
+                    $projet->getDescProjet(),
+                    $projet->getDateDebutProjet(),
+                    $projet->getDateFinProjet()
+                );
+                $this->addFlash('success', 'Project updated and synced with Google Calendar. View it <a href="' . $calendarLink . '" target="_blank">here</a>.');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Failed to sync project with Google Calendar: ' . $e->getMessage());
+            }
 
             return $this->redirectToRoute('app_project_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -78,4 +106,4 @@ class ProjectController extends AbstractController
 
         return $this->redirectToRoute('app_project_index', [], Response::HTTP_SEE_OTHER);
     }
-} 
+}
